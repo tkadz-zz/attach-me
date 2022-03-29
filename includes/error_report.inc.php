@@ -1,7 +1,7 @@
 <?php
-if(isset($_GET['type']) && isset($_GET['err'])) {
-    $type = $_GET['type'];
-    $message = $_GET['err'];
+if(isset($_SESSION['type']) && isset($_SESSION['err'])) {
+    $type = $_SESSION['type'];
+    $message = $_SESSION['err'];
 
 
 
@@ -42,6 +42,8 @@ elseif ($type == 's'){
     <?php
 }
 
+    unset($_SESSION['type']);
+    unset($_SESSION['err']);
 
 }
 
@@ -64,7 +66,7 @@ elseif ($type == 's'){
 
 <script type="text/javascript">
     //close div in 5 secs
-    window.setTimeout("closeDisDiv();", 8000);
+    window.setTimeout("closeDisDiv();", 10000);
 
     function closeDisDiv(){
         document.getElementById("divDis").style.display="none";

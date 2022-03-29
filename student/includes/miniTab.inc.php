@@ -10,7 +10,7 @@
                         <a class="nav-link active " id="profile-tab" -data-bs-toggle="tab" href="profile.php" role="tab" aria-selected="false"><span class="fa fa-pencil"></span> Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="false"><span class="fa fa-briefcase"></span> Carrier</a>
+                        <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="carrier.php" role="tab" aria-selected="false"><span class="fa fa-briefcase"></span> Carrier</a>
                     </li>
                 </ul>
                 <div>
@@ -24,3 +24,7 @@
         </div>
     </div>
 </div>
+
+<?php
+include "../includes/error_report.inc.php";
+?>

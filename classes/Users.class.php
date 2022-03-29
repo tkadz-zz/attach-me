@@ -7,6 +7,51 @@ class Users extends Dbh
     //-------------------------------------------------------------
     //student profile section
 
+    protected function studentUpdatePassword($op, $cp, $id){
+        //update student password
+        $sql = "SELECT * FROM users WHERE id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        $rows = $stmt->fetchAll();
+
+        if(password_verify($op, $rows[0]['password'])){
+            //Match
+            $sql2 = "UPDATE users SET password=? WHERE id=?";
+            $stmt2 = $this->con()->prepare($sql2);
+            $pass_safe = password_hash($cp, PASSWORD_DEFAULT);
+
+            if($stmt2->execute([$pass_safe, $id])){
+
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Password Updated Successfully';
+
+                echo "<script type='text/javascript'>;
+                      window.location='../password.php';
+                    </script>";
+            }
+            else{
+
+                $_SESSION['type'] = 'd';
+                $_SESSION['err'] = 'Password Update Failed';
+
+                echo "<script type='text/javascript'>;
+                      window.location='../password.php';
+                    </script>";
+            }
+        }
+        else{
+            //Not Matched
+
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'New Password did not match Old Password';
+
+            echo "<script type='text/javascript'>;
+                      window.location='../password.php';
+                    </script>";
+        }
+
+    }
+
 
     protected function studentUpdateProfile($name,$surname,$phone,$homeAddress,$postalAddress,$country,$email,$sex,$dob,$id){
 
@@ -16,14 +61,20 @@ class Users extends Dbh
             //success
             $_SESSION['name'] = $name;
             $_SESSION['surname'] = $surname;
+
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Profile Updated Successfully';
+
             echo "<script type='text/javascript'>;
-                      window.location='../profile.php?type=s&err=Profile Updated Successfully';
+                      window.location='../profile.php';
                     </script>";
         }
         else{
             //err
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'Profile Failed To Update';
             echo "<script type='text/javascript'>;
-                      window.location='../profile.php?type=w&err=Profile Failed To Update';
+                      window.location='../profile.php';
                     </script>";
         }
 
@@ -85,16 +136,22 @@ class Users extends Dbh
                         Usercontr::autologinUsers($_SESSION['id'], $loginID);
                     } else {
                         //Password Did Not match
+                        $_SESSION['type'] = 'w';
+                        $_SESSION['err'] = 'Wrong LoginID or Password';
+
                         echo "<script type='text/javascript'>;
-                          window.location='../signin.php?regNum=".$loginID."&type=w&err=Wrong LoginID or Password';
+                          window.location='../signin.php?regNum=".$loginID."';
                         </script>";
                     }
                 }
             }
                 /* No rows matched -- do something else */
             else {
+                $_SESSION['type'] = 'w';
+                $_SESSION['err'] = 'Wrong LoginID or Password';
+
                 echo "<script type='text/javascript'>;
-                          window.location='../signin.php?regNum=".$loginID."&type=d&err=Wrong LoginID or Password';
+                          window.location='../signin.php?regNum=".$loginID."';
                         </script>";
                 }
             }
@@ -122,8 +179,10 @@ class Users extends Dbh
             Usercontr::UpdateRegStatus($regStatus, $id);
         }
         else{
+            $_SESSION['type'] = 'd';
+            $_SESSION['err'] = 'Opps! Something went wrong with this step';
             echo "<script type='text/javascript'>;
-                      window.location='../signup.php?type=s&err=Opps! Something went wrong with this step';
+                      window.location='../signup.php';
                     </script>";
         }
     }
@@ -137,8 +196,10 @@ class Users extends Dbh
             Usercontr::UpdateRegStatus($regStatus, $id);
         }
         else{
+            $_SESSION['type'] = 'd';
+            $_SESSION['err'] = 'Opps! Something went wrong with this step';
             echo "<script type='text/javascript'>;
-                      window.location='../signup.php?type=s&err=Opps! Something went wrong with this step';
+                      window.location='../signup.php';
                     </script>";
         }
     }
@@ -151,31 +212,41 @@ class Users extends Dbh
         $stmt = $this->con()->prepare($sql);
         if($stmt->execute([$NewRegStatus, $id])) {
             if($NewRegStatus == 2){
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Hooray!, you are now one of us. We just need a few information to get your account up and going';
                 echo "<script type='text/javascript'>;
-                          window.location='../signup.php?type=s&err=Congrats, you are now one of us';
+                          window.location='../signup.php';
                         </script>";
             }
             elseif($NewRegStatus == 3){
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'You are a step closer to finalising your account setup';
                 echo "<script type='text/javascript'>;
-                          window.location='../signup.php?type=s&err=You are a step closer to finalising your account setup';
+                          window.location='../signup.php';
                         </script>";
             }
 	    elseif($NewRegStatus == 4){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Your account setup is complete, you can now enjoy learning the easy way';
                 echo "<script type='text/javascript'>;
-                          window.location='../signup.php?type=s&err=You are a step closer to finalising your account setup';
+                          window.location='../signup.php';
                         </script>";
             }
 	    elseif($NewRegStatus == 5){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Thank you for being part of us once again';
                 echo "<script type='text/javascript'>;
-                          window.location='../".$_SESSION['role']."/index.php?type=s&err=Account Setup Completed';
+                          window.location='../". $_SESSION['role'] ."/index.php';
                         </script>";
             }
 
         }
         else{
             //FAILED UPDATING REG STATUS
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'Failed to update Registration Status';
             echo "<script type='text/javascript'>;
-                          window.location='../signup.php?type=w&err=Failed to update Registration Status';
+                          window.location='../signup.php';
                         </script>";
         }
     }
@@ -217,6 +288,7 @@ class Users extends Dbh
             $_SESSION['surname'] = $rowsStudent[0]['surname'];
             $_SESSION['id'] = $rowsUser[0]['id'];
             $_SESSION['regNumber'] = $loginID;
+            $_SESSION['role'] = $rowsUser[0]['role'];
 
             $updateRegS = new Usercontr();
             $updateRegS->UpdateRegStatus($rowsUser[0]['regStatus'], $_SESSION['id']);
@@ -252,19 +324,47 @@ class Users extends Dbh
             $_SESSION['surname'] = $rowsStudent[0]['surname'];
             $_SESSION['regNumber'] = $loginID;
             $_SESSION['role'] = $rowsUser[0]['role'];
-            if($rowsUser[0]['regStatus'] < 5){
-                //redirect to signupPage to finish registration
+
+            if($rowsUser[0]['status'] != 1){
+                $_SESSION['type'] = 'd';
+                $_SESSION['err'] = 'Your account ('. $rowsStudent[0]['name'] .' '. $rowsStudent[0]['surname'] .') is temporarily deactivated. Contact the administrator to get this issue fixed';
+
+                unset($_SESSION['id']);
+                unset($_SESSION['name']);
+                unset($_SESSION['surname']);
+                unset($_SESSION['email']);
+                unset($_SESSION['role']);
+                unset($_SESSION['status']);
+
                 echo "<script type='text/javascript'>
-                        window.location='../signup.php?type=w&err=Your account registration progress was successfully retrieved from last registration attempt';
+                        window.location='../signin.php?regNum=$loginID';
                       </script>";
             }
-            else{
-                echo "<script type='text/javascript'>
-                        window.location='../student/index.php?type=s&err=Welcome Back!';
+            else {
+                if ($rowsUser[0]['regStatus'] < 5) {
+                    //redirect to signupPage to finish registration
+
+                    $_SESSION['type'] = 's';
+                    $_SESSION['err'] = 'Your account registration progress was successfully retrieved from last registration attempt';
+
+                    echo "<script type='text/javascript'>
+                        window.location='../signup.php';
                       </script>";
+                }
+
+            else{
+
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Welcome Back!';
+
+                echo "<script type='text/javascript'>
+                        window.location='../student/index.php';
+                      </script>";
+            }
             }
         }
 
+        //TODO Update company login to check for deactivated and active users
         elseif($rowsUser[0]['role'] == 'company'){
             //redirect to company profile
             if($rowsUser[0]['regStatus'] < 4){
@@ -280,6 +380,7 @@ class Users extends Dbh
             }
         }
 
+        //TODO Update institute login to check for deactivated and active users
         elseif($rowsUser[0]['role'] == 'institute'){
             //redirrect to institute profile
             if($rowsUser[0]['regStatus'] < 4){
@@ -295,6 +396,7 @@ class Users extends Dbh
             }
         }
 
+        //TODO Update admin login to check for deactivated and active users
         elseif ($rowsUser[0]['role'] == 'admin'){
             //redirect to admin profile
             //redirrect to institute profile

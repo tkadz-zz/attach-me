@@ -14,5 +14,7 @@ if(isset($_POST['btn-signin'])) {
     }
 }
 else{
-    echo'Action Forbiden';
+    echo "<script type='text/javascript'>;
+             window.location='../unauthorized.php';
+            </script>";
 }

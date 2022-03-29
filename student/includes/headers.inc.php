@@ -6,7 +6,13 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Star Admin2 </title>
+    <title>Attach-Me
+        <?php
+        if(isset($_SESSION['id'] )) {
+            echo ' /' . $_SESSION['name'] . ' ' . $_SESSION['surname'];
+        }
+        ?>
+    </title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="../UniversalUsersDashboardStyles/vendors/feather/feather.css">
     <link rel="stylesheet" href="../UniversalUsersDashboardStyles/vendors/mdi/css/materialdesignicons.min.css">

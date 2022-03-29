@@ -20,7 +20,13 @@ if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Attach-Me</title>
+        <title>Attach-Me
+            <?php
+                if(isset($_SESSION['id'] )) {
+                    echo ' /' . $_SESSION['name'] . ' ' . $_SESSION['surname'];
+                }
+            ?>
+        </title>
         <link rel="icon" type="image/x-icon" href="images/signin-header-image" />
         <!-- Bootstrap icons-->
         <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">

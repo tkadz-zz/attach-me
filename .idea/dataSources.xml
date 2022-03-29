@@ -4,7 +4,14 @@
     <data-source source="LOCAL" name="MySQL - attachme@localhost" uuid="36f62409-510e-496d-a9ea-babfac8e13b6">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/attachme</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="MySQL - attachme@localhost [2]" uuid="b748046a-c9aa-4c25-ab32-dd6178d2865d">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/attachme</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
