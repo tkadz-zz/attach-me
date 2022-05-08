@@ -30,14 +30,17 @@ class StudentView extends Users
                                 <div class="col-md-6">
                                     <label class="labels text-decoration-underline">Institute</label>
                                     <p>My school</p>
+                                    <p><a href="#!">{Schoolname} Resorces <span class="fa fa-external-link"></span></a></p>
                                 </div>
                             </div>
+                        <hr>
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels text-decoration-underline">Program/Course</label>
                                     <p>My own proram</p>
                                 </div>
                             </div>
+                        <hr>
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels text-decoration-underline">Company Attached</label>
@@ -48,32 +51,42 @@ class StudentView extends Users
 
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                            <div class="col-md-5">
+                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Curriculum Vitae</div>
                                     <div class="card-body">
-                                        <h6 -class="card-title">Unavailable</h6>
-                                        <p class="-card-text text-center"><a class="btn btn-outline-dark" href="#!">Upload</a></p>
+                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
+                                        <p class="-card-text text-center"><a class="mdi mdi-upload text-decoration-none" href="#!"> Upload</a></p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+                            <div class="col-md-5">
+                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Attachment Report</div>
                                     <div class="card-body">
-                                        <h6 -class="card-title">Uploaded</h6>
-                                        <p class="-card-text text-center"><a class="btn btn-outline-dark" href="#!">View</a></p>
+                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
+                                        <p class="-card-text text-center"><a class="mdi mdi-eye-outline text-decoration-none" href="#!"> View</a></p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+                            <div class="col-md-5">
+                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Assesment Report</div>
+                                    <div class="card-body">
+                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
+                                        <p class="-card-text text-center"><a class="mdi mdi-upload text-decoration-none" href="#!"> Upload</a></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Logbook Report</div>
                                     <div class="card-body">
-                                        <h6 -class="card-title">Uploaded </h6>
-                                        <p class="-card-text text-center"><a class="btn btn-outline-dark" href="#!">Update</a></p>
+                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
+                                        <p class="-card-text text-center"><a class="mdi mdi-eye text-decoration-none" href="#!"> View</a> | <a class="mdi mdi-update" href="#!"> Update</a> </p>
                                     </div>
                                 </div>
                             </div>
@@ -92,14 +105,6 @@ class StudentView extends Users
                         <div class="d-flex justify-content-between align-items-center experience">
                             <span>Additional Settings</span>
                         </div>
-                        <hr>
-                        <a href="password.php" class="btn btn-dark align-items-center"> <span class="fa fa-lock"></span> Change Password <span class="fa fa-arrow-right"></span></a>
-                        <br>
-                        <br>
-                        <a href="#!" class="btn btn-warning align-items-center"> <span class="fa fa-exclamation-circle"></span> Deactivate Account</a>
-                        <br>
-                        <br>
-                        <a href="#!" class="btn btn-danger align-items-center"> <span class="fa fa-exclamation-triangle"></span> Permanently Delete Account</a>
                     </div>
                 </div>
             </div>

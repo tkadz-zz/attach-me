@@ -10,8 +10,8 @@
                 <div class="col-lg-6">
                     <!-- Mashead text and app badges-->
                     <div class="mb-5 mb-lg-0 text-center text-lg-start">
-                        <h1 class="display-1 lh-1 mb-3">Login to your account here</h1>
-                        <p class="lead fw-normal text-muted mb-5">We are happy to have you back</p>
+                        <h1 class="display-1 lh-1 mb-3">Lost or Forgot Password</h1>
+                        <p class="lead fw-normal text-muted mb-5">we offer different ways to recover your account</p>
                         <div class="d-flex flex-column flex-lg-row align-items-center">
                         </div>
                     </div>
@@ -21,18 +21,25 @@
                 <div class="col-lg-6">
                     <div -class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Recover your account</h1>
                         </div>
                         <?php include "includes/error_report.inc.php"; ?>
 
-                        <form class="user" method="POST" action="includes/signin.inc.php">
+                        <form class="user" method="POST" action="includes/forgotpassword.inc.php">
                             <div class="form-group col-md-12">
-                                <input type="text" class="form-control form-control-user"
+                                <input type="email" class="form-control form-control-user"
                                        id="exampleInputText"
                                        aria-describedby="emailHelp"
-                                       placeholder="Reg-Number / LoginID"
-                                       name="loginID"
-                                       value=""
+                                       placeholder="Email of your account"
+                                       name="email"
+                                       value="<?php
+                                       if(isset($_GET['email'])){
+                                           echo $_GET['email'];
+                                       }
+                                       else{
+                                           '';
+                                       }
+                                       ?>"
                                 />
                             </div>
 
@@ -47,8 +54,8 @@
                                 </div>
                             </div>
                             -->
-                            <button name="btn-signin" class="btn btn-primary btn-user btn-block">
-                                Login <span class="fa fa-sign-in"></span>
+                            <button name="btn-recover-password" class="btn btn-primary btn-user btn-block">
+                                Send Link <span class="fa fa-envelope"></span>
                             </button>
 
                             <br>
@@ -56,10 +63,11 @@
                         </form>
 
 
-                        <hr>
+                        <br>
                         <div class="text-center">
-                            <a class="small" href="forgot-password.html">Forgot Password?</a>
+                            <a class="small" href="#!">Try another way <span class="fa fa-external-link"></span></a>
                         </div>
+                        <hr>
                         <?php
                         if(!isset($_SESSION['id']))
                         {

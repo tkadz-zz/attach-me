@@ -4,6 +4,103 @@
 class Users extends Dbh
 {
 
+
+
+
+    //Notifications
+    protected function getallnotifications($id){
+        $sql = "SELECT * from notifications where receiverID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function getallactivenotifications($id){
+        $unreadStatus = 1;
+        $undelStatus = 1;
+        $notyTypeLimit = 6;
+        $sql = "SELECT * from notifications where receiverID=? AND notyStatus=? AND notyType<=? AND notyDelStatus=? ORDER BY dateReceived DESC";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id, $unreadStatus,$notyTypeLimit, $undelStatus]);
+        return $stmt->fetchAll();
+    }
+
+
+
+
+
+    protected function passwordreserttoken($email)
+    {
+        $expFormat = mktime(
+            date("H"), date("i"), date("s"), date("m"), date("d") + 1, date("Y")
+        );
+        $expDate = date("Y-m-d H:i:s", $expFormat);
+        $key = md5($email);
+        $addKey = substr(md5(uniqid(rand(), 1)), 3, 10);
+        $key = $key . $addKey;
+
+        $sql = "INSERT INTO password_reset_temp(email, token_key, expDate) VALUES(?, ?, ?)";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$email, $key, $expDate]);
+
+       /* $r = mysqli_fetch_assoc($res);
+        $password = $r['password'];
+        $to = $email;
+        $subject = "Your Recovered Password";
+
+        $message = "Please use this password to login " . $password;
+        $headers = "From : vivek@codingcyber.com";
+        if(mail($to, $subject, $message, $headers)){
+            echo "Your Password has been sent to your email id";
+        }else{
+            echo "Failed to Recover your password, try again";
+        }*/
+
+
+
+
+
+    }
+
+
+    protected function forgotpassword($email){
+        $sql1 = "SELECT email FROM students WHERE email=?;";
+        $sql2 = "SELECT email FROM company WHERE email=?;";
+        $sql3 = "SELECT email FROM institute WHERE email=?;";
+
+        $stmt1 = $this->con()->prepare($sql1);
+        $stmt2 = $this->con()->prepare($sql2);
+        $stmt3 = $this->con()->prepare($sql3);
+
+        $stmt1->execute([$email]);
+        $stmt2->execute([$email]);
+        $stmt3->execute([$email]);
+
+        $value1 = $stmt1->fetchAll();
+        $value2 = $stmt2->fetchAll();
+        $value3 = $stmt3->fetchAll();
+
+        if(count($value1) > 0){
+            Usercontr::passwordreserttoken($email);
+        }
+        elseif (count($value2) > 0){
+            Usercontr::passwordreserttoken($email);
+        }
+        elseif (count($value3)){
+            Usercontr::passwordreserttoken($email);
+        }
+        else{
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'No account is linked with this email address';
+            echo "<script type='text/javascript'>;
+                      window.location='../forgotpassword.php?email=$email';
+                    </script>";
+        }
+
+
+    }
+
+
     //-------------------------------------------------------------
     //student profile section
 
@@ -43,7 +140,7 @@ class Users extends Dbh
             //Not Matched
 
             $_SESSION['type'] = 'w';
-            $_SESSION['err'] = 'New Password did not match Old Password';
+            $_SESSION['err'] = 'Old password did not match';
 
             echo "<script type='text/javascript'>;
                       window.location='../password.php';
@@ -145,7 +242,7 @@ class Users extends Dbh
                     }
                 }
             }
-                /* No rows matched -- do something else */
+            /* No rows matched -- do something else */
             else {
                 $_SESSION['type'] = 'w';
                 $_SESSION['err'] = 'Wrong LoginID or Password';
@@ -153,22 +250,22 @@ class Users extends Dbh
                 echo "<script type='text/javascript'>;
                           window.location='../signin.php?regNum=".$loginID."';
                         </script>";
-                }
             }
         }
+    }
 
 
 
 
 
     //STUDENT REGISTRATION CLASSES
-    
+
     protected function Stage4($id){
-	$regStatus = 4;
+        $regStatus = 4;
         Usercontr::UpdateRegStatus($regStatus, $id);
 
     }
-  
+
 
     protected function Stage3($institute, $program, $programType, $dateStart, $dateEnd, $id){
         $sql = 'INSERT into studentEducation(user_id, school_id, program, programType, initial_year, final_year)
@@ -225,16 +322,16 @@ class Users extends Dbh
                           window.location='../signup.php';
                         </script>";
             }
-	    elseif($NewRegStatus == 4){
-            $_SESSION['type'] = 's';
-            $_SESSION['err'] = 'Your account setup is complete, you can now enjoy learning the easy way';
+            elseif($NewRegStatus == 4){
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Your account setup is complete, you can now enjoy learning the easy way';
                 echo "<script type='text/javascript'>;
                           window.location='../signup.php';
                         </script>";
             }
-	    elseif($NewRegStatus == 5){
-            $_SESSION['type'] = 's';
-            $_SESSION['err'] = 'Thank you for being part of us once again';
+            elseif($NewRegStatus == 5){
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Thank you for being part of us once again';
                 echo "<script type='text/javascript'>;
                           window.location='../". $_SESSION['role'] ."/index.php';
                         </script>";
@@ -352,15 +449,15 @@ class Users extends Dbh
                       </script>";
                 }
 
-            else{
+                else{
 
-                $_SESSION['type'] = 's';
-                $_SESSION['err'] = 'Welcome Back!';
+                    $_SESSION['type'] = 's';
+                    $_SESSION['err'] = 'Welcome Back!';
 
-                echo "<script type='text/javascript'>
+                    echo "<script type='text/javascript'>
                         window.location='../student/index.php';
                       </script>";
-            }
+                }
             }
         }
 
