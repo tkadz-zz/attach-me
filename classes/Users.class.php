@@ -6,6 +6,47 @@ class Users extends Dbh
 
 
 
+    protected function loginCompanySubAcc($subID, $subCompanyID, $password){
+        //login SubAcc
+        $sql = "SELECT * FROM company_sub_accounts WHERE id=? AND companyID=? ";
+        $stmt = $this->con()->prepare($sql);
+        $res = $stmt->execute([$subID, $subCompanyID]);
+
+        if ($res) {
+            $record = $stmt->fetchAll();
+            /* Check the number of rows that match the SELECT statement */
+            if (count($record) > 0) {
+                foreach ($record as $row) {
+                    //
+                    $passwords = $row["password"];
+                    if (password_verify($password, $passwords)) {
+                        session_start();
+                        $_SESSION['subID'] = $subID;
+                        //Sub Acc Logged-in
+
+                    } else {
+                        //Password Did Not match
+                        $_SESSION['type'] = 'w';
+                        $_SESSION['err'] = 'Wrong Sub-Account Or Password for '. $row["name"] ." ". $row["surname"] .' ';
+
+                        echo "<script type='text/javascript'>;
+                          window.location='../accounts.php';
+                        </script>";
+                    }
+                }
+
+            }
+            else{
+                //else of countrecords
+            }
+        }
+        else{
+            //else of if res
+        }
+
+
+    }
+
 
     //Notifications
     protected function getallnotifications($id){
@@ -43,18 +84,18 @@ class Users extends Dbh
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$email, $key, $expDate]);
 
-       /* $r = mysqli_fetch_assoc($res);
-        $password = $r['password'];
-        $to = $email;
-        $subject = "Your Recovered Password";
+        /* $r = mysqli_fetch_assoc($res);
+         $password = $r['password'];
+         $to = $email;
+         $subject = "Your Recovered Password";
 
-        $message = "Please use this password to login " . $password;
-        $headers = "From : vivek@codingcyber.com";
-        if(mail($to, $subject, $message, $headers)){
-            echo "Your Password has been sent to your email id";
-        }else{
-            echo "Failed to Recover your password, try again";
-        }*/
+         $message = "Please use this password to login " . $password;
+         $headers = "From : vivek@codingcyber.com";
+         if(mail($to, $subject, $message, $headers)){
+             echo "Your Password has been sent to your email id";
+         }else{
+             echo "Failed to Recover your password, try again";
+         }*/
 
 
 
@@ -349,6 +390,20 @@ class Users extends Dbh
     }
 
 
+    protected function GetCompanyById($id){
+        $sql = "SELECT * FROM company WHERE user_id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetSubCompanyById($id){
+        $sql = "SELECT * FROM company_sub_accounts WHERE companyID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
     protected function GetUser($id){
         $sql = "SELECT * FROM users WHERE id=?";
         $stmt = $this->con()->prepare($sql);
@@ -463,17 +518,34 @@ class Users extends Dbh
 
         //TODO Update company login to check for deactivated and active users
         elseif($rowsUser[0]['role'] == 'company'){
+
+            $rowsCompany = $this->GetCompanyById($id);
+            $_SESSION['name'] = $rowsCompany[0]['name'];
+            $_SESSION['email'] = $rowsCompany[0]['email'];
+            $_SESSION['role'] = $rowsUser[0]['role'];
+
             //redirect to company profile
-            if($rowsUser[0]['regStatus'] < 4){
-                //redirect to signupPage to finish registration
+            if($rowsUser[0]['status'] != 1){
+                $_SESSION['type'] = 'd';
+                $_SESSION['err'] = 'Your account is temporarily deactivated. Contact the administrator to get this issue fixed';
+
+                unset($_SESSION['id']);
+                unset($_SESSION['name']);
+                unset($_SESSION['surname']);
+                unset($_SESSION['email']);
+                unset($_SESSION['role']);
+                unset($_SESSION['status']);
+
                 echo "<script type='text/javascript'>
-                        window.location='../signup.php?type=w&err=Your account registration progress was successfully retrieved from last registration attempt';
+                        window.location='../signin.php?regNum=$loginID';
                       </script>";
             }
-            else{
+            else {
+
                 echo "<script type='text/javascript'>
                         window.location='../company/index.php?type=s&err=Welcome Back!';
                       </script>";
+
             }
         }
 

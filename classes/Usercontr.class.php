@@ -2,6 +2,10 @@
 class Usercontr extends Users{
 
 
+    public function loginCompanySubAcc($subID, $subCompanyID, $password){
+        parent::loginCompanySubAcc($subID, $subCompanyID, $password);
+    }
+
 
     public function passwordreserttoken($email)
     {

@@ -17,13 +17,29 @@
                         <ul class="text-muted mb-5">
                             <li>Trying to access a page you are not supposed to</li>
                             <li>Trying to change a setting a page you are not supposed to</li>
+                            <li>Trying to access resources that are not available yet or under update / maintenance <span class="fa fa-gear fa-spin"></span></li>
                         </ul>
                         </p>
 
                         <hr>
-                        <a href="index.php" class="btn btn-primary btn-user btn-block">Dashboard <span class="fa fa-home"></span> </a>
 
-                        <a href="?logout=true" class="btn btn-danger btn-user btn-block">Logout <span class="fa fa-sign-out"></span> </a>
+
+                        <?php
+                        if(isset($_SESSION['id']) || isset($_SESSION['role'])){
+                            ?>
+                            <a href="#!" onclick="history.go(-1)" class="btn btn-primary btn-user btn-block"><span class="fa fa-chevron-circle-left"></span> Go Back</a>
+                            <a href="?logout=true" class="btn btn-danger btn-user btn-block">Logout <span class="fa fa-sign-out"></span> </a>
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                            <a href="student/index.php" class="btn btn- btn-user btn-block text-primary">Sign-in <span class="fa fa-sign-in"></span> </a>
+                            <a href="index.php" class="btn btn-primary btn-user btn-block">Home <span class="fa fa-home"></span> </a>
+                            <?php
+                        }
+                        ?>
+
 
                         <p><div class="d-flex flex-column flex-lg-row align-items-center">
                         </div>

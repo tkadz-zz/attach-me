@@ -13,7 +13,17 @@ if($_SESSION["id"] == "" || $_SESSION["id"] == NULL){
 
 else{
 
-  if(isset($_SESSION['role']) && $_SESSION['role'] == 'student'){
+
+  if(isset($_SESSION['role']) && $_SESSION['role'] == 'company'){
+
+    if(!isset($_SESSION['subID'])){
+      $_SESSION['type'] = 's';
+      $_SESSION['err'] = 'Select one your Sub-Account Below to continue';
+      echo "<script type='text/javascript'>
+    window.location='accounts.php';
+    </script>";
+    }
+
     echo "<script type='text/javascript'>
       window.location='dashboard.php';
       </script>";
@@ -23,7 +33,6 @@ else{
       window.location='../unauthorized.php';
       </script>";
   }
-
 
 
 }

@@ -527,7 +527,7 @@ class StudentView extends Users
                             More options will appear below once you get attachment
                         </p>
                     </a>
-                    <a href="#!" class="dropdown-item preview-item">
+                    <a href="vacancies.php" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Vacancies</p>
                             <p class="fw-light small-text mb-0">View and apply to available vacancies</p>
