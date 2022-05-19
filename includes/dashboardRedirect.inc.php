@@ -16,7 +16,9 @@ $myrole = $_SESSION['role'];
 
 else{
 //prohibited session
-echo 'please login first';
+    echo "<script type='text/javascript'>;
+             window.location='../unauthorized.php';
+            </script>";
 }
 
 

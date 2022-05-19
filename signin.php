@@ -74,7 +74,7 @@
 
                         <hr>
                         <div class="text-center">
-                            <a class="small" href="forgot-password.html">Forgot Password?</a>
+                            <a class="small" href="forgotpassword.php">Forgot Password?</a>
                         </div>
                         <?php
                         if(!isset($_SESSION['id']))

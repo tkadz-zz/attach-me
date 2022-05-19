@@ -5,6 +5,7 @@ session_start();
 
 <?php
 if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
+
     $newlogout = new Usercontr();
     $newlogout->log_out();
 

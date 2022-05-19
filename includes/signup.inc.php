@@ -21,30 +21,34 @@ if($password != $confirmPassword){
 }
 
 elseif(strlen($loginID) < 1){
-    $message = "type=d&err=RegNumber is empty";
+    $_SESSION['type'] = 'd';
+    $_SESSION['err'] = 'RegNumber is empty';
     echo "<script type='text/javascript'>;
-             window.location='../signup.php?$message';
+             window.location='../signup.php';
             </script>";
 }
 
 elseif(strlen($name) < 1){
-    $message = "type=d&err=Name is empty";
+    $_SESSION['type'] = 'd';
+    $_SESSION['err'] = 'Name is empty';
   echo "<script type='text/javascript'>;
-             window.location='../signup.php?$message';
+             window.location='../signup.php';
             </script>";
 }
 
 elseif(strlen($surname) < 1){
-    $message = "type=d&err=Surname is empty";
+    $_SESSION['type'] = 'd';
+    $_SESSION['err'] = 'Surname is empty';
   echo "<script type='text/javascript'>;
-             window.location='../signup.php?$message';
+             window.location='../signup.php';
             </script>";
 }
 
 elseif (strlen($password) < 8 || strlen($confirmPassword) < 8){
-    $message = "type=d&err=Password Too Short";
+    $_SESSION['type'] = 'd';
+    $_SESSION['err'] = 'Password is too short';
   echo "<script type='text/javascript'>;
-             window.location='../signup.php?$message';
+             window.location='../signup.php';
             </script>";
 }
 

@@ -13,9 +13,14 @@ if($_SESSION["id"] == "" || $_SESSION["id"] == NULL){
 
 else{
 
-  if(isset($_SESSION['role'])){
+  if(isset($_SESSION['role']) && $_SESSION['role'] == 'student'){
     echo "<script type='text/javascript'>
       window.location='dashboard.php';
+      </script>";
+  }
+  else{
+    echo "<script type='text/javascript'>
+      window.location='../unauthorized.php';
       </script>";
   }
 
