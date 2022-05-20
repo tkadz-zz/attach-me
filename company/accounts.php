@@ -2,9 +2,13 @@
 include 'includes/emptyLayoutTop.inc.php';
 include 'includes/miniTab.inc.php';
 
+
+
 ?>
 <br>
-<?php echo $_SESSION['name'] ?>'s Sub-Accounts
+<div class="">
+    <h6><?php echo $_SESSION['name'] ?>'s Sub-Accounts</h6>
+</div>
 <hr>
 <style>
     form {
