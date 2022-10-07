@@ -27,7 +27,11 @@ if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
     <div class="navbar-menu-wrapper d-flex align-items-top">
         <ul class="navbar-nav">
             <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
-                <h1 class="welcome-text"><span class="text-black fw-bold"> <?php echo $_SESSION['name'] ?></span></h1>
+                <h1 class="welcome-text"><span class="text-black fw-bold"> <?php echo $_SESSION['name'] ?></span><?php
+                    if(isset($_SESSION['subID'])){
+                        echo "(". $_SESSION['subName'] ." ". $_SESSION['subSurname'] .")";
+                    }
+                    ?></h1>
                 <h6 class="welcome-sub-text" style="font-size: 15px"><?php echo  $_SESSION['email']  ?> </h6>
             </li>
         </ul>

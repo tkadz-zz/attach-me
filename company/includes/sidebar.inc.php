@@ -42,6 +42,13 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link" href="accounts.php">
+                <i class="menu-icon mdi mdi-repeat"></i>
+                <span class="menu-title">Switch Account</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" href="?logout=true">
                 <i class="menu-icon mdi mdi-power"></i>
                 <span class="menu-title">Sign Out</span>

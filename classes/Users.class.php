@@ -11,7 +11,7 @@ class Users extends Dbh
         $sql = "SELECT * FROM company_sub_accounts WHERE id=? AND companyID=? ";
         $stmt = $this->con()->prepare($sql);
         $res = $stmt->execute([$subID, $subCompanyID]);
-
+        //TODO Update code to check if user is active or not
         if ($res) {
             $record = $stmt->fetchAll();
             /* Check the number of rows that match the SELECT statement */
@@ -22,7 +22,17 @@ class Users extends Dbh
                     if (password_verify($password, $passwords)) {
                         session_start();
                         $_SESSION['subID'] = $subID;
+
+                        $_SESSION['subName'] = $row['name'];
+                        $_SESSION['subSurname'] = $row['surname'];
+                        $_SESSION['subDepartment'] = $row['department'];
+
                         //Sub Acc Logged-in
+                        $_SESSION['type'] = 's';
+                        $_SESSION['err'] = 'Welcome Back '. $row["name"] ." ". $row["surname"] .' ';
+                        echo "<script type='text/javascript'>;
+                          window.location='../dashboard.php';
+                        </script>";
 
                     } else {
                         //Password Did Not match
