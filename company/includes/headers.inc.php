@@ -9,7 +9,7 @@
     <title>Attach-Me
         <?php
         if(isset($_SESSION['id'] )) {
-            echo ' /' . $_SESSION['name'] . ' ' . $_SESSION['surname'];
+            echo ' /' . $_SESSION['name'];
         }
         ?>
     </title>
@@ -33,6 +33,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="shortcut icon"  href="../images/signin-header-image" />
+
+
+
 </head>
 <body>
 

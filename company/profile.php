@@ -55,8 +55,8 @@ include 'includes/subAccSessionFilter.inc.php';
 
 <?php
 
-$studentProfile = new StudentView();
-$studentProfile->StudentViewProfile($_SESSION['id']);
+$studentProfile = new CompanyView();
+$studentProfile->companyViewProfile($_SESSION['subID']);
 
 ?>
 

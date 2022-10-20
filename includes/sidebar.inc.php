@@ -5,7 +5,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                 </div>
                 <div class="sidebar-brand-text mx-3">
-                <img class="" height="30" src="images/signin-header-image"></img> BoomsTech
+                <img class="" height="30" src="images/signin-header-image"></img> Attach-Me
                 </div>
             </a>
 

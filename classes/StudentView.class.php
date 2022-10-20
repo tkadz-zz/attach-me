@@ -6,13 +6,20 @@ class StudentView extends Users
     public function StudentViewCarrier($id){
         $userRow = $this->GetUser($id);
         $studentRow = $this->GetStudentByID($id);
+        $studentEducationRows = $this->GetStudentEducationByUserID($id);
+        $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
+        $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
+
         ?>
 
         <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
             <div class="row ">
                 <div class="col-md-3 border-right">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px" src="../avatar/undraw_rocket.svg">
+                        <?php
+                        $this->sexProfileImageView($id, $studentRow[0]['sex']);
+                        ?>
+                        <br>
                         <span class="font-weight-bold"><?php echo $studentRow[0]['name'] .' '. $studentRow[0]['surname']   ?></span>
                         <span class="text-black-50"><?php echo $studentRow[0]['email'] ?></span>
                         <span> </span>
@@ -22,74 +29,107 @@ class StudentView extends Users
 
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">My Carrier</h4>
+
+                        <div class="row">
+                            <div class="col-md-12 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="text-right card-header">My Carrier</h4>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="col-md-6">
+                                        <label class="labels text-decoration-underline">Institute:</label>
+                                        <p><a href="#!"><?php echo $instituteRow[0]['name'] ?> Resorces <span class="fa fa-external-link"></span></a></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="mt-2">
+                                    <div class="col-md-6">
+                                        <label class="labels text-decoration-underline">Program/Course:</label>
+                                        <p><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="mt-2">
+                                    <div class="col-md-6">
+                                        <label class="labels text-decoration-underline">Company Attached:</label><br>
+                                        <?php
+                                        if($studentRow[0]['attachmentStatus'] != 1) {
+                                            ?>
+                                                <p class="badge badge-warning text-dark">Not Attached Yet</p>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+                                            <p class="badge badge-warning">Attached</p>
+                                            <?php
+                                        }
+                                        ?>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
-                            <div class="row mt-2">
-                                <div class="col-md-6">
-                                    <label class="labels text-decoration-underline">Institute</label>
-                                    <p>My school</p>
-                                    <p><a href="#!">{Schoolname} Resorces <span class="fa fa-external-link"></span></a></p>
-                                </div>
-                            </div>
-                        <hr>
-                            <div class="row mt-2">
-                                <div class="col-md-6">
-                                    <label class="labels text-decoration-underline">Program/Course</label>
-                                    <p>My own proram</p>
-                                </div>
-                            </div>
-                        <hr>
-                            <div class="row mt-2">
-                                <div class="col-md-6">
-                                    <label class="labels text-decoration-underline">Company Attached</label>
-                                    <p>My company</p>
-                                </div>
-                            </div>
                         <hr>
 
 
                         <div class="row">
-                            <div class="col-md-5">
-                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+
+                            <div class="col-md-6">
+                                <a style="text-decoration: none" href="#!">
+                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Curriculum Vitae</div>
                                     <div class="card-body">
                                         <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
-                                        <p class="-card-text text-center"><a class="mdi mdi-upload text-decoration-none" href="#!"> Upload</a></p>
+                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
                                     </div>
                                 </div>
+                                </a>
                             </div>
 
-                            <div class="col-md-5">
-                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                            <?php
+                            if($studentRow[0]['attachmentStatus'] == 1) {
+                                ?>
+
+                            <div class="col-md-6">
+                                <a style="text-decoration: none" href="#!">
+                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Attachment Report</div>
                                     <div class="card-body">
                                         <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                        <p class="-card-text text-center"><a class="mdi mdi-eye-outline text-decoration-none" href="#!"> View</a></p>
+                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
                                     </div>
                                 </div>
+                                </a>
                             </div>
 
-                            <div class="col-md-5">
-                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">Assesment Report</div>
+                            <div class="col-md-6">
+                                <a style="text-decoration: none" href="#!">
+                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Assessment Report</div>
                                     <div class="card-body">
                                         <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
-                                        <p class="-card-text text-center"><a class="mdi mdi-upload text-decoration-none" href="#!"> Upload</a></p>
+                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
                                     </div>
                                 </div>
+                                </a>
                             </div>
 
-                            <div class="col-md-5">
-                                <div class="card -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                            <div class="col-md-6">
+                                <a style="text-decoration: none" href="#!">
+                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Logbook Report</div>
                                     <div class="card-body">
                                         <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                        <p class="-card-text text-center"><a class="mdi mdi-eye text-decoration-none" href="#!"> View</a> | <a class="mdi mdi-update" href="#!"> Update</a> </p>
+                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
                                     </div>
                                 </div>
+                                </a>
                             </div>
+                                <?php
+                            }
+                                ?>
 
                         </div>
 
@@ -186,7 +226,10 @@ class StudentView extends Users
                         <a href="profile.php" class="btn btn-dark align-items-center"> <span class="fa fa-user-edit"></span> Update Profile <span class="fa fa-arrow-right"></span></a>
                         <br>
                         <br>
-
+                        <a href="#!" class="btn btn-warning align-items-center"> <span class="fa fa-exclamation-circle"></span> Deactivate Account</a>
+                        <br>
+                        <br>
+                        <a href="#!" class="btn btn-danger align-items-center"> <span class="fa fa-exclamation-triangle"></span> Permanently Delete Account</a>
                     </div>
                 </div>
 
@@ -205,7 +248,7 @@ class StudentView extends Users
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Attachment Details</h4>
+                    <h4 class="card-title card-header">Attachment Details</h4>
                     <p class="card-description">
                         <?php
                         $var = new StudentView();
@@ -308,19 +351,80 @@ class StudentView extends Users
     }
 
 
+    public function sexProfileImageView($id, $sex){
+        $userRows = $this->isUser($id, $_SESSION['role']);
+
+        if(!isset($_GET['setProfileImage'])){
+            if($userRows[0]['avatar'] == ''){
+            if($sex == 'MALE'){
+                ?>
+                <img class="rounded-circle mt-5" width="150px" src="../img/male.png">
+                <?php
+            }
+            elseif ($sex == 'FEMALE'){
+                ?>
+                <img class="rounded-circle mt-5" width="150px" src="../img/female.png">
+                <?php
+            }
+            else{
+                ?>
+                <img class="rounded-circle mt-5" width="150px" src="../img/user.png">
+                <?php
+            }
+            }
+            else{
+                ?>
+                <img class="rounded-circle mt-5" width="150px" height="150px" src="<?php echo $userRows[0]['avatar'] ?>">
+                <?php
+            }
+            ?>
+            <div class="shadow-sm myhover">
+                <a class="p-2" data-toggle="tooltip" data-placement="right" title="Update Profile Picture" href="?setProfileImage"><span class="fa fa-camera"></span></a>
+                <a class="p-2 text-danger"onclick="return confirm('Are you sure you want to remove this picture?')"  data-toggle="tooltip" data-placement="right" title="Delete Profile Picture" href="includes/deleteProfilePicture.php"><span class="fa fa-trash"></span></a>
+            </div>
+            <?php
+        }
+
+        else{
+            ?>
+            <div class="animated--grow-in text-dark fadeout -my-3 -p-3 bg-white rounded shadow-sm alert alert-success">
+                <span class="animated--grow-in fadeout fa fa-info-circle"></span> Update Image Below
+            </div>
+            <form method="POST" action="includes/updateProfileImage.inc.php" enctype="multipart/form-data">
+                <div>
+                    <input type="file" name="profilePic" class="form-control" required>
+                </div>
+                <br>
+                <div>
+                    <a  onclick="history.back(-1)" class="btn btn-sm btn-outline-warning">Cancel <span class="fa fa-times"></span></a>
+                    <button name="btn_ProfilePic" type="submit" class="btn btn-outline-primary"><span class="fa fa-camera"></span> Updload</button>
+                </div>
+            </form>
+            <hr>
+            <?php
+        }
+    }
+
+
 
     public function StudentViewProfile($id){
         $userRow = $this ->GetUser($id);
-        $studentRow = $this->GetStudentByID($id);
+        $userRole = $this->isUser($id, $_SESSION['role']);
         ?>
 
         <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
             <div class="row ">
                 <div class="col-md-3 border-right">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px" src="../avatar/undraw_profile_1.svg">
-                        <span class="font-weight-bold"><?php echo $studentRow[0]['name'] .' '. $studentRow[0]['surname']   ?></span>
-                        <span class="text-black-50"><?php echo $studentRow[0]['email'] ?></span>
+
+                        <?php
+
+                        $this->sexProfileImageView($id, $userRole[0]['sex']);
+
+                        ?>
+
+                        <span class="font-weight-bold"><?php echo $userRole[0]['name'] .' '. $userRole[0]['surname']   ?></span>
+                        <span class="text-black-50"><?php echo $userRole[0]['email'] ?></span>
                         <span> </span>
                     </div>
                 </div>
@@ -329,7 +433,7 @@ class StudentView extends Users
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">Profile Settings</h4>
+                            <h4 class="text-right card-header">Profile Settings</h4>
 
                         </div>
                         <form method="post" action="includes/StudentUpdate.inc.php" >
@@ -342,33 +446,33 @@ class StudentView extends Users
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels">Name</label>
-                                    <input name="name" type="text" class="form-control" placeholder="first name" value="<?php echo $studentRow[0]['name'] ?>" required>
+                                    <input name="name" type="text" class="form-control" placeholder="first name" value="<?php echo $userRole[0]['name'] ?>" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="labels">Surname</label>
-                                    <input name="surname" type="text" class="form-control" value="<?php echo $studentRow[0]['surname'] ?>" placeholder="surname" required>
+                                    <input name="surname" type="text" class="form-control" value="<?php echo $userRole[0]['surname'] ?>" placeholder="surname" required>
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12">
                                     <label class="labels">Mobile Number</label>
-                                    <input name="phone" type="text" class="form-control" placeholder="enter phone number" value="<?php echo $studentRow[0]['phone'] ?>">
+                                    <input name="phone" type="text" class="form-control" placeholder="enter phone number" value="<?php echo $userRole[0]['phone'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label class="labels">Address Line 1</label>
-                                    <input name="homeAddress" type="text" class="form-control" placeholder="enter address line 1" value="<?php echo $studentRow[0]['homeAddress'] ?>">
+                                    <input name="homeAddress" type="text" class="form-control" placeholder="enter address line 1" value="<?php echo $userRole[0]['homeAddress'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label class="labels">Address Line 2</label>
-                                    <input name="postalAddress" type="text" class="form-control" placeholder="enter address line 2" value="<?php echo $studentRow[0]['postalAddress'] ?>">
+                                    <input name="postalAddress" type="text" class="form-control" placeholder="enter address line 2" value="<?php echo $userRole[0]['postalAddress'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label class="labels">State</label>
-                                    <input name="country" type="text" class="form-control" placeholder="enter address line 2" value="<?php echo $studentRow[0]['nationality'] ?>">
+                                    <input name="country" type="text" class="form-control" placeholder="enter address line 2" value="<?php echo $userRole[0]['nationality'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label class="labels">Email ID</label>
-                                    <input name="email" type="text" class="form-control" placeholder="enter email id" value="<?php echo $studentRow[0]['email'] ?>">
+                                    <input name="email" type="text" class="form-control" placeholder="enter email id" value="<?php echo $userRole[0]['email'] ?>">
                                 </div>
 
                             </div>
@@ -399,8 +503,8 @@ class StudentView extends Users
 
                                     //ACCOUNT IS NOW CREATED
                                     ?>
-                                    <label class="labels">Date Of Birth</label>
-                                    <input name="dob" type="date" class="form-control" value="<?php echo $studentRow[0]['dob'] ?>" placeholder="DOB" min="<?php echo $DOBMin ?>" max="<?php echo $DOBMax ?>"></div>
+                                    <label class="labels">Date Of Birth <b>(<?php echo $this->dateToDayMDY($userRole[0]['dob']) ?>)</b></label>
+                                    <input name="dob" type="date" class="form-control" value="<?php echo $userRole[0]['dob'] ?>" placeholder="DOB" min="<?php echo $DOBMin ?>" max="<?php echo $DOBMax ?>"></div>
                             </div>
                             <div class="mt-5 text-center">
                                 <button name="btn_updateProfile" class="btn btn-primary" type="submit">Save Profile</button>
@@ -419,11 +523,6 @@ class StudentView extends Users
                         <hr>
                         <a href="password.php" class="btn btn-dark align-items-center"> <span class="fa fa-lock"></span> Change Password <span class="fa fa-arrow-right"></span></a>
                         <br>
-                        <br>
-                        <a href="#!" class="btn btn-warning align-items-center"> <span class="fa fa-exclamation-circle"></span> Deactivate Account</a>
-                        <br>
-                        <br>
-                        <a href="#!" class="btn btn-danger align-items-center"> <span class="fa fa-exclamation-triangle"></span> Permanently Delete Account</a>
                     </div>
                 </div>
             </div>
@@ -453,7 +552,7 @@ class StudentView extends Users
         <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Profile Details | <a style="font-size: 13px" href="profile.php"><span class="fa fa-pencil">update</span></a></h4>
+                    <h4 class="card-title card-header">Profile Details | <a style="font-size: 13px" href="profile.php"><span class="fa fa-pencil">update</span></a></h4>
                     <p class="card-description">
                     </p>
                     <div class="row">
@@ -491,7 +590,7 @@ class StudentView extends Users
                                     DOB
                                 </p>
                                 <p>
-                                    <?php echo $studentRow[0]['phone'] ?>
+                                    <?php echo $this->dateToDay($studentRow[0]['dob']);  ?>
                                 </p>
 
                             </address>

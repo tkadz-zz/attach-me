@@ -70,12 +70,62 @@ if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
 
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="img-xs rounded-circle" src="../avatar/undraw_profile.svg" alt="Profile image"> </a>
+                    <?php
+                    if($_SESSION['avatar'] != ''){
+                        ?>
+                        <img class="img-xs rounded-circle" src="<?php echo $_SESSION['avatar'] ?>" alt=" image">
+                        <?php
+                    }
+                    else{
+                        if($_SESSION['sex'] == 'MALE'){
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/male.png">
+                            <?php
+                        }
+                        elseif ($_SESSION['sex'] == 'FEMALE'){
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/female.png">
+                            <?php
+                        }
+                        else{
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/user.png">
+                            <?php
+                        }
+
+                    }
+                    ?>
+                </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="dropdown-header text-center">
-                        <img class="img-md rounded-circle" src="../avatar/undraw_profile.svg" alt="Profile image">
-                        <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
-                        <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                        <?php
+                        if($_SESSION['avatar'] != ''){
+                            ?>
+                            <img style="height: 100px" class="img-md rounded-circle" src="<?php echo $_SESSION['avatar'] ?>" alt=" image">
+                            <?php
+                        }
+                        else{
+                            if($_SESSION['sex'] == 'MALE'){
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/male.png">
+                                <?php
+                            }
+                            elseif ($_SESSION['sex'] == 'FEMALE'){
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/female.png">
+                                <?php
+                            }
+                            else{
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/user.png">
+                                <?php
+                            }
+
+                        }
+                        ?>
+
+                        <p class="mb-1 mt-3 font-weight-semibold"><?php echo $_SESSION['name'] .' '. $_SESSION['surname'] ?></p>
+                        <p class="fw-light text-muted mb-0"><?php echo $_SESSION['regNumber'] ?></p>
                     </div>
 
                     <a class="dropdown-item" href="profile.php"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>

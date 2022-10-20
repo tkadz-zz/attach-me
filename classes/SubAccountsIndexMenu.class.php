@@ -24,26 +24,25 @@ class SubAccountsIndexMenu extends Users
                 ?>
 
                 <div class="col-md-3 mb-3">
+
+
                     <div class="card">
                         <?php
-                        if($row['sex'] == 'M')
-                        {
-                        ?>
-                        <img class="card-img-top" style="width: 80px" src="../img/male.png" alt="Card image cap">
-                        <?php
-                        }
-                        elseif($row['sex'] == 'F'){
-
-                        ?>
-                        <img class="card-img-top" style="width: 80px" src="../img/female.png" alt="Card image cap">
-                        <?php
-                        }
+                        if($row['avatar'] != ''){ ?>
+                            <img class="card-img-top rounded-circle" style="width: 80px; height: 80px" src="<?php echo $row['avatar'] ?>" alt="Card image cap">
+                            <?php }
                         else{
-                        ?>
-                            <img class="card-img-top" style="width: 80px" src="../img/user.png" alt="Card image cap">
-                        <?php
-                        }
-                        ?>
+                            if($row['sex'] == 'MALE') { ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/male.png" alt="Card image cap">
+                            <?php }
+                            elseif($row['sex'] == 'FEMALE'){ ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/female.png" alt="Card image cap">
+                            <?php }
+                            else{ ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/user.png" alt="Card image cap">
+                            <?php }
+                        } ?>
+
                         <div class="card-body">
                             <h6 class="card-text"><?php echo $row['name'] .' '. $row['surname'] ?></h6>
                             <p class="card-text"><?php echo $row['department'] ?></p>

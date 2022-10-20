@@ -63,25 +63,110 @@ if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
             include 'mini_messages.inc.php';
             ?>
 
-
-
             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="img-xs rounded-circle" src="../avatar/undraw_profile.svg" alt="Profile image"> </a>
+                    <?php
+                    if(isset($_SESSION['avatar'])){
+                    if($_SESSION['avatar'] != ''){
+                        ?>
+                        <img class="img-xs rounded-circle" src="<?php echo $_SESSION['avatar'] ?>" alt=" image">
+                        <?php
+                    }
+                    else{
+                        if($_SESSION['sex'] == 'MALE'){
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/male.png">
+                            <?php
+                        }
+                        elseif ($_SESSION['sex'] == 'FEMALE'){
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/female.png">
+                            <?php
+                        }
+                        else{
+                            ?>
+                            <img class="img-xs rounded-circle" src="../img/user.png">
+                            <?php
+                        }
+
+                    }
+                    }
+                    else{
+                        ?>
+                        <img class="img-xs rounded-circle" src="../img/companyEnterprise.png">
+                    <?php
+                    }
+                    ?>
+                </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="dropdown-header text-center">
-                        <img class="img-md rounded-circle" src="../avatar/undraw_profile.svg" alt="Profile image">
-                        <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
-                        <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                        <?php
+                        if(isset($_SESSION['avatar'])){
+                        if($_SESSION['avatar'] != ''){
+                            ?>
+                            <img style="height: 100px" class="img-md rounded-circle" src="<?php echo $_SESSION['avatar'] ?>" alt=" image">
+                            <?php
+                        }
+                        else{
+                            if($_SESSION['sex'] == 'MALE'){
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/male.png">
+                                <?php
+                            }
+                            elseif ($_SESSION['sex'] == 'FEMALE'){
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/female.png">
+                                <?php
+                            }
+                            else{
+                                ?>
+                                <img style="height: 100px" class="img-md rounded-circle" src="../img/user.png">
+                                <?php
+                            }
+
+                        }
+                        }
+                        else{
+                            ?>
+                            <img style="height: 100px" class="img-md rounded-circle" src="../img/companyEnterprise.png">
+                        <?php
+                        }
+                        ?>
+
+                        <?php
+                        if(isset($_SESSION['subID'])){ ?>
+                            <p class="mb-1 mt-3 font-weight-semibold"><b><?php echo $_SESSION['name'] ?></b> (<?php echo $_SESSION['subName'] .' '. $_SESSION['subSurname'] ?>)</p>
+                        <p class="fw-light text-muted mb-0"><?php echo $_SESSION['subEmail'] ?></p>
+                        <?php }
+                        else{
+                        ?>
+                        <p class="mb-1 mt-3 font-weight-semibold"><?php echo $_SESSION['name'] ?></p>
+                        <p class="fw-light text-muted mb-0"><?php echo $_SESSION['email'] ?></p>
+                        <?php } ?>
                     </div>
 
                     <a class="dropdown-item" href="profile.php"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>
                     <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
                     <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
                     <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
+                    <?php
+                    if(isset($_SESSION['subID']))
+                    {
+                        ?>
+                        <a onclick="return confirm('Switching Account will log you out, Continue?');" class="dropdown-item" href="includes/switchAccount.inc.php">
+                            <i class="dropdown-item-icon mdi mdi-repeat text-primary me-2"></i>
+                            <span class="menu-title">Switch Account</span>
+                        </a>
+
+                        <?php
+                    }
+                    ?>
                     <a class="dropdown-item" href="?logout=true"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
                 </div>
             </li>
+
+
+
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
             <span class="mdi mdi-menu"></span>

@@ -48,6 +48,14 @@ include 'includes/miniTab.inc.php';
             border: solid 1px #BA68C8
         }
 
+        .myhover:hover{
+            cursor: pointer;
+            transition: all .3s ease-in-out;
+            transform: scale(1.1);
+            -webkit-box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+        }
+
     </style>
 
 

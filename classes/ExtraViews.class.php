@@ -6,11 +6,10 @@ class ExtraViews extends Users
 
     //FOR STUDENT GENDER SELECTION
     public function studentGender($id){
-        $rows = $this->GetStudentByID($id);
         ?>
-        <option value="MALE"> <?php echo $rows[0]['sex']  ?> </option>
+        <option value="<?php echo $_SESSION['sex'] ?>"> <?php echo $_SESSION['sex']  ?> </option>
         <?php
-        if($rows[0]['sex'] == 'MALE'){
+        if($_SESSION['sex'] == 'MALE'){
           ?>
             <option value="FEMALE"> FEMALE </option>
             <option value="N_A"> KEEP PRIVATE  </option>

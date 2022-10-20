@@ -3,51 +3,17 @@ include("autoloader.inc.php");
 include 'subAccSessionFilter.inc.php';
 include 'subAccAdminSessionFilter.inc.php';
 
-if (isset($_POST['btn_post_vacancy'])){
+if (isset($_POST['btn_post_vacancyQualification'])){
 
     $companyID = $_SESSION['id'];
-    $subID = $_SESSION['subID'];
 
-    $title = $_POST['Vtitle'];
-    $location = $_POST['Vlocation'];
-    $expDate = $_POST['VexpDate'];
-    $category = $_POST['Vcategory'];
-    $body = $_POST['Vbody'];
-    $postOnlineDate = $_POST['postOnlineDate'];
-    $randomSTR = $_POST['randomSTR'];
+    $qualification = $_POST['qualification'];
+    $vacancyID = $_POST['vacancyID'];
     $dateAdded = date("Y-m-d h:m:i");
 
-    if(strlen($title) < 1 ){
+    if(strlen($qualification) < 1 ){
         $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Title can not be empty';
-        echo "<script type='text/javascript'>;
-                  history.back(-1);
-              </script>";
-    }
-    elseif (strlen($location) < 1 ){
-        $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Location can not be empty';
-        echo "<script type='text/javascript'>;
-                  history.back(-1);
-              </script>";
-    }
-    elseif (strlen($expDate) < 1 ){
-        $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Exp-Date can not be empty';
-        echo "<script type='text/javascript'>;
-                  history.back(-1);
-              </script>";
-    }
-    elseif (strlen($category) < 1 ){
-        $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Category can not be empty';
-        echo "<script type='text/javascript'>;
-                  history.back(-1);
-              </script>";
-    }
-    elseif (strlen($body) < 15 ){
-        $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'vacancy body is too short, please add some more details';
+        $_SESSION['err'] = 'Qualification can not be empty';
         echo "<script type='text/javascript'>;
                   history.back(-1);
               </script>";
@@ -56,7 +22,7 @@ if (isset($_POST['btn_post_vacancy'])){
     else{
         try {
             $n = new Usercontr();
-            $n->postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID);
+            $n->postVacancyQualification($qualification, $vacancyID, $dateAdded);
         } catch (TypeError $e) {
             echo "Error" . $e->getMessage();
         }

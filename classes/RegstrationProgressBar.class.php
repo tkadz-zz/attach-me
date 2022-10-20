@@ -10,7 +10,13 @@ class RegstrationProgressBar extends Users
     $inactive = 'dark';
     $de_active = 'danger';
 
-    $regS = $rows[0]['regStatus'];
+    if(count($rows) > 0){
+        $regS = $rows[0]['regStatus'];
+    }
+    else{
+        $regS = NULL;
+    }
+
 
     if($regS == NULL ){
         $one = $active;

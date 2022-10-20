@@ -1,11 +1,57 @@
 <?php
 class Usercontr extends Users{
 
+    public function deleteProfilePicture($id)
+    {
+        parent::deleteProfilePicture($id);
+    }
+
+    public function updateProfileImage($file_tmp, $file_destination, $file_name_new, $file_ext, $id){
+        parent::updateProfileImage($file_tmp, $file_destination, $file_name_new, $file_ext, $id);
+    }
+
+    public function addCategory($category, $description, $dateAdded, $companyID, $subID)
+    {
+        parent::addCategory($category, $description, $dateAdded, $companyID, $subID);
+    }
+
+    public function finishPostingVacancy($vuid)
+    {
+        parent::finishPostingVacancy($vuid);
+    }
+
+    public function dateToDay($mydate)
+    {
+        return parent::dateToDay($mydate);
+    }
+
+    public function postVacancyOnlineDate($vuid, $onlineDate)
+    {
+        parent::postVacancyOnlineDate($vuid, $onlineDate);
+    }
+
+    public function deletePostVacancyQualification($vuid, $id)
+    {
+        parent::deletePostVacancyQualification($vuid, $id);
+    }
+
+    public function postVacancyQualification($qualification, $vacancyID, $dateAdded)
+    {
+        parent::postVacancyQualification($qualification, $vacancyID, $dateAdded);
+    }
+
+    public function postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID)
+    {
+        parent::postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID);
+    }
+
+    public function subCompanyUpdatePassword($op, $cp, $id){
+        parent::subCompanyUpdatePassword($op, $cp, $id);
+    }
 
     public function loginCompanySubAcc($subID, $subCompanyID, $password){
         parent::loginCompanySubAcc($subID, $subCompanyID, $password);
     }
-
 
     public function passwordreserttoken($email)
     {

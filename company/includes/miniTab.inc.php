@@ -12,6 +12,15 @@
                     <li class="nav-item">
                         <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="vacancies.php" role="tab" aria-selected="false"><span class="mdi mdi-newspaper"></span> Vacancies</a>
                     </li>
+                    <?php
+                    if(isset($_SESSION['subRole']) AND $_SESSION['subRole'] == 'admin'){
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="#!" role="tab" aria-selected="false"><span class="mdi mdi-account-edit"></span> Sub Accounts</a>
+                        </li>
+                        <?php
+                    }
+                    ?>
                 </ul>
                 <div>
                     <div class="btn-wrapper">

@@ -6,16 +6,15 @@ include 'includes/subAccAdminSessionFilter.inc.php';
 ?>
 
 
-<h4 class="pt-3">New Vacancy</h4>
+<h4 class="pt-3"> Post Vacancy STEP 2/2</h4>
 <br>
 
 
-    <div class="row">
+
         <?php
         $cv = new CompanyView();
-        $cv->PostVacancyView();
+        $cv->viewVacancyFinal($_GET['vuid']);
         ?>
-    </div>
 
 
 
