@@ -11,7 +11,7 @@
           foreach ($rows as $row){
               $s++;
               ?>
-              <option value="<?php echo $row['user_id'] ?>"><?php echo $s .'. '. $row['name'] ?></option>
+              <option value="<?php echo $row['userID'] ?>"><?php echo $s .'. '. $row['name'] ?></option>
               <?php
           }
       }

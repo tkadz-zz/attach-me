@@ -1,323 +1,101 @@
 <?php
 
-class SignupUserView extends Users
-
-{
-
-
-
-
-
-
+class SignupUserView extends Users{
 
     public function showSignupForm($id){
-
         $rows = $this->GetUser($id);
-
-
-
         if(isset($_SESSION['id'])){
-
             $regStatus = $rows[0]['regStatus'];
-
         }
-
         else{
-
             $regStatus = NULL;
+        }?>
 
-        }
-
-        ?>
-
-        <style>
-
-                            .avatar{
-
-                                vertical-align: middle;
-
-                                width: 50px;
-
-                                height: 50px;
-
-                                border-radius: 50%;
-
-                            }
-
-                        </style>
-
-
+    <style>
+    .avatar{
+        vertical-align: middle;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    </style>
 
         <?php
 
-
-
-
-
-
-
-
-
         if($regStatus == 2){
-
             $Date = date("Y-m-d");
-
-
-
             //71 YEARS MAXIMUM AGE
-
             $DOBMin =  date('Y-m-d', strtotime($Date. ' - 26206 days'));
-
-
-
             //15 YEARS OLD MINIMUM AGE
-
             $DOBMax =  date('Y-m-d', strtotime($Date. ' - 6117 days'));
-
             //ACCOUNT IS NOW CREATED
-
             ?>
 
-            <div class="row gx-5 align-items-center">
-
-
-
+            <div class="row gx-5 pt-4 align-items-center">
                 <div class="col-lg-6">
-
-                    <!-- Mashead text and app badges-->
-
-                    <div class="mb-5 mb-lg-0 text-center text-lg-start">
-
-                        <h1 class="display-1 lh-1 mb-3">Personal Details</h1>
-
-                        <p class="lead fw-normal text-muted mb-5">Please, Tell us more about yourself for better personalisation
-
-                        <div class="d-flex flex-column flex-lg-row align-items-center">
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-
-
-                <div class="col-lg-6">
-
                     <div -class="p-5">
-
                         <div class="text-center">
-
                             <h1 class="h4 text-gray-900 mb-4">'HELLO <?php echo $_SESSION['name'] ?>!'</h1>
-
                         </div>
-
-
-
-
 
                         <form role="form" class="user" method="POST" action="includes/signupStages.inc.php">
-
-
-
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>When where you born?</label>
-
-                                    <input id="dob" type="date"  class="form-control form-control-user"
-
-                                           id="exampleLastName"
-
-                                           placeholder="When Where your born?"
-
-                                           autocomplete="off"
-
-                                           name="DOB"
-
-                                           min="<?php echo $DOBMin ?>"
-
-                                           max="<?php echo $DOBMax ?>"
-
-                                           required
-
-                                    >
-
+                                    <input id="dob" type="date"  class="form-control form-control-user" placeholder="When Where your born?" autocomplete="off" name="DOB" min="<?php echo $DOBMin ?>"max="<?php echo $DOBMax ?>" required >
                                 </div>
-
-
-
                             </div>
-
-
-
                             <br>
 
-
-
-
-
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Marital Status</label>
-
-                                    <select type="number" class="form-control form-control-user"
-
-                                            id="exampleFirstName"
-
-                                            autocomplete="off"
-
-                                            name="marital"
-
-                                            required >
-
+                                    <select type="number" class="form-control form-control-user" id="exampleFirstName" autocomplete="off" name="marital" required >
                                         <option value=""> -- Marital Status --</option>
-
                                         <option value="single">Single</option>
-
                                         <option value="married">Married</option>
-
                                         <option value="divorced">Divorced</option>
-
                                         <option value="private">Keep Private</option>
-
                                     </select>
-
                                 </div>
-
-
-
-
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Gender</label>
-
-                                    <select type="text" class="form-control form-control-user"
-
-                                            id="sex"
-
-                                            placeholder="Tell Us Your Gender"
-
-                                            autocomplete="off"
-
-                                            name="gender"
-
-                                            required
-
-                                    >
-
+                                    <select type="text" class="form-control form-control-user" id="sex" placeholder="Tell Us Your Gender" autocomplete="off" name="gender" required >
                                         <option value=""> -- Select Your Gender -- </option>
-
                                         <option value="male">Male</option>
-
                                         <option value="female">Female</option>
-
                                         <option value="n_a">Keep Private</option>
-
                                     </select>
-
                                 </div>
-
                             </div>
-
-
-
                             <br>
 
-
-
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6">
-
                                     <label>Phone (07** *** ***)</label>
-
-                                    <input type="number" class="form-control form-control-user"
-
-                                           id="number"
-
-                                           placeholder="Phone Number"
-
-                                           name="phone"
-
-                                           min="0700000000"
-
-                                           max="0799999999"
-
-                                           maxlength="9"
-
-                                           required
-
-                                    >
-
+                                    <input type="number" class="form-control form-control-user" id="number" placeholder="Phone Number" name="phone" min="0700000000" max="0799999999" maxlength="9" required >
                                 </div>
-
-
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Email (optional)</label>
-
                                     <input type="email" class="form-control form-control-user"
-
                                            id="email"
-
                                            placeholder="Provide Email if you own one"
-
                                            name="email"
-
-
-
                                     >
-
                                 </div>
-
-
-
                                 <br>
-
-
-
                                 <br>
-
                                 <div>
-
                                     <span id='message'></span>
-
                                 </div>
-
-
-
                                 <br>
-
-
-
                             </div>
 
-
-
-
-
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Country</label>
-
                                     <select class="form-control form-control-user" id="country" name="country" required>
 
                                         <option value=""> -- Select Your Country -- </option>
@@ -815,788 +593,315 @@ class SignupUserView extends Users
                                         <option value="Zimbabwe">Zimbabwe</option>
 
                                     </select>
-
                                 </div>
-
-
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Whats your religion?</label>
-
                                     <input id="dob" type="text"  class="form-control form-control-user"
-
                                            id="exampleLastName"
-
                                            placeholder="Religion/Belief"
-
                                            autocomplete="off"
-
                                            name="religion"
-
                                            required
-
                                     >
-
                                 </div>
-
-
-
-
-
-
-
                             </div>
-
-
-
                             <br>
-
-
 
                             <div class="form-group row">
-
                                 <div class="col-sm-12 mb-3 mb-sm-0">
-
                                     <label>About self</label>
-
                                     <textarea name="about" class="form-control form-control-user" style="height: 100px" placeholder="tell us a little more about you"></textarea>
-
                                 </div>
-
                             </div>
-
-
-
-
-
                             <br>
-
-
 
                             <button id="save-btn" name="stage2" type="submit"  class="btn btn-outline-primary btn-user btn-block">
-
                                 Next <span class="fa fa-chevron-circle-right"></span>
-
                             </button>
-
                         </form>
-
                         <br>
-
-
-
                         <hr>
 
                         <?php
 
-                        if(!isset($_SESSION['id']))
-
-                        {
-
+                        if(!isset($_SESSION['id'])){
                             ?>
-
                             <div class="text-center">
-
                                 <a class="small" href="signin.php">Already have an account? Sign-in!</a>
-
                             </div>
-
                             <?php
-
                         }
-
                         ?>
-
                     </div>
-
                 </div>
 
-
-
-
-
-
-
-
-
-            </div>
-
-            <?php
-
-        }
-
-
-
-
-
-        elseif ($regStatus == 3){
-
-            ?>
-
-            <div class="row gx-5 align-items-center">
-
-
-
                 <div class="col-lg-6">
-
+                    <!-- Mashead text and app badges-->
+                    <div class="mb-5 mb-lg-0 text-center text-lg-start">
+                        <h1 class="display-1 lh-1 mb-3">Personal Details</h1>
+                        <p class="lead fw-normal text-muted mb-5">Please, Tell us more about yourself for better personalisation
+                        <div class="d-flex flex-column flex-lg-row align-items-center"></div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        elseif ($regStatus == 3){
+            ?>
+            <div class="row gx-5 align-items-center">
+                <div class="col-lg-6">
                     <div -class="p-5">
-
                         <div class="text-center">
-
                             <h1 class="h4 text-gray-900 mb-4"><?php echo $_SESSION['regNumber'] ?></h1>
-
                         </div>
-
-
-
-
 
                         <form role="form" class="user" method="POST" action="includes/signupStages.inc.php">
-
-
-
                             <div class="form-group row">
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Institute</label>
-
                                     <select name="institute" type="text" class="form-control form-control-user" required>
-
                                         <option> -- Choose Your Institute -- </option>
-
                                         <option value="0"> Not Listed Below </option>
-
                                         <?php
-
                                         $n = new Userview();
-
                                         $n->ShowInstitutes();
-
                                         ?>
-
                                     </select>
-
                                 </div>
-
                             </div>
-
-
-
-
-
                             <br>
-
                             <div class="form-group row">
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Course/Program</label>
-
                                     <select name="program" type="text" class="form-control form-control-user" required>
-
                                         <option> -- Choose Your Program/Course -- </option>
-
                                         <option value="0"> Not Listed Below </option>
-
                                         <?php
-
                                         $n = new Userview();
-
                                         $n->ShowPrograms();
-
                                         ?>
-
                                     </select>
-
                                 </div>
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Program/Course Type</label>
-
                                     <select name="programType" type="text" class="form-control form-control-user" required>
-
                                         <option> -- Program/Course Type -- </option>
-
                                         <option value="0"> Not Listed Below </option>
-
                                         <option value="Certificate"> Certificate </option>
-
                                         <option value="Bachelor"> Bachelor's Degree </option>
-
                                         <option value="Masters"> Masters Degree </option>
-
                                         <option value="PHD"> PHD </option>
-
                                         <option value="Doctorate"> Doctorate </option>
-
                                     </select>
-
                                 </div>
-
                             </div>
-
                             <br>
-
-
 
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Date Started / From</label>
-
                                     <input type="date" class="form-control form-control-user"
-
                                            placeholder="Date Name"
-
                                            autocomplete="off"
-
                                            name="dateStart"
-
                                            required
-
                                     >
-
                                 </div>
-
-
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <label>Date Graduated /to Graduate</label>
-
                                     <input type="date" class="form-control form-control-user"
-
                                            id="exampleLastName"
-
                                            placeholder="Surname"
-
                                            autocomplete="off"
-
                                            name="dateEnd"
-
                                            required
-
                                     >
-
                                 </div>
-
                             </div>
-
-
-
                             <br>
-
-
-
-
-
-
-
-
-
                             <br>
-
-
 
                             <button id="save-btn" name="stage3" type="submit"  class="btn btn-outline-primary btn-user btn-block">
-
                                 Next <span class="fa fa-chevron-circle-right"></span>
-
                             </button>
-
-
-
                             <br>
-
-
-
-
-
                         </form>
-
-
-
-
-
-
-
-
-
                         <hr>
 
                         <?php
-
-                        if(!isset($_SESSION['id']))
-
-                        {
-
+                        if(!isset($_SESSION['id'])){
                             ?>
-
                             <div class="text-center">
-
                                 <a class="small" href="signin.php">Already have an account? Sign-in!</a>
-
                             </div>
-
                             <?php
-
                         }
-
                         ?>
-
                     </div>
-
                 </div>
-
-
-
-
 
                 <div class="col-lg-6">
-
                     <!-- Mashead text and app badges-->
-
                     <div class="mb-5 mb-lg-0 text-center text-lg-start">
-
                         <h1 class="display-1 lh-1 mb-3">Educational Details</h1>
-
                         <p class="lead fw-normal text-muted mb-5">Okay <?php echo $_SESSION['regNumber'] ?> You have come soo far and we are almost there. Now you tell us more
-
                             about your latest education career
-
                         <div class="d-flex flex-column flex-lg-row align-items-center">
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-
             <?php
-
         }
 
-
-
-
-
-
-
-
-
-
-
-        elseif ($regStatus == 4)
-
-        {
-
+        elseif ($regStatus == 4){
             ?>
-
-
-
-
-
-
-
             <div class="row gx-5 align-items-center">
-
                 <br>
-
-
-
-
-
                 <div class="col-lg-12">
-
                     <!-- Mashead text and app badges-->
-
                     <div class="mb-5 mb-lg-0 text-center text-lg-start">
-
                         <h1 class="display-1 lh-1 mb-3">Horay!!!</h1>
-
                         <br>
-
                         <p class="lead fw-normal text-muted mb-5">Congratulations <?php echo $_SESSION['name'] .' '. $_SESSION['surname'] ?> Your account is now ready to use. Our journey with you begins here.
-                        
                         <div>
-                        <label>by clicking finish, you agree to our <a href="#!">Terms and conditions</a></label>
-                        <br>
-                        <br>
-                        
-			<form method="POST" action="includes/signupStages.inc.php">
-			    <input type="text" name="emptyInput" hidden >
-
-			    <button id="save-btn" name="stage4" type="submit"  class="btn btn-outline-primary btn-user btn-block">
-
-                                Finish <span class="fa fa-check"></span>
-
-                            </button>
-
-
-
-			</form>
-                        
+                            <label>by clicking finish, you agree to our <a href="#!">Terms and conditions</a></label>
+                            <br>
+                            <br>
+                            <form method="POST" action="includes/signupStages.inc.php">
+                                <input type="text" name="emptyInput" hidden >
+                                <button id="save-btn" name="stage4" type="submit"  class="btn btn-outline-primary btn-user btn-block"> Finish <span class="fa fa-check"></span></button>
+                            </form>
                         </div>
-
-
-
                         <br>
-
-
-
                         <hr>
-
-
-
                         <div>
-
                         <div>
-
                         </div>
-
-
-
-
-
-
-
-
-
-
 
                         <script>
-
                             function myFunction() {
-
                               document.getElementById("myCheck").disabled = true;
-
                             }
-
                         </script>
-
-
-
                         <div class="d-flex flex-column flex-lg-row align-items-center">
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <?php
-
         }
-
-
-
-
-
-
-
-
-
-
-
         else{
-
             ?>
-
-
-
-
-
             <div class="row gx-5 align-items-center">
-
-
-
                 <div class="col-lg-6">
-
                     <div -class="p-5">
-
                         <div class="text-center">
-
                             <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
-
                         </div>
-
-
-
-
-
                         <form role="form" class="user" method="POST" action="includes/signup.inc.php">
-
-
-
                             <div class="form-group row">
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <input type="text" class="form-control form-control-user"
-
                                            id="exampleRegNumber"
-
                                            placeholder="Student Reg-Number"
-
                                            autocomplete="off"
-
                                            name="loginID"
-
                                            required
-
                                     >
-
                                 </div>
-
                             </div>
-
-
-
                             <br>
 
-
-
-
-
                             <div class="form-group row">
-
-
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <input type="text" class="form-control form-control-user"
-
                                            id="exampleFirstName"
-
                                            placeholder="First Name"
-
                                            autocomplete="off"
-
                                            name="name"
-
                                            required
-
                                     >
-
                                 </div>
-
-
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <input type="text" class="form-control form-control-user"
-
                                            id="exampleLastName"
-
                                            placeholder="Surname"
-
                                            autocomplete="off"
-
                                            name="surname"
-
                                            required
-
                                     >
-
                                 </div>
-
                             </div>
-
-
-
                             <br>
 
-
-
                             <div class="form-group row">
-
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-
                                     <input type="password" class="form-control form-control-user"
-
                                            id="password"
-
                                            placeholder="Password"
-
                                            name="password"
-
                                            required
-
                                            onkeyup='check();'
-
                                     >
-
                                 </div>
-
-
-
                                 <br>
 
-
-
                                 <div class="col-sm-6">
-
                                     <input type="password" class="form-control form-control-user"
-
                                            id="confirmPassword"
-
                                            placeholder="Repeat Password"
-
                                            name="confirmPassword"
-
                                            required
-
                                            onkeyup='check();'
-
                                     >
-
                                 </div>
-
                                 <br>
 
                                 <div>
-
                                     <span id='message'></span>
-
                                 </div>
-
-
-
                                 <br>
-
-
-
                             </div>
-
-
-
-
-
                             <br>
-
-
 
                             <button id="save-btn" name="submitButton" class="btn btn-outline-primary btn-user btn-block" disabled="disabled">
-
                                 Register Account <span class="fa fa-user-plus"></span>
-
                             </button>
-
-
-
                             <br>
-
-
-
-
-
                         </form>
-
-
-
-
-
-
-
-
-
                         <hr>
 
+
                         <div class="text-center">
-
                             <a class="small" href="forgot-password.html">Forgot Password?</a>
-
                         </div>
-
                         <?php
-
-                        if(!isset($_SESSION['id']))
-
-                        {
-
+                        if(!isset($_SESSION['id'])){
                             ?>
-
                             <div class="text-center">
-
                                 <a class="small" href="signin.php">Already have an account? Sign-in!</a>
-
                             </div>
-
                             <?php
-
                         }
-
                         ?>
-
                     </div>
-
                 </div>
-
-
-
-
 
                 <div class="col-lg-6">
-
                     <!-- Mashead text and app badges-->
-
                     <div class="mb-5 mb-lg-0 text-center text-lg-start">
-
                         <h1 class="display-1 lh-1 mb-3">Create a free Student account</h1>
-
                         <p class="lead fw-normal text-muted mb-5">We are happy you have decided to join us. Its a choice thats worth it
-
                         <div class="d-flex flex-column flex-lg-row align-items-center">
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-
             <?php
-
         }
-
-
-
     }
-
-
-
 }
-

@@ -2,15 +2,20 @@
 include 'includes/emptyLayoutTop.inc.php';
 include 'includes/miniTab.inc.php';
 include 'includes/subAccSessionFilter.inc.php';
+include 'includes/subAccAdminSessionFilter.inc.php';
 ?>
 
 
-<h4 class="pt-3">New Vacancies</h4>
-
-
-
+<h4 class="pt-3">Post Vacancy STEP 1/2</h4>
 <br>
 
+
+    <div class="row">
+        <?php
+        $cv = new CompanyView();
+        $cv->PostVacancyView();
+        ?>
+    </div>
 
 
 
