@@ -4,6 +4,31 @@
 class Users extends Dbh
 {
 
+    protected function subAccUpdateProfile($name,$surname,$phone,$email,$sex,$id){
+        $sql = "UPDATE company_sub_accounts SET name=?, surname=?, sex=?, email=?, phone=? WHERE id=?";
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$name, $surname, $sex, $email, $phone, $id])){
+
+            $_SESSION['subName'] = $name;
+            $_SESSION['subSurname'] = $surname;
+            $_SESSION['subEmail'] = $email;
+            $_SESSION['sex'] = $sex;
+
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Profile Update Successfully';
+            echo "<script type='text/javascript'>;
+                      window.location='../profile.php';
+                    </script>";
+        }
+        else{
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'Something went wrong. Please try again. If the problem persist contact system administrator';
+            echo "<script type='text/javascript'>;
+                      history.back(-1);
+                    </script>";
+        }
+    }
+
     protected function deleteProfilePicture($id){
         $userRows = $this->isUser($id, $_SESSION['role']);
         $source = "../" . $userRows[0]['avatar'];
@@ -754,6 +779,13 @@ class Users extends Dbh
         $sql = "SELECT * FROM vacancyCategories WHERE id=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetCategories(){
+        $sql = "SELECT * FROM vacancyCategories order by RAND() limit 0,6";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 

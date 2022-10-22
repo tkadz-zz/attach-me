@@ -12,14 +12,21 @@ class ExtraViews extends Users
         if($_SESSION['sex'] == 'MALE'){
           ?>
             <option value="FEMALE"> FEMALE </option>
-            <option value="N_A"> KEEP PRIVATE  </option>
+            <option value="PRIVATE"> KEEP PRIVATE  </option>
+            <?php
+        }
+
+        if($_SESSION['sex'] == 'FEMALE'){
+            ?>
+            <option value="MALE"> MALE </option>
+            <option value="PRIVATE"> KEEP PRIVATE  </option>
             <?php
         }
 
         else{
             ?>
             <option value="MALE"> MALE </option>
-            <option value="N_A"> KEEP PRIVATE </option>
+            <option value="FEMALE"> FEMALE </option>
             <?php
         }
 

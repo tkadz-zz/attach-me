@@ -32,10 +32,7 @@ section {
  * Correct the font size and margin on `h1` elements within `section` and
  * `article` contexts in Chrome, Firefox, and Safari.
  */
-h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}
+
 
 /* Grouping content
    ========================================================================== */
@@ -61,14 +58,7 @@ figure {
  * 1. Add the correct box sizing in Firefox.
  * 2. Show the overflow in Edge and IE.
  */
-hr {
-  box-sizing: content-box;
-  /* 1 */
-  height: 0;
-  /* 1 */
-  overflow: visible;
-  /* 2 */
-}
+
 
 /**
  * 1. Correct the inheritance and scaling of font size in all browsers.
@@ -424,9 +414,6 @@ template {
   display: none;
 }
 
-html {
-  height: 100%;
-}
 
 fieldset {
   margin: 0;
@@ -811,18 +798,7 @@ legend {
 }
 
 .s003 {
-  min-height: 100vh;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-      justify-content: center;
-  -ms-flex-align: center;
-      align-items: center;
-  font-family: 'Poppins', sans-serif;
-  background-color: #a598ee;
-  background-size: cover;
-  background-position: center center;
-  padding: 15px;
+
 }
 
 .s003 form {
@@ -970,7 +946,7 @@ legend {
   color: #fff;
   border: 0;
   cursor: pointer;
-  background: #63c76a;
+  background: rgba(0, 79, 250, 0.5);
   transition: all .2s ease-out, color .2s ease-out;
 }
 
@@ -979,7 +955,7 @@ legend {
 }
 
 .s003 form .inner-form .input-field.third-wrap .btn-search:hover {
-  background: #50c058;
+  background: #0067ff;
 }
 
 .s003 form .inner-form .input-field.third-wrap .btn-search:focus {

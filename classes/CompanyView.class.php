@@ -31,7 +31,7 @@ class CompanyView extends Users
                             <h4 class="text-right card-header">Profile Settings</h4>
 
                         </div>
-                        <form method="post" action="includes/StudentUpdate.inc.php" >
+                        <form method="post" action="includes/subAccProfileUpdate.inc.php" >
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels">Name</label>
@@ -44,12 +44,12 @@ class CompanyView extends Users
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12">
-                                    <label class="labels">Mobile Number</label>
-                                    <input name="phone" type="text" class="form-control" placeholder="enter phone number" value="<?php echo $userRole[0]['phone'] ?>">
+                                    <label class="labels">Mobile Number (<span>07** *** ***</span>) </label>
+                                    <input name="phone" type="number" max="0799999999" min="0700000000" class="form-control" placeholder="enter phone number" value="<?php echo $userRole[0]['phone'] ?>">
                                 </div>
                                 <div class="col-md-12">
                                     <label class="labels">Email ID</label>
-                                    <input name="email" type="text" class="form-control" placeholder="enter email id" value="<?php echo $userRole[0]['email'] ?>">
+                                    <input name="email" type="email" class="form-control" placeholder="enter email" value="<?php echo $userRole[0]['email'] ?>">
                                 </div>
 
                             </div>
@@ -62,24 +62,6 @@ class CompanyView extends Users
                                         $extraV->studentGender($_SESSION['subID']);
                                         ?>
                                     </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <?php
-                                    $Date = date("Y-m-d");
-
-                                    //71 YEARS MAXIMUM AGE
-
-                                    $DOBMin =  date('Y-m-d', strtotime($Date. ' - 26206 days'));
-
-
-
-                                    //15 YEARS OLD MINIMUM AGE
-
-                                    $DOBMax =  date('Y-m-d', strtotime($Date. ' - 6117 days'));
-
-                                    //ACCOUNT IS NOW CREATED
-                                    ?>
                                 </div>
                                 <div class="mt-5 text-center">
                                     <button name="btn_updateProfile" class="btn btn-primary" type="submit">Save Profile</button>

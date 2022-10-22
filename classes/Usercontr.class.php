@@ -1,6 +1,11 @@
 <?php
 class Usercontr extends Users{
 
+    public function subAccUpdateProfile($name, $surname, $phone, $email, $sex, $id)
+    {
+        parent::subAccUpdateProfile($name, $surname, $phone, $email, $sex, $id);
+    }
+
     public function deleteProfilePicture($id)
     {
         parent::deleteProfilePicture($id);

@@ -3,6 +3,16 @@
 class StudentView extends Users
 {
 
+    public function categoryShortLoops(){
+        $rows = $this->GetCategories();
+        foreach ($rows as $row){
+            ?>
+            <a data-toggle="tooltip" data-placement="right" title="View All <?php echo $row['category'] ?> Vacancies" class="btn btn-outline-primary pp-filter-button" href="?filter=<?php echo $row['category'] ?>&fid=<?php echo $row['id'] ?>" data-filter="<?php echo $row['category'] ?>"><?php echo $row['category'] ?></a>
+            <?php
+        }
+    }
+
+
     public function StudentViewCarrier($id){
         $userRow = $this->GetUser($id);
         $studentRow = $this->GetStudentByID($id);
@@ -279,7 +289,7 @@ class StudentView extends Users
                     </p>
 
                     <div class="dropdown-divider"></div>
-                    <a href="cv.php" class="dropdown-item">
+                    <a href="vacancies.php" class="dropdown-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Vacancies</p>
                             <p class="fw-light small-text mb-0">View and apply to available vacancies</p>
