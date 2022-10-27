@@ -816,7 +816,7 @@ legend {
       justify-content: space-between;
   -ms-flex-align: center;
       align-items: center;
-  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  --box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 

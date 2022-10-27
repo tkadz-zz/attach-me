@@ -4,6 +4,8 @@
 class Users extends Dbh
 {
 
+
+
     protected function subAccUpdateProfile($name,$surname,$phone,$email,$sex,$id){
         $sql = "UPDATE company_sub_accounts SET name=?, surname=?, sex=?, email=?, phone=? WHERE id=?";
         $stmt = $this->con()->prepare($sql);
@@ -782,7 +784,7 @@ class Users extends Dbh
         return $stmt->fetchAll();
     }
 
-    protected function GetCategories(){
+    protected function GetCategoriesMiniLoop(){
         $sql = "SELECT * FROM vacancyCategories order by RAND() limit 0,6";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute();
@@ -813,6 +815,13 @@ class Users extends Dbh
         $sql = "SELECT * FROM vacancyCategories WHERE companyID=? ORDER BY id DESC";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetAllVacancyCategories(){
+        $sql = "SELECT * FROM vacancyCategories";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 

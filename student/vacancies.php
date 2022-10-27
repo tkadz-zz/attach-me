@@ -8,6 +8,13 @@ include 'includes/miniTab.inc.php';
 <link href="../colorlibSearch/css/main.css" rel="stylesheet" />
 
 <style>
+    div.scrollmenu {
+        padding: 15px;
+        overflow: auto;
+        white-space: nowrap;
+    }
+
+
     .logo{
         border: 1px solid #f6f6f6;
     }
@@ -88,7 +95,7 @@ include 'includes/miniTab.inc.php';
 
 
 <div class="mt-4 mb-4">
-        <div class="s003 col-md-6">
+        <div class="s003 col-md-6 shadow-sm">
             <form>
                 <div class="inner-form">
                     <!--
@@ -109,7 +116,7 @@ include 'includes/miniTab.inc.php';
                     </div>
                     -->
                     <div class="input-field second-wrap">
-                        <input id="search" type="text" placeholder="Enter Keywords?" />
+                        <input id="search" type="text" placeholder="Search Vacancies..." />
                     </div>
                     <div class="input-field third-wrap">
                         <button class="btn-search" type="button">
@@ -128,27 +135,45 @@ include 'includes/miniTab.inc.php';
         <div class="pp-category-filter">
             <div class="row">
                 <div class="col-sm-12">
-                    <a data-toggle="tooltip" data-placement="right" title="View All Vacancies" class="btn btn-primary pp-filter-button" href="vacancies.php" data-filter="all">All</a>
-                    <?php
-                    $nl = new StudentView();
-                    $nl->categoryShortLoops();
-                    ?>
+                    <span class="alert text-decoration-underline">Vacancy Filter <span class="fa fa-arrow-circle-down"></span> </span>
+                    <br>
+                    <div class="scrollmenu">
+                        <a data-toggle="tooltip" data-placement="right" title="View All Vacancies" class="btn btn-primary pp-filter-button" href="vacancies.php" data-filter="all">All</a>
+                        <?php
+                        $nl = new StudentView();
+                        $nl->categoryShortLoops();
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <br>
 
+    <?php
+    if(isset($_GET['filter'])){
+        ?>
+        <div class="btn btn-outline-secondary btn-sm rounded text-decoration-none" data-size="large"><a href="javascript:history.back()" class="fb-xfbml-parse-ignore"><span class="fa fa-chevron-circle-left"></span> Back</a></div>
+        <br>
+        <br>
+        <span class="card-description" style="font-size: 12px">Showing: <span class="badge badge-info text-dark"><?php echo $_GET['filter'] ?></span> Category</span>
+        <br>
+        <br>
+        <?php
+    }
+    ?>
+
     <div class="row">
 
         <?php
+        $today = date('Y-m-d');
         $records = 10;
         if(isset($_GET['filter'])){
             $fid = $_GET['fid'];
-            $query = "SELECT * FROM vacancies WHERE cartegory='$fid'";
+            $query = "SELECT * FROM vacancies WHERE cartegory='$fid' AND expiryDate > '$today' AND status=1";
         }
         else{
-            $query = 'SELECT * FROM vacancies';
+            $query = "SELECT * FROM vacancies WHERE expiryDate > '$today' AND status=1";
         }
         $p = new PignationView();
         $p->vacancyLoop($records, $query);

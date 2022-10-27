@@ -15,7 +15,9 @@ include 'includes/subAccSessionFilter.inc.php';
 
         <div class="card">
             <ul class="list-group list-group-flush">
+                <!--
                 <a class="text-decoration-none" href="vacancyCategories.php"><li class="list-group-item"><span class="fa fa-eye"></span> All Categories <span class="fa fa-arrow-circle-right"></span></li></a>
+                -->
 
                 <a class="text-decoration-none" href="allVacancies.php"><li class="list-group-item"><span class="fa fa-eye"></span> View All Vacancies <span class="fa fa-arrow-circle-right"></span></li></a>
                 <a class="text-decoration-none" href="postVacancy.php"><li class="list-group-item"><span class="fa fa-plus"></span> Post New Vacancies <span class="fa fa-arrow-circle-right"></span></li></a>

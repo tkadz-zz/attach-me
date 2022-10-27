@@ -4,10 +4,16 @@ class StudentView extends Users
 {
 
     public function categoryShortLoops(){
-        $rows = $this->GetCategories();
+        $rows = $this->GetCategoriesMiniLoop();
         foreach ($rows as $row){
+            if(isset($_GET['filter']) AND $_GET['filter'] == $row['category']){
+                $color = 'info';
+            }
+            else{
+                $color = 'primary';
+            }
             ?>
-            <a data-toggle="tooltip" data-placement="right" title="View All <?php echo $row['category'] ?> Vacancies" class="btn btn-outline-primary pp-filter-button" href="?filter=<?php echo $row['category'] ?>&fid=<?php echo $row['id'] ?>" data-filter="<?php echo $row['category'] ?>"><?php echo $row['category'] ?></a>
+            <a data-toggle="tooltip" data-placement="right" title="View All <?php echo $row['category'] ?> Vacancies" class="btn btn-outline-<?php echo $color ?>  pp-filter-button" href="?filter=<?php echo $row['category'] ?>&fid=<?php echo $row['id'] ?>" data-filter="<?php echo $row['category'] ?>"><?php echo $row['category'] ?></a>
             <?php
         }
     }

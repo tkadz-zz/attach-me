@@ -3,8 +3,8 @@
 class DBTableloopsView extends Users
 {
 
-    public function VacancyCategoryLoopView($id){
-        $rows = $this->GetAllVacancyCategorysByCompanyID($id);
+    public function VacancyCategoryLoopView(){
+        $rows = $this->GetAllVacancyCategories();
 
         ?>
         <option value="">-- Select Category --</option>

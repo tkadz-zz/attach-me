@@ -400,7 +400,7 @@ class CompanyView extends Users
                                 //for active vacancy status=1
                                 $status=1;
                                 $vacCateg = new DBTableloopsView();
-                                $vacCateg->VacancyCategoryLoopView($_SESSION['id']);
+                                $vacCateg->VacancyCategoryLoopView();
                                 ?>
                             </select>
                         </div>

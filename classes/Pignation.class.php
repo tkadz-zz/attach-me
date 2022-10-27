@@ -4,6 +4,113 @@ class Pignation extends Users
 {
 
 
+    public function SubAccLoop($query){
+        $stmt = $this->con()->prepare($query);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+         if(count($rows) > 0){
+        ?>
+        <div class="row">
+
+            <?php
+            $x=0;
+            foreach($rows as $row){
+
+                $x++;
+                $inputID = 'inputid' . $x;
+                $buttonID = 'buttonid' . $x;
+                $hr = 'hrid' . $x;
+
+                $subID = $row['id'];
+                $subCompanyID = $row['companyID'];
+                ?>
+
+                <div class="col-md-3 mb-3">
+
+
+                    <div class="card">
+                        <?php
+                        if($row['avatar'] != ''){ ?>
+                            <img class="card-img-top rounded-circle" style="width: 80px; height: 80px" src="<?php echo $row['avatar'] ?>" alt="Card image cap">
+                        <?php }
+                        else{
+                            if($row['sex'] == 'MALE') { ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/male.png" alt="Card image cap">
+                            <?php }
+                            elseif($row['sex'] == 'FEMALE'){ ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/female.png" alt="Card image cap">
+                            <?php }
+                            else{ ?>
+                                <img class="card-img-top" style="width: 80px" src="../img/user.png" alt="Card image cap">
+                            <?php }
+                        } ?>
+
+                        <div class="card-body">
+                            <h6 class="card-text"><?php echo $row['name'] .' '. $row['surname'] ?></h6>
+                            <p class="card-text"><?php echo $row['department'] ?></p>
+                            <button id="theButton1<?php echo $x ?>" onclick="clickMe<?php echo $x ?>()" type="button" class="btn btn-secondary"> <span class="fa fa-chevron-circle-down"></span></button>
+
+
+
+                            <form method="post" action="includes/subAccSignin.inc.php" >
+                                <div class="col-md-12">
+                                    <hr class="hide" id="<?php echo $hr; ?>">
+                                    <input name="password" id="<?php echo $inputID; ?>" type="password" class="form-control hide" placeholder="Password">
+                                    <input name="subID" type="text" hidden value="<?php echo $subID ?>">
+                                    <input name="subCompanyID" type="text" hidden value="<?php echo $subCompanyID ?>">
+                                    <br>
+                                    <button name="sub_login" class="btn btn-primary hide" id="<?php echo $buttonID; ?>"  type="submit">Login</button>
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function clickMe<?php echo $x ?>() {
+                        var text = document.getElementById("<?php echo $inputID; ?>");
+                        text.classList.toggle("hide");
+                        text.classList.toggle("show");
+
+                        var tests = document.getElementById("<?php echo $buttonID; ?>");
+                        tests.classList.toggle("hide");
+                        tests.classList.toggle("show");
+
+                        var tests = document.getElementById("<?php echo $hr; ?>");
+                        tests.classList.toggle("hide");
+                        tests.classList.toggle("show");
+                    }
+                </script>
+
+                <?php
+            }
+         }
+         else{
+             ?>
+         <hr>
+             <div class="container px-0">
+                 <div class="pp-gallery">
+                     <div class="-card-columns">
+                         <div class="alert alert-info text-dark" role="alert">
+                             <span class="mdi mdi-information-outline"></span> No Accounts found. <br><br>
+                             If you are trying to search, check your spelling and try again or submit a blank search to view all accounts
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <?php
+         }
+            ?>
+        </div>
+        <?php
+    }
+
+
+
+
+
+
     public function vacancyLoop($query)
     {
         $stmt = $this->con()->prepare($query);
@@ -16,7 +123,24 @@ class Pignation extends Users
                 $categRoles = $this->GetCategoryByID($row['cartegory']);
                 $companyRoles = $this->GetCompanyById($row['companyID']);
             ?>
-            <div class="col-md-12" data-groups="[&quot;<?php echo $categRoles[0]['category'] ?>&quot;]">
+            <div class="col-md-12"
+                <?php
+                if(count($categRoles) <= 0){
+                    $categName = 'uncategorised';
+                    $categID =0;
+                    ?>
+                 data-groups="[&quot;<?php echo $categName ?>&quot;]">
+                <?php
+                }
+                else{
+                    $categName = $categRoles[0]['category'];
+                    $categID = $categRoles[0]['id'];
+                    ?>
+                    data-groups="[&quot;<?php echo $categName ?>&quot;]">
+                    <?php
+                }
+                ?>
+
                 <div>
                     <div class="card mx-auto">
                         <div class="row">
@@ -36,7 +160,6 @@ class Pignation extends Users
                                         <?php
                                     }
                                     ?>
-
                                     <div class="card-description">
                                         <?php echo $companyRoles[0]['name'] ?>
                                     </div>
@@ -44,12 +167,14 @@ class Pignation extends Users
                             </div>
                             <div class="col-md-10">
                                 <div class="card-title">
-                                    <p class="heading"><?php echo $row['title'] ?> : <a data-toggle="tooltip" data-placement="right" title="View All <?php echo $categRoles[0]['category'] ?> Vacancies" href="?filter=<?php echo $categRoles[0]['category'] ?>&fid=<?php echo $categRoles[0]['id'] ?>" style="font-size: 10px" class="badge badge-primary text-decoration-none"><?php echo $categRoles[0]['category'] ?></a></p>
+                                    <p class="heading"><?php echo $row['title'] ?> : <a data-toggle="tooltip" data-placement="right" title="View All
+                                    <?php echo $categName ?> Vacancies" href="?filter=<?php echo $categName ?>&fid=<?php echo $categID ?>" style="font-size: 10px" class="badge badge-primary text-decoration-none"><?php echo $categName ?></a></p>
                                 </div>
                                 <div class="mutual">
-                                    <i class="fas fa-users"></i>&nbsp;&nbsp;<span>Body</span>
-                                    <p>Some few details here</p>
-                                    <p>Some few details here</p>
+
+                                    <span>Posted: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo $this->timeAgo($row['datePosted']) ?> : (<?php echo $this->dateToDayMDY($row['datePosted']) ?>)</span><br>
+                                    <span>Deadline: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo $this->dateToDay($row['expiryDate']) ?></span><br>
+                                    <span>Location: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo strtoupper($row['location']) ?></span>
                                 </div>
                                 <div class="row btnsubmit mt-4">
                                     <div class="col-md-12 col-12">
