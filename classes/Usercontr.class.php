@@ -3,6 +3,11 @@ class Usercontr extends Users{
 
 
 
+    public function vacancyApply($vuid, $id)
+    {
+        parent::vacancyApply($vuid, $id);
+    }
+
     public function subAccUpdateProfile($name, $surname, $phone, $email, $sex, $id)
     {
         parent::subAccUpdateProfile($name, $surname, $phone, $email, $sex, $id);

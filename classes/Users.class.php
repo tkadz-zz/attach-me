@@ -1,9 +1,27 @@
 <?php
 
 
-class Users extends Dbh
-{
+class Users extends Dbh{
 
+
+    protected function vacancyApply($vuid, $id){
+        $vacancyRows = $this->GetVacancyByUniqueID($vuid);
+        $companyID = $vacancyRows[0]['companyID'];
+        $readStatus = 0; $blank = ''; $today = date('Y-m-d H:m:s'); $activeStatus = 1;
+
+        $sql = 'INSERT INTO applications(userID, companyID, vacancyUID, readStatus, dateRead, dateAdded, status)VALUES(?,?,?,?,?,?,?)';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$id, $companyID, $vuid, $readStatus, $blank, $today, $activeStatus])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Vacancy Application has been Successfully Sent';
+            echo "<script type='text/javascript'>;
+                      window.location='../apply.php?vuid=$vuid';
+                    </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
 
 
     protected function subAccUpdateProfile($name,$surname,$phone,$email,$sex,$id){
@@ -65,18 +83,10 @@ class Users extends Dbh
                     history.back(-1);
                 </script>";
                 } else {
-                    $_SESSION['type'] = 'w';
-                    $_SESSION['err'] = 'Opps! Failed to delete Profile Picture. Please try again';
-                    echo "<script type='text/javascript'>
-                    history.back(-1);
-                </script>";
+                    $this->opps();
                 }
             } else {
-                $_SESSION['type'] = 'w';
-                $_SESSION['err'] = 'Failed to Delete Profile Picture';
-                echo "<script type='text/javascript'>
-                    history.back(-1);
-                </script>";
+                $this->opps();
             }
         }
     }
@@ -89,11 +99,7 @@ class Users extends Dbh
             if ($userRows[0]['avatar'] != '') {
                 $source = "../" . $userRows[0]['avatar'];
                 if (!unlink($source)) {
-                    $_SESSION['type'] = 'w';
-                    $_SESSION['err'] = 'Failed to Remove Current Profile Picture. Try Again Later';
-                    echo "<script type='text/javascript'>
-                            history.back(-1);
-                        </script>";
+                    $this->opps();
                 }
             }
 
@@ -116,27 +122,19 @@ class Users extends Dbh
                     window.location='../profile.php';
                 </script>";
                 } else {
-                    $_SESSION['type'] = 'w';
-                    $_SESSION['err'] = 'Something went wrong. Please try again';
-                    echo "<script type='text/javascript'>
-                    history.back(-1);
-                </script>";
+                    $this->opps();
 
                 }
             }
             else{
-                $_SESSION['type'] = 'd';
-                $_SESSION['err'] = 'Opps! Something went wrong while uploading your Profile Picture';
-                echo "<script type='text/javascript'>
-                    history.back(-1);
-                </script>";
+                $this->opps();
             }
     }
 
 
     protected function opps(){
         $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Opps! Something went wrong. Please try again';
+        $_SESSION['err'] = 'Sorry! Something went wrong. Please try again and if the problem persist contact system administrator';
         echo "<script type='text/javascript'>;
                       history.back();
                     </script>";
@@ -188,11 +186,7 @@ class Users extends Dbh
                     </script>";
             }
             else{
-                $_SESSION['type'] = 'd';
-                $_SESSION['err'] = 'Opps,something went wrong. Contact system admin';
-                echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
+                $this->opps();
             }
 
         }
@@ -210,11 +204,7 @@ class Users extends Dbh
                     </script>";
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps,something went wrong. Contact system admin';
-            echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
+            $this->opps();
         }
 
     }
@@ -230,11 +220,7 @@ class Users extends Dbh
                     </script>";
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps,something went wrong. Contact system admin';
-            echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
+            $this->opps();
         }
     }
 
@@ -251,11 +237,7 @@ class Users extends Dbh
 
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps,something went wrong. Contact system admin';
-            echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
+            $this->opps();
         }
     }
 
@@ -279,11 +261,7 @@ class Users extends Dbh
 
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps,something went wrong. Contact system admin';
-            echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
+            $this->opps();
         }
 
 
@@ -303,30 +281,20 @@ class Users extends Dbh
             $pass_safe = password_hash($cp, PASSWORD_DEFAULT);
 
             if($stmt2->execute([$pass_safe, $id])){
-
                 $_SESSION['type'] = 's';
                 $_SESSION['err'] = 'Password Updated Successfully';
-
                 echo "<script type='text/javascript'>;
                       window.location='../password.php';
                     </script>";
             }
             else{
-
-                $_SESSION['type'] = 'd';
-                $_SESSION['err'] = 'Password Update Failed';
-
-                echo "<script type='text/javascript'>;
-                      window.location='../password.php';
-                    </script>";
+                $this->opps();
             }
         }
         else{
             //Not Matched
-
             $_SESSION['type'] = 'w';
             $_SESSION['err'] = 'Old password did not match';
-
             echo "<script type='text/javascript'>;
                       window.location='../password.php';
                     </script>";
@@ -439,30 +407,20 @@ class Users extends Dbh
             $pass_safe = password_hash($cp, PASSWORD_DEFAULT);
 
             if($stmt2->execute([$pass_safe, $id])){
-
                 $_SESSION['type'] = 's';
                 $_SESSION['err'] = 'Password Updated Successfully';
-
                 echo "<script type='text/javascript'>;
                       window.location='../password.php';
                     </script>";
             }
             else{
-
-                $_SESSION['type'] = 'd';
-                $_SESSION['err'] = 'Password Update Failed';
-
-                echo "<script type='text/javascript'>;
-                      window.location='../password.php';
-                    </script>";
+                $this->opps();
             }
         }
         else{
             //Not Matched
-
             $_SESSION['type'] = 'w';
             $_SESSION['err'] = 'Old password did not match';
-
             echo "<script type='text/javascript'>;
                       window.location='../password.php';
                     </script>";
@@ -482,18 +440,12 @@ class Users extends Dbh
 
             $_SESSION['type'] = 's';
             $_SESSION['err'] = 'Profile Updated Successfully';
-
             echo "<script type='text/javascript'>;
                       window.location='../profile.php';
                     </script>";
         }
         else{
-            //err
-            $_SESSION['type'] = 'w';
-            $_SESSION['err'] = 'Profile Failed To Update';
-            echo "<script type='text/javascript'>;
-                      window.location='../profile.php';
-                    </script>";
+            $this->opps();
         }
 
     }
@@ -568,7 +520,6 @@ class Users extends Dbh
             else {
                 $_SESSION['type'] = 'w';
                 $_SESSION['err'] = 'Wrong LoginID or Password';
-
                 echo "<script type='text/javascript'>;
                           window.location='../signin.php?regNum=".$loginID."';
                         </script>";
@@ -593,11 +544,7 @@ class Users extends Dbh
             Usercontr::UpdateRegStatus($regStatus, $id);
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps! Something went wrong with this step';
-            echo "<script type='text/javascript'>;
-                      window.location='../signup.php';
-                    </script>";
+            $this->opps();
         }
     }
 
@@ -609,11 +556,7 @@ class Users extends Dbh
             Usercontr::UpdateRegStatus($regStatus, $id);
         }
         else{
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps! Something went wrong with this step';
-            echo "<script type='text/javascript'>;
-                      window.location='../signup.php';
-                    </script>";
+            $this->opps();
         }
     }
 
@@ -653,12 +596,7 @@ class Users extends Dbh
 
         }
         else{
-            //FAILED UPDATING REG STATUS
-            $_SESSION['type'] = 'w';
-            $_SESSION['err'] = 'Failed to update Registration Status';
-            echo "<script type='text/javascript'>;
-                          window.location='../signup.php';
-                        </script>";
+            $this->opps();
         }
     }
 
@@ -755,6 +693,7 @@ class Users extends Dbh
 
     //$GET BY FUNCTIONS
 
+
     protected function isUser($id, $role){
         if($role == 'admin'){
             return $this->GetAdminByUserID($id);
@@ -775,7 +714,6 @@ class Users extends Dbh
         }
 
     }
-
 
     protected function GetCategoryByID($id){
         $sql = "SELECT * FROM vacancyCategories WHERE id=?";
@@ -804,6 +742,14 @@ class Users extends Dbh
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
+
+    protected function GetInstituteByID($id){
+        $sql = "SELECT * FROM institute WHERE id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
     protected function GetProgramByID($id){
         $sql = "SELECT * FROM program WHERE id=?";
         $stmt = $this->con()->prepare($sql);
@@ -831,6 +777,23 @@ class Users extends Dbh
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
+
+
+    protected function GetApplicationByUserIDandVacancyID($vuid, $id){
+        $sql = "SELECT * FROM applications WHERE vacancyUID=? AND userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$vuid, $id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetApplicationByVacancyUID($vuid){
+        $sql = "SELECT * FROM applications WHERE vacancyUID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$vuid]);
+        return $stmt->fetchAll();
+    }
+
+
 
     protected function GetVacancyByUniqueID($uniqueID){
         $sql = "SELECT * FROM vacancies WHERE uniqueID=?";
@@ -948,7 +911,6 @@ class Users extends Dbh
                         //Password Did Not match
                         $_SESSION['type'] = 'w';
                         $_SESSION['err'] = 'Wrong Sub-Account Or Password for '. $row["name"] ." ". $row["surname"] .' ';
-
                         echo "<script type='text/javascript'>;
                           window.location='../accounts.php';
                         </script>";
@@ -956,15 +918,11 @@ class Users extends Dbh
                 }
             }
             else{
-                //count records else
-                $_SESSION['type'] = 'd';
-                $_SESSION['err'] = 'Opps! Somethink went wrong.Please Try Again';
+                $this->opps();
             }
         }
         else{
-            //else of if res
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Opps! Somethink went wrong.Please Try Again';
+            $this->opps();
         }
 
 
@@ -1038,20 +996,15 @@ class Users extends Dbh
             else {
                 if ($rowsUser[0]['regStatus'] < 5) {
                     //redirect to signupPage to finish registration
-
                     $_SESSION['type'] = 's';
                     $_SESSION['err'] = 'Your account registration progress was successfully retrieved from last registration attempt';
-
                     echo "<script type='text/javascript'>
                         window.location='../signup.php';
                       </script>";
                 }
-
                 else{
-
                     $_SESSION['type'] = 's';
                     $_SESSION['err'] = 'Welcome Back!';
-
                     echo "<script type='text/javascript'>
                         window.location='../student/index.php';
                       </script>";
@@ -1099,7 +1052,7 @@ class Users extends Dbh
             //redirrect to institute profile
             if($rowsUser[0]['regStatus'] < 4){
                 //redirect to signupPage to finish registration
-                $_SESSION['type'] = 'w';
+                $_SESSION['type'] = 'i';
                 $_SESSION['err'] = 'Your account registration progress was successfully retrieved from last registration attempt';
                 echo "<script type='text/javascript'>
                         window.location='../signup.php';
@@ -1123,7 +1076,7 @@ class Users extends Dbh
             $_SESSION['role'] = $rowsUser[0]['role'];
 
             $_SESSION['type'] = 's';
-            $_SESSION['err'] = 'Logged in as an Administrato';
+            $_SESSION['err'] = 'Logged in as an Administrator';
             echo "<script type='text/javascript'>
                         window.location='../admin/index.php';
                       </script>";
@@ -1161,13 +1114,7 @@ class Users extends Dbh
                 $autoLogin -> autologinSet($user_id, $loginID);
             }
             else{
-                //FAILED CREATING THE STUDENT
-                //echo 'Failed to create student';
-                $_SESSION['type'] = 'w';
-                $_SESSION['err'] = 'Failed to create student account';
-                echo "<script type='text/javascript'>
-                        window.location='../signup.php';
-                      </script>";
+                $this->opps();
             }
         }
         elseif ($user_role == 'company'){
@@ -1232,24 +1179,12 @@ class Users extends Dbh
 
                 }
                 else{
-                    //FAILED TO CREATE USER
-                    //echo 'Failed to create user';
-                    $_SESSION['type'] = 'w';
-                    $_SESSION['err'] = 'Failed to create user';
-                    echo "<script type='text/javascript'>
-                        window.location='../signup.php';
-                      </script>";
+                    $this->opps();
                 }
             }
         }
         else{
-            //FAILED EXECUTING THE QUERY;
-            //echo 'Failed executing query';
-            $_SESSION['type'] = 'd';
-            $_SESSION['err'] = 'Failed executing query';
-            echo "<script type='text/javascript'>
-                        window.location='../signup.php';
-                      </script>";
+            $this->opps();
         }
     }
 

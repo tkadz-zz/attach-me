@@ -28,10 +28,7 @@
                         <form class="user" method="POST" action="includes/signin.inc.php">
                             <div class="form-group col-md-12">
                                 <input type="text" class="form-control form-control-user"
-                                       id="exampleInputText"
-                                       aria-describedby="emailHelp"
-                                       placeholder="Reg-Number / LoginID"
-                                       name="loginID"
+                                       id="exampleInputText" aria-describedby="emailHelp" placeholder="Reg-Number / LoginID" name="loginID"
                                        value="<?php
                                        if(isset($_GET['regNum'])){
                                            echo $_GET['regNum'];

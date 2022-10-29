@@ -4,7 +4,19 @@ include 'includes/miniTab.inc.php';
 include 'includes/subAccSessionFilter.inc.php';
 include 'includes/subAccAdminSessionFilter.inc.php';
 ?>
+<style>
+    .mylst {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
 
+    .mylst li{
+        float: left;
+        padding: 2px;
+    }
+</style>
 
 <h4 class="pt-3">Vacancy Summery</h4>
 <br>

@@ -58,7 +58,7 @@ if(isset($_POST['btn_ProfilePic'])) {
     else{
         //file extension error
         $_SESSION['type'] = 'w';
-        $_SESSION['err'] = 'Image Should be either JPG, JPEG, or PNG File Format';
+        $_SESSION['err'] = 'Image Should be either <span class="text-dark">JPG</span>, <span class="text-dark">JPEG</span> or <span class="text-dark">PNG</span> File Format. Your attempted file is <span class="text-dark text-uppercase">'.$file_ext.'</span> File Format';
         echo "<script>
                 history.back(-1);
             </script>";

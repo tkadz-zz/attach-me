@@ -116,12 +116,13 @@ class Pignation extends Users
         $stmt = $this->con()->prepare($query);
         $stmt->execute();
         $rows = $stmt->fetchAll();
-        if(count($rows) > 0)
-        {
+        if(count($rows) > 0) {
             $s = 0;
             foreach ($rows as $row){
+
                 $categRoles = $this->GetCategoryByID($row['cartegory']);
                 $companyRoles = $this->GetCompanyById($row['companyID']);
+
             ?>
             <div class="col-md-12"
                 <?php
@@ -172,13 +173,13 @@ class Pignation extends Users
                                 </div>
                                 <div class="mutual">
 
-                                    <span>Posted: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo $this->timeAgo($row['datePosted']) ?> : (<?php echo $this->dateToDayMDY($row['datePosted']) ?>)</span><br>
+                                    <span>Posted: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo $this->timeAgo($row['dateOnline']) ?> : (<?php echo $this->dateToDayMDY($row['datePosted']) ?>)</span><br>
                                     <span>Deadline: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo $this->dateToDay($row['expiryDate']) ?></span><br>
                                     <span>Location: </span><span class="card-description text-dark" style="font-size: 13px"><?php echo strtoupper($row['location']) ?></span>
                                 </div>
                                 <div class="row btnsubmit mt-4">
                                     <div class="col-md-12 col-12">
-                                        <button style="float: right" type="button" class="btn btn-primary btn-lg"><span>Apply Now</span></button>
+                                        <a href="apply.php?vuid=<?php echo $row['uniqueID'] ?>" style="float: right" type="button" class="btn btn-primary btn-lg"><span>Apply Now</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -191,6 +192,7 @@ class Pignation extends Users
                 </div>
             </div>
             <?php
+
             }
         }
         else

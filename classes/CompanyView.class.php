@@ -3,6 +3,44 @@
 class CompanyView extends Users
 {
 
+    public function viewApplicantsTable($vuid){
+        $vacancyAppRows = $this->GetApplicationByVacancyUID($vuid);
+        $s = 0;
+        foreach ($vacancyAppRows as $vacancyAppRow){
+            $s++;
+            $userID = $vacancyAppRow['userID'];
+            $studentRows = $this->GetStudentByID($userID);
+            $studentEducationRows = $this->GetStudentEducationByUserID($userID);
+            $userRows = $this->GetUser($userID);
+            $instituteRows = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
+            $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
+
+            ?>
+            <tr>
+                <td>
+                    <?php
+                    if($vacancyAppRow['readStatus'] != 1){
+                        ?>
+                        <span class="badge badge-primary fa fa-fade">New <span class="fa fa-star"></span></span>
+                        <?php
+                    }
+                    else{
+                        echo $s;
+                    }
+                    ?>
+                </td>
+                <td><?php echo $studentRows[0]['name'] ?></td>
+                <td><?php echo $studentRows[0]['surname'] ?></td>
+                <td><?php echo $userRows[0]['loginID'] ?></td>
+                <td><?php echo $instituteRows[0]['name'] ?></td>
+                <td><?php echo $programRows[0]['name'] ?></td>
+                <td><a href="#!"><span class="fa fa-pencil"></span> </a></td>
+            </tr>
+            <?php
+        }
+    }
+
+
     public function companyViewProfile($id){
         $userRole = $this->isUser($id, $_SESSION['role']);
         ?>
@@ -124,10 +162,10 @@ class CompanyView extends Users
             ?>
             <tr>
                 <td><?php echo $s ?> </td>
-                <td><?php echo $row['title'] ?></td>
+                <td><a href="vacancySummery.php?vuid=<?php echo $row['uniqueID'] ?>"><?php echo $row['title'] ?></a></td>
                 <td><?php echo $vCateg[0]['category'] ?></td>
                 <td><?php echo $this->dayDate($row['datePosted']) ?></td>
-                <td><?php echo $this->dayDate($row['dateOnline']) ?></td>
+                <td><?php echo $this->dayDate($row['dateOnline']);?></td>
                 <td class="alert alert-<?php echo $borderClass ?>"><?php echo $this->dayDate($row['expiryDate']) ?></td>
                 <td><a href="vacancySummery.php?vuid=<?php echo $row['uniqueID'] ?>"><span class="fa fa-pencil"></span> </a></td>
             </tr>
@@ -152,20 +190,39 @@ class CompanyView extends Users
             <div class="card border border-<?php echo $borderClass ?> border-3">
                 <div class="card-body">
                     <h4 class="card-title card-header">Vacancy Detailed Summery <span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
-                    <p class="card-description">
-                        The following are the vacancy details
+                    <div>
+                        <p class="card-description">The following are the vacancy details</p>
+                        <div>
+                            <ul class="mylst">
                         <?php
                         if($rows[0]['expiryDate'] > date('Y-m-d')){
                         ?>
-                    <div class="btn btn-outline-success btn-sm rounded text-decoration-none" data-href="postVacancyFinal.php?vuid=<?php echo $vuid ?>" data-layout="button" data-size="large"><a href="postVacancyFinal.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore"><span class="fa fa-chevron-circle-left"></span> Edit <span class="fa fa-pencil"></span> </a></div>
-                    <div class="btn btn-outline-secondary btn-sm rounded text-decoration-none" data-href="http://localhost/AttachMe/student/vacancy.php?vuid=<?php echo $vuid ?>" data-layout="button" data-size="large"><a target="_blank" href="http://localhost/AttachMe/student/vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore">Share <span class="fa fa-share"></span> </a></div>
-                    <?php
-                    }
-                    ?>
 
-                    <div onclick="return confirm('You are about to delete this Vacancy. Proceed?')" class="btn btn-outline-danger btn-sm rounded text-decoration-none" data-href="http://localhost/AttachMe/student/vacancy.php?vuid=<?php echo $vuid ?>" data-layout="button" data-size="large"><a target="_blank" href="http://localhost/AttachMe/student/vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore"><span class="fa fa-trash"></span> Delete </a></div>
-                    <div class="btn btn-outline-secondary btn-sm rounded text-decoration-none" data-href="allVacancies.php" data-layout="button" data-size="large"><a href="allVacancies.php" class="fb-xfbml-parse-ignore">Home <span class="fa fa-home"></span> </a></div>
-                    </p>
+                                <li><a href="postVacancyFinal.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded"><span class="fa fa-chevron-circle-left"></span> Edit <span class="fa fa-pencil"></span> </a></li>
+                                <li><a target="_blank" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-success btn-sm rounded">Share <span class="fa fa-share"></span> </a></li>
+
+                        <?php
+                        }
+                        ?>
+                                <li><a onclick="return confirm('You are about to delete this Vacancy. Proceed?')" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-trash"></span> Delete </a></li>
+                                <li><a href="allVacancies.php" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded">Home <span class="fa fa-home"></span> </a></li>
+                                <li>
+                                <a href="applicants.php?vuid=<?php echo $vuid ?>" style="z-index: 1030;" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
+                                    Vacancy Applicants <span class="fa fa-comments"></span>
+                                    <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">
+                                    <?php
+                                    echo count($this->GetApplicationByVacancyUID($vuid))
+                                    ?>
+                                    <span class="visually-hidden">unread messages</span>
+                                  </span>
+                                </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr>
 
                     <ul>
                         <?php

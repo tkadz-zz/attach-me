@@ -1,4 +1,4 @@
 <?php
-    $progress = new RegstrationProgressBar();
-    $progress->viewProgressBar($_SESSION['id']);
+$progress = new RegstrationProgressBar();
+$progress->viewProgressBar($_SESSION['id']);
 ?>

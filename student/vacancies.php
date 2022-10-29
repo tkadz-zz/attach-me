@@ -167,13 +167,13 @@ include 'includes/miniTab.inc.php';
 
         <?php
         $today = date('Y-m-d');
-        $records = 10;
+        $records = 8;
         if(isset($_GET['filter'])){
             $fid = $_GET['fid'];
-            $query = "SELECT * FROM vacancies WHERE cartegory='$fid' AND expiryDate > '$today' AND status=1";
+            $query = "SELECT * FROM vacancies WHERE cartegory='$fid' AND expiryDate >= '$today' AND dateOnline <='$today' AND status=1 ORDER BY id DESC";
         }
         else{
-            $query = "SELECT * FROM vacancies WHERE expiryDate > '$today' AND status=1";
+            $query = "SELECT * FROM vacancies WHERE expiryDate >= '$today' AND dateOnline <='$today' AND status=1 ORDER BY id DESC";
         }
         $p = new PignationView();
         $p->vacancyLoop($records, $query);
