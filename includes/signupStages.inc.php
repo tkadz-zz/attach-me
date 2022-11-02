@@ -7,6 +7,7 @@ if(isset($_POST['stage2'])) {
     $DOB = $_POST['DOB'];
     $marital = strtoupper($_POST['marital']);
     $gender = strtoupper($_POST['gender']);
+    $nid = strtoupper($_POST['nid']);
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $country = strtoupper($_POST['country']);
@@ -15,7 +16,7 @@ if(isset($_POST['stage2'])) {
 
     try {
         $stage2 = new Usercontr();
-        $stage2->Stage2($DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $_SESSION['id']);
+        $stage2->Stage2($nid,$DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $_SESSION['id']);
     }
     catch (TypeError $e){
         echo "Error" . $e->getMessage();

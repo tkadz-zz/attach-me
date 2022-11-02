@@ -3,6 +3,24 @@ class Usercontr extends Users{
 
 
 
+    public function myCount($ress){
+        $s = 0;
+        foreach ($ress as $res){
+            $s++;
+        }
+        if($s >= 100){
+            echo '99+';
+        }
+        else{
+            echo $s;
+        }
+    }
+
+    public function GetApplicationByUserID($id)
+    {
+        return parent::GetApplicationByUserID($id);
+    }
+
     public function vacancyApply($vuid, $id)
     {
         parent::vacancyApply($vuid, $id);
@@ -103,8 +121,8 @@ class Usercontr extends Users{
         parent::Stage3($institute, $program, $programType, $dateStart, $dateEnd, $id);
     }
 
-    public function Stage2($DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id){
-        parent::Stage2($DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id);
+    public function Stage2($nid, $DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id){
+        parent::Stage2($nid, $DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id);
     }
 
     public function SigninUser($loginID, $password){

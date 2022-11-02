@@ -4,6 +4,18 @@
 class Users extends Dbh{
 
 
+    protected function openApplication($id){
+        $appRows = $this->GetApplicationByUserID($id);
+        if($appRows[0]['readStatus'] != 1) {
+            $today = date('Y-m-d H:m:s');
+            $read = 1;
+            $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=?";
+            $stmt = $this->con()->prepare($sql);
+            $stmt->execute([$read, $today, $id]);
+        }
+    }
+
+
     protected function vacancyApply($vuid, $id){
         $vacancyRows = $this->GetVacancyByUniqueID($vuid);
         $companyID = $vacancyRows[0]['companyID'];
@@ -485,6 +497,13 @@ class Users extends Dbh{
         return  $stmt->fetchAll();
     }
 
+    protected function GetAllInstitutes(){
+        $sql = "SELECT * FROM institute";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute();
+        return  $stmt->fetchAll();
+    }
+
 
 
     //STUDENT LOGIN/SIGNIN
@@ -548,10 +567,10 @@ class Users extends Dbh{
         }
     }
 
-    protected function Stage2($DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id){
-        $sql = 'UPDATE students SET dob=?, marital=?, sex=?, phone=?, email=?, nationality=?, religion=?, aboutSelf=? WHERE user_id=?';
+    protected function Stage2($nid, $DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id){
+        $sql = 'UPDATE students SET nationalID=?, dob=?, marital=?, sex=?, phone=?, email=?, nationality=?, religion=?, aboutSelf=? WHERE user_id=?';
         $stmt = $this->con()->prepare($sql);
-        if($stmt->execute([$DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id])) {
+        if($stmt->execute([$nid, $DOB, $marital, $gender, $phone, $email, $country, $religion, $about, $id])) {
             $regStatus = 2;
             Usercontr::UpdateRegStatus($regStatus, $id);
         }
@@ -715,6 +734,16 @@ class Users extends Dbh{
 
     }
 
+
+
+    protected function GetCvByUserID($id){
+        $sql = "SELECT * FROM cv WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+
     protected function GetCategoryByID($id){
         $sql = "SELECT * FROM vacancyCategories WHERE id=?";
         $stmt = $this->con()->prepare($sql);
@@ -795,6 +824,23 @@ class Users extends Dbh{
 
 
 
+    protected function GetApplicationByCompanyID($id){
+        $sql = "SELECT * FROM applications WHERE companyID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetApplicationByUserID($id){
+        $sql = "SELECT * FROM applications WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+
+
+
     protected function GetVacancyByUniqueID($uniqueID){
         $sql = "SELECT * FROM vacancies WHERE uniqueID=?";
         $stmt = $this->con()->prepare($sql);
@@ -855,6 +901,15 @@ class Users extends Dbh{
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
+
+    protected function GetStudentNationalID($nid){
+        $sql = "SELECT * FROM students WHERE nationalID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$nid]);
+        return $stmt->fetchAll();
+    }
+
+
 
     protected function GetUserByLoginID($loginID){
         $sql = "SELECT * FROM users WHERE loginID=?";
@@ -938,6 +993,7 @@ class Users extends Dbh{
             $rowsStudent = $this->GetStudentByID($id);
             $_SESSION['name'] = $rowsStudent[0]['name'];
             $_SESSION['surname'] = $rowsStudent[0]['surname'];
+            $_SESSION['sex'] = $rowsStudent[0]['sex'];
             $_SESSION['id'] = $rowsUser[0]['id'];
             $_SESSION['regNumber'] = $loginID;
             $_SESSION['role'] = $rowsUser[0]['role'];
@@ -1104,11 +1160,11 @@ class Users extends Dbh{
         }
         elseif ($user_role == 'student'){
             //STUDENT
-            $sql = "INSERT INTO students(user_id, name, surname, email, phone, dob, sex, marital, avatar, homeAddress, postalAddress, nationality, religion, aboutSelf, attachmentStatus)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO students(user_id, name, surname, nationalID, email, phone, dob, sex, marital, avatar, homeAddress, postalAddress, nationality, religion, aboutSelf, attachmentStatus)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $this->con()->prepare($sql);
 
-            if($stmt->execute([$user_id, $name, $surname, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $myNull])){
+            if($stmt->execute([$user_id, $name, $surname, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $myNull])){
                 //USER CREATED SUCCESSFULLY
                 $autoLogin = new Usercontr();
                 $autoLogin -> autologinSet($user_id, $loginID);

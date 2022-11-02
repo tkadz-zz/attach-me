@@ -3,6 +3,280 @@
 class CompanyView extends Users
 {
 
+    public function studentProfile($id){
+        $rows = $this->GetUser($id);
+
+
+        if($rows == NULL){
+            ?>
+            <div class="container px-0">
+                <div class="pp-gallery">
+                    <div class="-card-columns">
+                        <div class="alert alert-info text-dark" role="alert">
+                            <span class="mdi mdi-information-outline"></span> No Accounts found. <br><br>
+                            User account appears to be missing
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        elseif ($rows != NULL AND $rows[0]['role'] != 'student'){
+            ?>
+            <div class="container px-0">
+                <div class="pp-gallery">
+                    <div class="-card-columns">
+                        <div class="alert alert-info text-dark" role="alert">
+                            <span class="mdi mdi-information-outline"></span> Student Account Not Found. <br><br>
+                            Student account appears to be missing
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        else{
+            $userApplied = $this->GetApplicationByUserID($id);
+            if($userApplied[0]['companyID'] != $_SESSION['id'] AND !isset($_GET['nID'])){
+                ?>
+                <div class="container px-0">
+                    <div class="pp-gallery">
+                        <div class="-card-columns">
+                            <div class="alert alert-danger text-dark" role="alert">
+                                <span class="mdi mdi-information-outline"></span> This Action is prohibited <br><br>
+                                You can not view this student
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+            else{
+                if(isset($_GET['nID'])){
+                    $studentRows = $this->GetStudentNationalID($_GET['nID']);
+                }
+                else{
+                    $studentRows = $this->GetStudentByID($id);
+                    $this->openApplication($id);
+                }
+
+                if($studentRows == NULL){
+                    ?>
+                    <div class="container px-0">
+                        <div class="pp-gallery">
+                            <div class="-card-columns">
+                                <div class="alert alert-danger text-dark" role="alert">
+                                    <span class="mdi mdi-information-outline"></span> Student Account Not Found <br><br>
+                                    If you are using National ID, make sure its correct
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                else{
+
+            $studentRows = $this->GetStudentByID($id);
+            $studentEducationRows = $this->GetStudentEducationByUserID($id);
+
+            if($studentRows[0]['attachmentStatus'] == 1){
+                $borderClass = 'success';
+                $msg = 'Attached';
+            }
+            else{
+                $borderClass = 'warning';
+                $msg = 'Not Attached';
+            }
+            ?>
+            <div class="col-md-12">
+                <div class="card border border-<?php echo $borderClass ?> border-3">
+                    <div class="card-body">
+                        <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
+                        <div>
+                            <p class="card-description">The following are the details of <?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?></p>
+                            <?php
+                            if(!isset($_GET['nID'])){
+                            ?>
+                            <!-- <p class="card-description">Received: <?php echo $this->dateTimeToDay($userApplied[0]['dateAdded']) ?> (<?php echo $this->timeAgo($userApplied[0]['dateAdded']) ?>)</p> -->
+                            <?php
+                            }
+                             ?>
+                            <div>
+
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <span>Personal</span>
+                                <ul>
+                                    <?php
+                                    $addDetRow = $this->GetCompanyById($_SESSION['id']);
+                                    ?>
+                                    <li><span>National ID</span> : <span><?php echo $studentRows[0]['nationalID'] ?></span></li>
+                                    <li><span>Email</span> : <span><a href="mail:<?php echo $studentRows[0]['email'] ?>"><?php echo $studentRows[0]['email'] ?></a></span></li>
+                                    <li><span>Phone</span> : <span><a href="tel:<?php echo $studentRows[0]['phone'] ?>"><?php echo $studentRows[0]['phone'] ?></a></span></li>
+                                    <li><span>Address</span> : <span><?php echo $studentRows[0]['homeAddress'] ?></span></li>
+                                    <li><span>Sex</span> : <span><?php echo $studentRows[0]['sex'] ?></span></li>
+                                    <li><span>DOB</span> : <span><?php echo $this->dayDate($studentRows[0]['dob']) ?></span></li>
+                                    <li><span>Marital</span> : <span><?php echo $studentRows[0]['marital'] ?></span></li>
+                                    <li><span>Religion</span> : <span><?php echo $studentRows[0]['religion'] ?></span></li>
+                                    <li><span>Bio</span> : <br><span><?php echo $studentRows[0]['aboutSelf'] ?></span></li>
+                                </ul>
+                            </div>
+
+                            <div class="col-md-4">
+                                <span>Education</span>
+                                <ul>
+                                    <?php
+                                    $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
+                                    $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
+                                    ?>
+                                    <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                    <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?> in <?php echo $programRows[0]['name'] ?></span></li>
+                                    <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
+                                </ul>
+
+                                <?php
+                                if($studentRows[0]['attachmentStatus'] == 1){
+                                    ?>
+                                    <span>Company</span>
+                                    <ul>
+                                        <?php
+                                        $attachmentRows = 0 //TODO: Set attchemnt variables
+                                        ?>
+                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                        <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?> in <?php echo $programRows[0]['name'] ?></span></li>
+                                        <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
+                                    </ul>
+                                    <?php
+                                }
+                                ?>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <span>Documents</span>
+                                <br>
+                                <br>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    <span style="text-decoration: none" href="#!">
+                                        <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                            <div class="card-header">Curriculum Vitae</div>
+                                            <div class="card-body">
+                                                <?php
+                                                $cvRows = $this->GetCvByUserID($id);
+                                                if($cvRows == NULL){
+                                                    ?>
+                                                    <h6 class="badge-danger rounded">Not Available <span class="fa fa-exclamation"></span></h6>
+                                                    <?php
+                                                }
+                                                else{
+                                                    ?>
+                                                    <p class="-card-text text-center"><a href="<?php echo $cvRows[0]['cv'] ?>" target="_blank" class="btn btn-primary btn-sm"> Download...</a></p>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </span>
+                                    </div>
+
+                                    <?php
+                                    if($studentRows[0]['attachmentStatus'] == 1) {
+                                        //TODO: Add company details if student is attached
+                                        ?>
+
+                                        <div class="col-md-6">
+                                            <span style="text-decoration: none" href="#!">
+                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                                    <div class="card-header">Attachment Report</div>
+                                                    <div class="card-body">
+                                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
+                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <span style="text-decoration: none" href="#!">
+                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                                    <div class="card-header">Assessment Report</div>
+                                                    <div class="card-body">
+                                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
+                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <span style="text-decoration: none" href="#!">
+                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                                    <div class="card-header">Logbook Report</div>
+                                                    <div class="card-body">
+                                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
+                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <ul>
+                            <?php
+                            if($studentRows[0]['attachmentStatus'] != 1){
+                                ?>
+                                <hr>
+
+                                <form method="POST" action="#!">
+                                <input name="userID" type="text" value="<?php echo $id ?>" hidden>
+                                <input type="checkbox" id="checkme"/> Check to enable the attach button below
+                                    <br>
+                                    <br>
+                                <button type="submit" name="btn-attach" id="attbtn" disabled onclick="return confirm('This student will attached at this company. Proceed?')" class="btn btn-primary">Attach Student<span class="fa fa-user"></span></button>
+                            </form>
+
+                            <script>
+                                var checker = document.getElementById('checkme');
+                                var sendbtn = document.getElementById('attbtn');
+                                // when unchecked or checked, run the function
+                                checker.onchange = function(){
+                                    if(this.checked){
+                                        sendbtn.disabled = false;
+                                    } else {
+                                        sendbtn.disabled = true;
+                                    }
+
+                                }
+                            </script>
+
+                                <?php
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        }
+        }
+    }
+
     public function viewApplicantsTable($vuid){
         $vacancyAppRows = $this->GetApplicationByVacancyUID($vuid);
         $s = 0;
@@ -34,7 +308,7 @@ class CompanyView extends Users
                 <td><?php echo $userRows[0]['loginID'] ?></td>
                 <td><?php echo $instituteRows[0]['name'] ?></td>
                 <td><?php echo $programRows[0]['name'] ?></td>
-                <td><a href="#!"><span class="fa fa-pencil"></span> </a></td>
+                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-pencil"></span> </a></td>
             </tr>
             <?php
         }
@@ -194,28 +468,30 @@ class CompanyView extends Users
                         <p class="card-description">The following are the vacancy details</p>
                         <div>
                             <ul class="mylst">
-                        <?php
-                        if($rows[0]['expiryDate'] > date('Y-m-d')){
-                        ?>
+                                <?php
+                                if($rows[0]['expiryDate'] > date('Y-m-d')){
+                                    ?>
 
-                                <li><a href="postVacancyFinal.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded"><span class="fa fa-chevron-circle-left"></span> Edit <span class="fa fa-pencil"></span> </a></li>
-                                <li><a target="_blank" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-success btn-sm rounded">Share <span class="fa fa-share"></span> </a></li>
+                                    <li><a href="postVacancyFinal.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded"><span class="fa fa-chevron-circle-left"></span> Edit <span class="fa fa-pencil"></span> </a></li>
+                                    <li><a target="_blank" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-success btn-sm rounded">Share <span class="fa fa-share"></span> </a></li>
 
-                        <?php
-                        }
-                        ?>
+                                    <?php
+                                }
+                                ?>
                                 <li><a onclick="return confirm('You are about to delete this Vacancy. Proceed?')" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-trash"></span> Delete </a></li>
                                 <li><a href="allVacancies.php" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded">Home <span class="fa fa-home"></span> </a></li>
                                 <li>
-                                <a href="applicants.php?vuid=<?php echo $vuid ?>" style="z-index: 1030;" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
-                                    Vacancy Applicants <span class="fa fa-comments"></span>
-                                    <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">
+                                    <a href="applicants.php?vuid=<?php echo $vuid ?>" style="z-index: 1030;" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
+                                        Vacancy Applicants <span class="fa fa-comments"></span>
+                                        <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">
                                     <?php
-                                    echo count($this->GetApplicationByVacancyUID($vuid))
+                                    $ress = $this->GetApplicationByVacancyUID($vuid);
+                                    $n = new Usercontr();
+                                    $n->myCount($ress);
                                     ?>
                                     <span class="visually-hidden">unread messages</span>
                                   </span>
-                                </a>
+                                    </a>
                                 </li>
 
                             </ul>

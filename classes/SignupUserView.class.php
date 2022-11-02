@@ -40,6 +40,12 @@ class SignupUserView extends Users{
 
                         <form role="form" class="user" method="POST" action="includes/signupStages.inc.php">
                             <div class="form-group row">
+
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <label>National ID</label>
+                                    <input id="nid" type="text"  class="form-control form-control-user" placeholder="National ID(xx-xxxxxxRxx)" autocomplete="off" name="nid" minlength="12" maxlength="12"  required >
+                                </div>
+
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label>When where you born?</label>
                                     <input id="dob" type="date"  class="form-control form-control-user" placeholder="When Where your born?" autocomplete="off" name="DOB" min="<?php echo $DOBMin ?>"max="<?php echo $DOBMax ?>" required >

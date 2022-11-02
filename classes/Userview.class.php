@@ -8,7 +8,7 @@
 
       public function ShowInstitutes(){
 
-          $rows = parent::ShowInstitutes();
+          $rows = $this->GetAllInstitutes();
           $s = 0;
 
           foreach ($rows as $row){

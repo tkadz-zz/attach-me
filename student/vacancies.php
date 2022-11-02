@@ -98,23 +98,20 @@ include 'includes/miniTab.inc.php';
         <div class="s003 col-md-6 shadow-sm">
             <form>
                 <div class="inner-form">
-                    <!--
+
                     <div class="input-field first-wrap">
                         <div class="input-select">
 
                             <select data-trigger="" name="choices-single-defaul">
-                                <option placeholder="">Category</option>
-                                <option>New Arrivals</option>
-                                <option>Sale</option>
-                                <option>Ladies</option>
-                                <option>Men</option>
-                                <option>Clothing</option>
-                                <option>Footwear</option>
-                                <option>Accessories</option>
+                                <option value="">Category</option>
+                                <?php
+                                $nl = new StudentView();
+                                $nl->categoryShortLoopsOption();
+                                ?>
                             </select>
                         </div>
                     </div>
-                    -->
+
                     <div class="input-field second-wrap">
                         <input id="search" type="text" placeholder="Search Vacancies..." />
                     </div>
@@ -148,6 +145,21 @@ include 'includes/miniTab.inc.php';
             </div>
         </div>
     </div>
+    <br>
+
+    <a href="appliedVacancies.php" -style="z-index: 1030;" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
+        View Applied Vacancies <span class="fa fa-comments"></span>
+        <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">
+            <?php
+            $n = new Usercontr();
+            $ress = $n->GetApplicationByUserID($_SESSION['id']);
+            $n->myCount($ress);
+
+            ?>
+            <span class="visually-hidden">unread messages</span>
+          </span>
+    </a>
+    <br>
     <br>
 
     <?php

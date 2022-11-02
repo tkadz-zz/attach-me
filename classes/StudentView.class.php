@@ -3,6 +3,36 @@
 class StudentView extends Users
 {
 
+
+    public function viewAppliedVacancies($id){
+        $rows = $this->GetApplicationByUserID($id);
+        $s = 0;
+        foreach ($rows as $row){
+            $s++;
+            $vacancyRows = $this->GetVacancyByUniqueID($row['vacancyUID']);
+            $vCateg = $this->GetCategoryByID($vacancyRows[0]['cartegory']);
+
+            if($vacancyRows[0]['expiryDate'] > date('Y-m-d')){
+                $borderClass = 'success';
+            }
+            else{
+                $borderClass = 'danger';
+            }
+            ?>
+            <tr>
+                <td><?php echo $s ?> </td>
+                <td><a href="applicationDetailedDetails.php?vuid=<?php echo $vacancyRows[0]['uniqueID'] ?>"><?php echo $vacancyRows[0]['title'] ?></a></td>
+                <td><?php echo $vCateg[0]['category'] ?></td>
+                <td><?php echo $this->dayDate($vacancyRows[0]['dateOnline']);?></td>
+                <td class="alert alert-<?php echo $borderClass ?>"><?php echo $this->dayDate($vacancyRows[0]['expiryDate']) ?></td>
+                <td><a href="applicationDetailedDetails.php?vuid=<?php echo $vacancyRows[0]['uniqueID'] ?>"><span class="fa fa-eye"></span> </a></td>
+            </tr>
+            <?php
+        }
+    }
+
+
+
     public function viewApplyForm($vuid){
         $rows = $this->GetVacancyByUniqueID($vuid);
         $categoryRows = $this->GetCategoryByID($rows[0]['cartegory']);
@@ -162,6 +192,22 @@ class StudentView extends Users
         </div>
 
         <?php
+    }
+
+
+    public function categoryShortLoopsOption(){
+        $rows = $this->GetCategoriesMiniLoop();
+        foreach ($rows as $row){
+            if(isset($_GET['filter']) AND $_GET['filter'] == $row['category']){
+                $color = 'info';
+            }
+            else{
+                $color = 'primary';
+            }
+            ?>
+            <option data-toggle="tooltip" data-placement="right"  value="<?php echo $row['category'] ?>"><?php echo $row['category'] ?></option>
+            <?php
+        }
     }
 
     public function categoryShortLoops(){
