@@ -37,7 +37,7 @@ if(isset($_SESSION['subID'])){
         <form method="POST" action="includes/subAccSearch.inc.php">
             <div class="inner-form">
                 <div class="input-field second-wrap">
-                    <input <?php if(isset($_GET['search'])){?> value="<?php echo $_SESSION['search'] ?>" <?php } ?> id="search" pattern="[ a-zA-Z0-9]+" name="search" type="text" placeholder="Search Account...(by name or surname)" />
+                    <input <?php if(isset($_SESSION['search'])){?> value="<?php echo $_SESSION['search'] ?>" <?php } ?> id="search" pattern="[ a-zA-Z0-9]+" name="search" type="text" placeholder="Search Account...(by name or surname)" />
                 </div>
                 <div class="input-field third-wrap">
                     <button class="btn-search" name="btn-search" type="submit">

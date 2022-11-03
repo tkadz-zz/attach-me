@@ -3,6 +3,11 @@ class Usercontr extends Users{
 
 
 
+
+    public function studentSearch($nID){
+        return $this->GetStudentByNationalID($nID);
+    }
+
     public function myCount($ress){
         $s = 0;
         foreach ($ress as $res){

@@ -902,7 +902,7 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-    protected function GetStudentNationalID($nid){
+    protected function GetStudentByNationalID($nid){
         $sql = "SELECT * FROM students WHERE nationalID=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$nid]);
