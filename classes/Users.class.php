@@ -5,12 +5,42 @@ class Users extends Dbh{
 
 
 
+    public function deleteApplication($vuid, $userID){
+        $sql = 'DELETE FROM applications WHERE vacancyUID=? and userID=?';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$vuid, $userID])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Application Has been Deleted Successfully';
+            echo "<script type='text/javascript'>;
+                      window.location='../applicants.php?vuid=$vuid';
+                    </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
+
+    public function markApplicationAsRead($vuid, $userID){
+        $this->ReadUnreadApplication($vuid, $userID);
+        $_SESSION['type'] = 's';
+        $_SESSION['err'] = 'Action Successful';
+        echo "<script type='text/javascript'>;
+                      history.back(-1);
+                    </script>";
+    }
+
+
+
+
     protected function attachStudent($companyID, $subID, $today, $start, $end, $userID){
         $status = 1;
         $sql = "INSERT INTO attachments(userID, companyID, subID, dateAdded, dateStart, dateEnd, status) VALUES (?,?,?,?,?,?,?)";
         $stmt = $this->con()->prepare($sql);
 
-        $sql1 = $this->updateAttachmentStatus($userID);
+        $this->updateAttachmentStatus($userID);
+
+        $this->updateApplicantStatusToInavtive($userID);
+
 
         if($stmt->execute([$userID, $companyID, $subID, $today, $start, $end, $status])){
             $_SESSION['type'] = 's';
@@ -24,6 +54,13 @@ class Users extends Dbh{
         }
     }
 
+    protected function updateApplicantStatusToInavtive($id){
+        $active = 0;
+        $sql = "UPDATE applications SET status=? WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$active, $id]);
+    }
+
     protected function updateAttachmentStatus($id){
         $active = 1;
         $sql = "UPDATE students SET attachmentStatus=? WHERE user_id=?";
@@ -32,14 +69,30 @@ class Users extends Dbh{
     }
 
 
-    protected function openApplication($id){
+    protected function ReadUnreadApplication($vuid, $id){
+        $appRows = $this->GetApplicationByUserID($id);
+
+        if($appRows[0]['readStatus'] != 1) {
+            $read = 1;
+        }
+        else {
+            $read = 0;
+        }
+        $today = date('Y-m-d H:m:s');
+        $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=? AND vacancyUID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$read, $today, $id, $vuid]);
+    }
+
+
+    protected function openApplication($vuid, $id){
         $appRows = $this->GetApplicationByUserID($id);
         if($appRows[0]['readStatus'] != 1) {
             $today = date('Y-m-d H:m:s');
             $read = 1;
-            $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=?";
+            $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=? AND vacancyUID=?";
             $stmt = $this->con()->prepare($sql);
-            $stmt->execute([$read, $today, $id]);
+            $stmt->execute([$read, $today, $id, $vuid]);
         }
     }
 
@@ -843,10 +896,11 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-    protected function GetApplicationByVacancyUID($vuid){
-        $sql = "SELECT * FROM applications WHERE vacancyUID=?";
+    protected function GetActiveApplicationByVacancyUID($vuid){
+        $active = 1;
+        $sql = "SELECT * FROM applications WHERE vacancyUID=? AND status=?";
         $stmt = $this->con()->prepare($sql);
-        $stmt->execute([$vuid]);
+        $stmt->execute([$vuid, $active]);
         return $stmt->fetchAll();
     }
 

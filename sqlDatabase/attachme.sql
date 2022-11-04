@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 03, 2022 at 11:59 AM
+-- Generation Time: Nov 04, 2022 at 08:59 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -44,9 +44,33 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`id`, `userID`, `companyID`, `vacancyUID`, `readStatus`, `dateRead`, `dateAdded`, `lastUpdated`, `status`) VALUES
-(5, 23, 38, '730ef6fe8d13fc3ba4d08518b85959e1', 1, '2022-11-02 17:11:55', '2022-10-29 18:10:23', '2022-11-02 16:59:55', 1),
-(6, 23, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-02 17:11:55', '2022-10-29 22:10:02', '2022-11-02 16:59:55', 1),
-(7, 28, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-02 17:11:48', '2022-10-29 22:10:44', '2022-11-02 17:25:12', 1);
+(5, 23, 38, '730ef6fe8d13fc3ba4d08518b85959e1', 0, '2022-11-04 18:11:34', '2022-10-29 18:10:23', '2022-11-04 18:15:23', 0),
+(6, 23, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-04 19:11:29', '2022-10-29 22:10:02', '2022-11-04 18:15:29', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attachments`
+--
+
+CREATE TABLE `attachments` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `companyID` int(11) NOT NULL,
+  `subID` int(11) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `dateStart` varchar(225) NOT NULL,
+  `dateEnd` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `attachments`
+--
+
+INSERT INTO `attachments` (`id`, `userID`, `companyID`, `subID`, `dateAdded`, `dateStart`, `dateEnd`, `lastUpdated`, `status`) VALUES
+(10, 23, 38, 2, '2022-11-04 19:11:23', '2022-11-05', '2022-11-15', '2022-11-04 18:15:23', 1);
 
 -- --------------------------------------------------------
 
@@ -154,8 +178,8 @@ CREATE TABLE `institute` (
 --
 
 INSERT INTO `institute` (`id`, `userID`, `name`, `phone`, `email`, `website`, `address`, `avatar`, `dateJoined`, `lastUpdated`) VALUES
-(1, 3, 'Great Zimbabwe University', '4228844', 'info@gzu.ac.zw', 'http://www.gzu.co.zw', 'Masvingo, Harera ', '', '2021-02-02', '2022-10-20 11:42:47'),
-(2, 2, 'Midlands state university', '4228844', 'info@msu.ac.zw', 'http://www.msu.co.zw', 'Gweru ', '', '2021-02-02', '2022-10-20 11:42:44');
+(1, 3, 'Great Zimbabwe University', '4228844', 'info@gzu.ac.zw', 'http://www.gzu.co.zw', 'Masvingo, Harera ', '', '2021-02-02', '2022-11-04 18:39:30'),
+(2, 2, 'Midlands State University', '4228844', 'info@msu.ac.zw', 'http://www.msu.co.zw', 'Gweru ', '', '2021-02-02', '2022-11-04 18:39:40');
 
 -- --------------------------------------------------------
 
@@ -234,8 +258,8 @@ CREATE TABLE `program` (
 --
 
 INSERT INTO `program` (`id`, `name`, `dateAdded`, `lastUpdated`, `status`) VALUES
-(1, 'Information Systems', '2021-12-12', '2021-10-31 10:25:01', 1),
-(2, 'Development Studies', '2021-12-12', '2021-10-31 10:25:01', 1);
+(1, 'Information Systems', '2021-12-12', '2022-11-04 18:46:42', 1),
+(2, 'Development Studies', '2021-12-12', '2022-11-04 18:47:00', 1);
 
 -- --------------------------------------------------------
 
@@ -306,11 +330,11 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email`, `phone`, `dob`, `sex`, `marital`, `avatar`, `homeAddress`, `postalAddress`, `nationality`, `religion`, `aboutSelf`, `attachmentStatus`, `lastUpdatedStudent`) VALUES
-(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-03 01:21:07'),
+(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-04 18:15:23'),
 (19, '24', 'PANASHE', 'MURWISI', '', 'panashemurwisi@gmail.com', '722233332', '1998-01-01', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'l love you all with all my heart', 0, '2021-10-31 06:16:41'),
 (20, '26', 'TEST', 'USER', '', '', '0782226633', '2005-01-31', 'FEMALE', 'MARRIED', '', '', '', 'SOUTH AFRICA', 'HINDU', 'a strong hindu believer', 0, '2021-11-01 19:14:26'),
 (21, '27', 'TERRY', 'KAYZ0', '', '', '782266333', '1997-02-03', 'N_A', 'PRIVATE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'nothing special to tell', 0, '2021-11-02 15:24:14'),
-(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-11-03 01:27:15'),
+(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-11-04 17:01:06'),
 (23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 0, '2022-11-03 01:44:25'),
 (26, '32', 'NUMERIC', 'USER', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2022-03-29 19:11:33'),
 (27, '33', 'NUMERIC', 'USERA', '', '', '782273383', '2001-02-28', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'N/A', 0, '2022-03-29 19:16:25'),
@@ -494,6 +518,12 @@ ALTER TABLE `applications`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `attachments`
+--
+ALTER TABLE `attachments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `company`
 --
 ALTER TABLE `company`
@@ -516,9 +546,7 @@ ALTER TABLE `cv`
 -- Indexes for table `institute`
 --
 ALTER TABLE `institute`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`),
-  ADD UNIQUE KEY `user_id` (`userID`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `notifications`
@@ -536,15 +564,13 @@ ALTER TABLE `password_reset_temp`
 -- Indexes for table `program`
 --
 ALTER TABLE `program`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `studentEducation`
 --
 ALTER TABLE `studentEducation`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id` (`userID`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `students`
@@ -556,15 +582,13 @@ ALTER TABLE `students`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `loginID` (`loginID`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `vacancies`
 --
 ALTER TABLE `vacancies`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uniqueID` (`uniqueID`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `vacancyCategories`
@@ -587,6 +611,12 @@ ALTER TABLE `vacancyQualifications`
 --
 ALTER TABLE `applications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `attachments`
+--
+ALTER TABLE `attachments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `company`

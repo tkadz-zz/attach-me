@@ -74,7 +74,6 @@ class CompanyView extends Users
                 else{
                     //search by id if nID is not set
                     $studentRows = $this->GetStudentByID($id);
-                    $this->openApplication($id);
                 }
 
 
@@ -276,7 +275,10 @@ class CompanyView extends Users
                 else{
                     //search by id if nID is not set
                     $studentRows = $this->GetStudentByID($id);
-                    $this->openApplication($id);
+                    if(isset($_GET['vuid'])){
+                        $this->openApplication($_GET['vuid'], $id);
+                    }
+
                 }
 
                 if($studentRows == NULL){
@@ -510,7 +512,7 @@ class CompanyView extends Users
     }
 
     public function viewApplicantsTable($vuid){
-        $vacancyAppRows = $this->GetApplicationByVacancyUID($vuid);
+        $vacancyAppRows = $this->GetActiveApplicationByVacancyUID($vuid);
         $s = 0;
         foreach ($vacancyAppRows as $vacancyAppRow){
             $s++;
@@ -540,7 +542,33 @@ class CompanyView extends Users
                 <td><?php echo $userRows[0]['loginID'] ?></td>
                 <td><?php echo $instituteRows[0]['name'] ?></td>
                 <td><?php echo $programRows[0]['name'] ?></td>
-                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-pencil"></span> </a></td>
+                <td>
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-pencil"></span> View Profile </a>
+                            <?php
+                            if($vacancyAppRows[0]['readStatus'] == 0){
+                                ?>
+                                <a onclick="return confirm('Mark this Application as Read')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=markAsRead&userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-envelope-open"></span> Mark as Read</a>
+                                <?php
+                            }
+                            else{
+                                ?>
+                                <a onclick="return confirm('Mark this Application as Unread')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=markAsRead&userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-envelope"></span> Mark as Unread</a>
+                                <?php
+                            }
+                            ?>
+
+
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
             </tr>
             <?php
         }
@@ -713,11 +741,11 @@ class CompanyView extends Users
                                 <li><a onclick="return confirm('You are about to delete this Vacancy. Proceed?')" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-trash"></span> Delete </a></li>
                                 <li><a href="allVacancies.php" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded">Home <span class="fa fa-home"></span> </a></li>
                                 <li>
-                                    <a href="applicants.php?vuid=<?php echo $vuid ?>" style="z-index: 1030;" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
+                                    <a href="applicants.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">
                                         Vacancy Applicants <span class="fa fa-comments"></span>
                                         <span class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">
                                     <?php
-                                    $ress = $this->GetApplicationByVacancyUID($vuid);
+                                    $ress = $this->GetActiveApplicationByVacancyUID($vuid);
                                     $n = new Usercontr();
                                     $n->myCount($ress);
                                     ?>

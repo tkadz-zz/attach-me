@@ -3,6 +3,18 @@ class Usercontr extends Users{
 
 
 
+    public function deleteApplication($vuid, $userID)
+    {
+        parent::deleteApplication($vuid, $userID);
+    }
+
+
+    public function markApplicationAsRead($vuid, $userID)
+    {
+        parent::markApplicationAsRead($vuid, $userID);
+    }
+
+
     public function attachStudent($companyID, $subID, $today, $start, $end, $userID)
     {
         parent::attachStudent($companyID, $subID, $today, $start, $end, $userID);
