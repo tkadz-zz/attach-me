@@ -4,6 +4,34 @@
 class Users extends Dbh{
 
 
+
+    protected function attachStudent($companyID, $subID, $today, $start, $end, $userID){
+        $status = 1;
+        $sql = "INSERT INTO attachments(userID, companyID, subID, dateAdded, dateStart, dateEnd, status) VALUES (?,?,?,?,?,?,?)";
+        $stmt = $this->con()->prepare($sql);
+
+        $sql1 = $this->updateAttachmentStatus($userID);
+
+        if($stmt->execute([$userID, $companyID, $subID, $today, $start, $end, $status])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Student successfully attached';
+            echo "<script type='text/javascript'>;
+                      window.location='../studentProfile.php?userID=$userID';
+                    </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
+
+    protected function updateAttachmentStatus($id){
+        $active = 1;
+        $sql = "UPDATE students SET attachmentStatus=? WHERE user_id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$active, $id]);
+    }
+
+
     protected function openApplication($id){
         $appRows = $this->GetApplicationByUserID($id);
         if($appRows[0]['readStatus'] != 1) {
@@ -862,6 +890,20 @@ class Users extends Dbh{
 
     protected function GetCompanyById($id){
         $sql = "SELECT * FROM company WHERE user_id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetCompanyByUserID($id){
+        $sql = "SELECT * FROM company WHERE user_id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetAttachmentsByUserID($id){
+        $sql = "SELECT * FROM attachments WHERE userID=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetchAll();

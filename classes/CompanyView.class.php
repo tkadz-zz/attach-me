@@ -3,6 +3,210 @@
 class CompanyView extends Users
 {
 
+
+    public function attachmentFinalization($id){
+
+        $rows = $this->GetUser($id);
+
+
+        if($rows == NULL){
+            //user account missing due to id
+            ?>
+            <div class="container px-0">
+                <div class="pp-gallery">
+                    <div class="-card-columns">
+                        <div class="alert alert-warning text-dark" role="alert">
+                            <span class="mdi mdi-information-outline"></span> No Accounts found. <br><br>
+                            User account appears to be missing
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        elseif ($rows != NULL AND $rows[0]['role'] != 'student'){
+            //prevent access to accounts other than student
+            ?>
+            <div class="container px-0">
+                <div class="pp-gallery">
+                    <div class="-card-columns">
+                        <div class="alert alert-warning text-dark" role="alert">
+                            <span class="mdi mdi-information-outline"></span> Student Account Not Found. <br><br>
+                            Student account appears to be missing
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        else{
+            //two abouve conditions passed
+
+            $userApplied = $this->GetApplicationByUserID($id);
+            if($userApplied == NULL){
+                //if the nID is used but application is missing, companyID and SESSION[ID] will be NULL hence CID 01 which is not used in the entire system
+                $compnyID = 01; //TODO: This code is working as intended but needs to be fixed. This way is not code ethical
+            }
+            else{
+                //application available
+                $compnyID = $userApplied[0]['companyID'];
+            }
+            if($compnyID != $_SESSION['id'] AND !isset($_GET['nID'])){
+                //filter to get students who have applied to this company only
+                ?>
+                <div class="container px-0">
+                    <div class="pp-gallery">
+                        <div class="-card-columns">
+                            <div class="alert alert-danger text-dark" role="alert">
+                                <span class="mdi mdi-information-outline"></span> This Action is prohibited <br><br>
+                                You can not view this student
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+            else{
+                if(isset($_GET['nID'])){
+                    //Search by nID if it is set
+                    $studentRows = $this->GetStudentByNationalID($_GET['nID']);
+                }
+                else{
+                    //search by id if nID is not set
+                    $studentRows = $this->GetStudentByID($id);
+                    $this->openApplication($id);
+                }
+
+
+                if($studentRows == NULL){
+                    //if nID is not found. This issue is fixed on studentSearch. This is for further protection
+                    ?>
+                    <div class="container px-0">
+                        <div class="pp-gallery">
+                            <div class="-card-columns">
+                                <div class="alert alert-warning text-dark" role="alert">
+                                    <span class="mdi mdi-information-outline"></span> Student Account Not Found <br><br>
+                                    If you are using National ID, make sure its correct
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                else{
+
+                    if($studentRows[0]['attachmentStatus'] == 1){
+                        $_SESSION['type'] = 'w';
+                        echo "<script type='text/javascript'>;
+                              window.location='studentProfile.php?userID=$id';
+                            </script>";
+                    }
+
+                    $studentRows = $this->GetStudentByID($id);
+                    $studentEducationRows = $this->GetStudentEducationByUserID($id);
+
+                    if($studentRows[0]['attachmentStatus'] == 1){
+                        $borderClass = 'success';
+                        $msg = 'Attached';
+                    }
+                    else{
+                        $borderClass = 'primary';
+                        $msg = 'Attachment in progress';
+                    }
+                    ?>
+                    <div class="col-md-12">
+                        <div class="card border border-<?php echo $borderClass ?> border-3">
+                            <div class="card-body">
+                                <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?> <span class="fa fa-spinner fa-spin"></span></span> </h4>
+                                <div>
+                                    <p class="card-description">Fill in the required details to finalize attaching <?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?></p>
+                                    <?php
+                                    if(!isset($_GET['nID'])){
+                                        ?>
+                                        <!-- <p class="card-description">Received: <?php echo $this->dateTimeToDay($userApplied[0]['dateAdded']) ?> (<?php echo $this->timeAgo($userApplied[0]['dateAdded']) ?>)</p> -->
+                                        <?php
+                                    }
+                                    ?>
+                                    <div>
+
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div -class="card shadow-sm">
+                                            <div -class="card-body">
+                                                <span>Attachment Period</span>
+                                                <br>
+                                                <br>
+                                                <div class="border border-primary border-2 rounded p-2">
+                                                    <form method="POST" action="includes/attach.inc.php">
+                                                        <div class="form-group row">
+                                                            <input name="userID" type="text" value="<?php echo $id ?>" hidden>
+                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                                <label>Starting Date</label>
+                                                                <input id="start" type="date" class="form-control form-control-user" autocomplete="off" name="start" min="<?php echo date('Y-m-d') ?>" required >
+                                                            </div>
+
+                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                                <label>Ending Date</label>
+                                                                <input id="end" type="date" class="form-control form-control-user" autocomplete="off" name="end" min="<?php echo date('Y-m-d', strtotime("+1 day")) ?>" required >
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <a href="includes/attach.inc.php?abort&userID=<?php echo $id ?>" name="btn_cancel" class="btn btn-warning btn-sm">Abort <span class="fa fa-times-circle"></span></a>
+                                                            <button name="btn_attach" class="btn btn-primary">Finalize <span class="fa fa-check-circle"></span></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span>Personal</span>
+                                        <ul>
+                                            <?php
+                                            $addDetRow = $this->GetCompanyById($_SESSION['id']);
+                                            ?>
+                                            <li><span>National ID</span> : <span><?php echo $studentRows[0]['nationalID'] ?></span></li>
+                                            <li><span>Email</span> : <span><a href="mail:<?php echo $studentRows[0]['email'] ?>"><?php echo $studentRows[0]['email'] ?></a></span></li>
+                                            <li><span>Phone</span> : <span><a href="tel:<?php echo $studentRows[0]['phone'] ?>"><?php echo $studentRows[0]['phone'] ?></a></span></li>
+                                            <li><span>Sex</span> : <span><?php echo $studentRows[0]['sex'] ?></span></li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <span>Education</span>
+                                        <ul>
+                                            <?php
+                                            $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
+                                            $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
+                                            ?>
+                                            <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                            <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></span></li>
+                                            <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
+                                        </ul>
+                                    </div>
+
+                                    </div>
+
+                                </div>
+
+                                <ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+            }
+        }
+    }
+
+
     public function studentProfile($id){
         $rows = $this->GetUser($id);
 
@@ -43,7 +247,7 @@ class CompanyView extends Users
             $userApplied = $this->GetApplicationByUserID($id);
             if($userApplied == NULL){
                 //if the nID is used but application is missing, companyID and SESSION[ID] will be NULL hence CID 01 which is not used in the entire system
-                $compnyID = 01;
+                $compnyID = 01; //TODO: This code is working as intended but needs to be fixed. This way is not code ethical
             }
             else{
                 //application available
@@ -157,15 +361,27 @@ class CompanyView extends Users
 
                                         <?php
                                         if($studentRows[0]['attachmentStatus'] == 1){
+                                            $attchementRows = $this->GetAttachmentsByUserID($id);
+                                            $companyRows = $this->GetCompanyByUserID($attchementRows[0]['companyID']);
+                                            $subAccRows = $this->GetSubAccByID($attchementRows[0]['subID']);
                                             ?>
                                             <span>Company</span>
                                             <ul>
                                                 <?php
                                                 $attachmentRows = 0 //TODO: Set attchemnt variables
                                                 ?>
-                                                <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
-                                                <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?> in <?php echo $programRows[0]['name'] ?></span></li>
-                                                <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
+                                                <li><span>Name</span> : <span><a href="companyProfile.php?userID=<?php echo $attchementRows[0]['companyID']  ?>"><?php echo $companyRows[0]['name'] ?></a></span></li>
+                                                <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attchementRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attchementRows[0]['dateEnd']) ?></span></li>
+                                                <?php
+                                                if($_SESSION['id'] == $attchementRows[0]['companyID']){
+                                                    ?>
+                                                        <hr>
+                                                    <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?></a></span></li>
+                                                    <li><span>On</span> : <span><?php echo $this->dayDate($attchementRows[0]['dateAdded']) ?></span></li>
+                                                    <?php
+                                                }
+                                                ?>
+
                                             </ul>
                                             <?php
                                         }
@@ -258,12 +474,12 @@ class CompanyView extends Users
                                         ?>
                                         <hr>
 
-                                        <form method="POST" action="#!">
+                                        <form method="POST" action="includes/attach.inc.php">
                                             <input name="userID" type="text" value="<?php echo $id ?>" hidden>
                                             <input type="checkbox" id="checkme"/> Check to enable the attach button below
                                             <br>
                                             <br>
-                                            <button type="submit" name="btn-attach" id="attbtn" disabled onclick="return confirm('This student will attached at this company. Proceed?')" class="btn btn-primary">Attach Student<span class="fa fa-user"></span></button>
+                                            <button type="submit" name="btn_attachToFinalize" id="attbtn" disabled onclick="return confirm('This student will attached at this company. Proceed?')" class="btn btn-primary">Attach Student<span class="fa fa-user"></span></button>
                                         </form>
 
                                         <script>

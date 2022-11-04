@@ -2,7 +2,6 @@
 include 'includes/emptyLayoutTop.inc.php';
 include 'includes/miniTab.inc.php';
 include 'includes/subAccSessionFilter.inc.php';
-include 'includes/subAccAdminSessionFilter.inc.php';
 ?>
 
 

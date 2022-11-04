@@ -2,6 +2,7 @@
 include 'includes/emptyLayoutTop.inc.php';
 include 'includes/miniTab.inc.php';
 include 'includes/subAccSessionFilter.inc.php';
+include 'includes/subAccAdminSessionFilter.inc.php';
 ?>
 
 <style>
@@ -61,8 +62,7 @@ include 'includes/subAccSessionFilter.inc.php';
     }
 
 </style>
-
-<h4 class="pt-3">Student Profile</h4>
+<h4 class="pt-3"></h4>
 <br>
 <div class="btn btn-outline-secondary btn-sm rounded text-decoration-none" data-size="large"><a href="javascript:history.back()" class="fb-xfbml-parse-ignore"><span class="fa fa-chevron-circle-left"></span> Back</a></div>
 <br>
@@ -71,7 +71,7 @@ include 'includes/subAccSessionFilter.inc.php';
 <div class="row">
     <?php
     $cv = new CompanyView();
-    $cv->studentProfile($_GET['userID']);
+    $cv->attachmentFinalization($_GET['userID']);
     ?>
 </div>
 

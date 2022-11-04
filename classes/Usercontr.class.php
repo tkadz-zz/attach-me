@@ -3,6 +3,11 @@ class Usercontr extends Users{
 
 
 
+    public function attachStudent($companyID, $subID, $today, $start, $end, $userID)
+    {
+        parent::attachStudent($companyID, $subID, $today, $start, $end, $userID);
+    }
+
 
     public function studentSearch($nID){
         return $this->GetStudentByNationalID($nID);
