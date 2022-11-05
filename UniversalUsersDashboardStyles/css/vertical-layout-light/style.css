@@ -12197,7 +12197,7 @@ fieldset:disabled .swal2-modal .swal2-buttonswrapper .swal2-styled,
 
 .dropdown-menu {
   position: absolute;
-  z-index: 1000;
+  -z-index: 1000;
   display: none;
   min-width: 10rem;
   padding: 0.5rem 0;

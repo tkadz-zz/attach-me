@@ -1,24 +1,24 @@
 <?php
 include("autoloader.inc.php");
-include "subAccAdminSessionFilter.inc.php";
+include "studentSessionFilter.inc.php";
 
 $action = $_GET['action'];
 $vuid = $_GET['vuid'];
 $userID = $_GET['userID'];
 
-if($action == 'markAsRead'){
+
+if($action == 'delete') {
     try {
         $s = new Usercontr();
-        $s->ReadUnreadApplication($vuid, $userID);
+        $s->deleteApplication($vuid, $userID);
     } catch (TypeError $e) {
         echo "Error" . $e->getMessage();
     }
 }
-
-elseif($action == 'delete') {
+elseif ($action == 'share'){
     try {
         $s = new Usercontr();
-        $s->deleteApplication($vuid, $userID);
+        $s->underDev();
     } catch (TypeError $e) {
         echo "Error" . $e->getMessage();
     }

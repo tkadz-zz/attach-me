@@ -26,6 +26,7 @@ include 'includes/subAccSessionFilter.inc.php';
                 <th>Date Posted</th>
                 <th>Online Date</th>
                 <th>Expiry Date</th>
+                <th>Applicants</th>
                 <th>More</th>
             </tr>
             </thead>

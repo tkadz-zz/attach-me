@@ -12,7 +12,7 @@ class StudentView extends Users
             $vacancyRows = $this->GetVacancyByUniqueID($row['vacancyUID']);
             $vCateg = $this->GetCategoryByID($vacancyRows[0]['cartegory']);
 
-            if($vacancyRows[0]['expiryDate'] > date('Y-m-d')){
+            if($vacancyRows[0]['expiryDate'] >= date('Y-m-d')){
                 $borderClass = 'success';
             }
             else{
@@ -25,18 +25,28 @@ class StudentView extends Users
                 <td><?php echo $vCateg[0]['category'] ?></td>
                 <td><?php echo $this->dayDate($vacancyRows[0]['dateOnline']);?></td>
                 <td class="alert alert-<?php echo $borderClass ?>"><?php echo $this->dayDate($vacancyRows[0]['expiryDate']) ?></td>
-                <td><a href="applicationDetailedDetails.php?vuid=<?php echo $vacancyRows[0]['uniqueID'] ?>"><span class="fa fa-eye"></span> </a></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="applicationDetailedDetails.php?vuid=<?php echo $vacancyRows[0]['uniqueID'] ?>"><span class="fa fa-eye"></span> View Vacancy </a>
+                            <a class="dropdown-item" href="includes/applicantOptions.inc.php?action=share&userID=<?php echo $id ?>&vuid=<?php echo $vacancyRows[0]['uniqueID']  ?>"><span class="fa fa-share"></span> Share</a>
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $id ?>&vuid=<?php echo $vacancyRows[0]['uniqueID']  ?>"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
             </tr>
             <?php
         }
     }
 
-
-
     public function viewApplyForm($vuid){
         $rows = $this->GetVacancyByUniqueID($vuid);
         $categoryRows = $this->GetCategoryByID($rows[0]['cartegory']);
-        if($rows[0]['expiryDate'] > date('Y-m-d')){
+        if($rows[0]['expiryDate'] >= date('Y-m-d')){
             $borderClass = 'success';
             $msg = 'Due: ' . $this->dateToDay($rows[0]['expiryDate']);
         }
@@ -54,7 +64,7 @@ class StudentView extends Users
                         <div>
                             <ul class="mylst">
                                 <?php
-                                if($rows[0]['expiryDate'] > date('Y-m-d')){
+                                if($rows[0]['expiryDate'] >= date('Y-m-d')){
                                     ?>
                                     <span><a data-toggle="tooltip" data-placement="right" title="Add to Bookmarks" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-bookmark"></span> </a></span>
                                     <span><a data-toggle="tooltip" data-placement="right" title="Share with friends and family" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-success btn-sm rounded"><span class="fa fa-share"></span> </a></span>
@@ -71,48 +81,48 @@ class StudentView extends Users
                                 <span class="text-decoration-underline h6">Company Details</span>
                                 <br>
                                 <br>
-                            <ul>
-                                <?php
-                                $companyRows = $this->GetCompanyById($rows[0]['companyID']);
-                                ?>
-                                <div class="shadow-sm card-body">
+                                <ul>
                                     <?php
-                                    if($companyRows[0]['avatar'] == ''){
-                                        ?>
-                                        <img class="card-img-top rounded-circle" style="width: 80px" src="../img/companyEnterprise.png" alt="Card image cap">
-                                        <?php
-                                    }
-                                    else{
-                                        ?>
-                                        <img class="card-img-top rounded-circle" style="width: 80px" src="<?php echo $companyRows[0]['avatar'] ?>" alt="Card image cap">
-                                        <?php
-                                    }
+                                    $companyRows = $this->GetCompanyById($rows[0]['companyID']);
                                     ?>
-                                    <span class="h6 p2"><?php echo $companyRows[0]['name'] ?></span>
+                                    <div class="shadow-sm card-body">
+                                        <?php
+                                        if($companyRows[0]['avatar'] == ''){
+                                            ?>
+                                            <img class="card-img-top rounded-circle" style="width: 80px" src="../img/companyEnterprise.png" alt="Card image cap">
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+                                            <img class="card-img-top rounded-circle" style="width: 80px" src="<?php echo $companyRows[0]['avatar'] ?>" alt="Card image cap">
+                                            <?php
+                                        }
+                                        ?>
+                                        <span class="h6 p2"><?php echo $companyRows[0]['name'] ?></span>
 
-                                    <br>
-                                    <br>
-                                    <span><span class="fa fa-envelope"></span> <a target="_blank" href="mailto:<?php echo $companyRows[0]['email'] ?>"><?php echo $companyRows[0]['email'] ?></a></span><br>
-                                    <span><span class="fa fa-phone"></span> <a href="tel:<?php echo $companyRows[0]['phone'] ?>"><?php echo $companyRows[0]['phone'] ?></a></span><br>
-                                    <span><span class="fa fa-location-arrow"></span> <?php echo $companyRows[0]['address'] ?></span><br>
-                                    <span><span class="fa fa-globe"></span> <a target="_top" href="<?php echo $companyRows[0]['website'] ?>"></a><?php echo $companyRows[0]['website'] ?></span><br>
+                                        <br>
+                                        <br>
+                                        <span><span class="fa fa-envelope"></span> <a target="_blank" href="mailto:<?php echo $companyRows[0]['email'] ?>"><?php echo $companyRows[0]['email'] ?></a></span><br>
+                                        <span><span class="fa fa-phone"></span> <a href="tel:<?php echo $companyRows[0]['phone'] ?>"><?php echo $companyRows[0]['phone'] ?></a></span><br>
+                                        <span><span class="fa fa-location-arrow"></span> <?php echo $companyRows[0]['address'] ?></span><br>
+                                        <span><span class="fa fa-globe"></span> <a target="_top" href="<?php echo $companyRows[0]['website'] ?>"></a><?php echo $companyRows[0]['website'] ?></span><br>
 
-                                </div>
-                            </ul>
+                                    </div>
+                                </ul>
                             </div>
 
 
                             <div class="col-md-6  border-start">
                                 <div class="shadow-sm card-body">
-                                <span class="text-decoration-underline h6">Vacancy Details</span>
-                                <br>
-                                <br>
-                                <div style="font-size: 13px">
-                                <span class="text-decoration-underline" style="font-size: 13px"><b>Title</b></span>: <?php echo $rows[0]['title'] ?><br>
-                                    <span class="text-decoration-underline" style="font-size: 13px"><b>Category</b></span>: <a class="badge badge-primary text-decoration-none" data-toggle="tooltip" data-placement="right" title="View All <?php echo $categoryRows[0]['category'] ?> Vacancies" href="vacancies.php?filter=<?php echo $categoryRows[0]['category'] ?>&fid=<?php echo $categoryRows[0]['id'] ?>"><?php echo $categoryRows[0]['category'] ?></a>
-                                <br>
-                                    <span class="text-decoration-underline" style="font-size: 13px"><b>Posted</b></span>: <?php echo $this->dateToDay($rows[0]['dateOnline']) ?><br>
-                                    <span class="text-decoration-underline" style="font-size: 13px"><b>Due</b></span>: <span class="text-<?php echo $borderClass ?>">
+                                    <span class="text-decoration-underline h6">Vacancy Details</span>
+                                    <br>
+                                    <br>
+                                    <div style="font-size: 13px">
+                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Title</b></span>: <?php echo $rows[0]['title'] ?><br>
+                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Category</b></span>: <a class="badge badge-primary text-decoration-none" data-toggle="tooltip" data-placement="right" title="View All <?php echo $categoryRows[0]['category'] ?> Vacancies" href="vacancies.php?filter=<?php echo $categoryRows[0]['category'] ?>&fid=<?php echo $categoryRows[0]['id'] ?>"><?php echo $categoryRows[0]['category'] ?></a>
+                                        <br>
+                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Posted</b></span>: <?php echo $this->dateToDay($rows[0]['dateOnline']) ?><br>
+                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Due</b></span>: <span class="text-<?php echo $borderClass ?>">
                                         <?php
                                         $today = date('Y-m-d');
                                         if($rows[0]['expiryDate'] == $today){
@@ -123,38 +133,54 @@ class StudentView extends Users
                                         }
 
                                         ?></span><br>
-                                <br>
-                                    <span class="text-decoration-underline" style="font-size: 14px"><b>Body</b></span><br>
-                                    <span style="font-size: 13px"><?php echo $rows[0]['body'] ?></span>
-                                </div>
-                                <br>
+                                        <br>
+                                        <span class="text-decoration-underline" style="font-size: 14px"><b>Body</b></span><br>
+                                        <span style="font-size: 13px"><?php echo $rows[0]['body'] ?></span>
+                                    </div>
+                                    <br>
 
-                                <span class="text-decoration-underline" style="font-size: 14px"><b>Qualifications</b></span><br>
-                                <span style="font-size: 13px"><?php
-                                    $n = new CompanyView();
-                                    $n->viewQualificationsloopNoDelete($vuid);
-                                    ?>
+                                    <span class="text-decoration-underline" style="font-size: 14px"><b>Qualifications</b></span><br>
+                                    <span style="font-size: 13px"><?php
+                                        $n = new CompanyView();
+                                        $n->viewQualificationsloopNoDelete($vuid);
+                                        ?>
                                 </span>
 
-                                <div>
-                                    <hr>
-                                    <?php
-
-                                    $applicationRows = $this->GetApplicationByUserIDandVacancyID($vuid, $_SESSION['id']);
-
-                                    if($borderClass == 'success'){
-                                        if($applicationRows == NULL){
-                                        ?>
-                                        <a onclick="return confirm('By Proceeding, Your acknowledge that your details will be sent to the employer. Proceed?')" href="includes/apply.inc.php?vuid=<?php echo $vuid ?>" class="btn btn-success btn-lg"><span class="fa fa-envelope"></span> Apply</a>
+                                    <div>
+                                        <hr>
                                         <?php
+
+                                        $applicationRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $_SESSION['id']);
+                                        $studentRows = $this->GetStudentByID($_SESSION['id']);
+
+                                        if($studentRows[0]['attachmentStatus'] == 1){
+                                            ?>
+                                            <div class="container px-0">
+                                                <div class="pp-gallery">
+                                                    <div class="-card-columns">
+                                                        <div class="alert alert-info text-dark" role="alert">
+                                                            <span class="mdi mdi-information-outline"></span> You are Already Attached <br><br>
+                                                            You can share this vacancy with your friends and family
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
                                         }
                                         else{
-                                            ?>
-                                                <div class="card-body shadow-lg">
-                                                    <a  class="btn btn-warning btn-sm"><span class=""></span>Applied</a>
-                                                    <div>
-                                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Applied On</b></span>: <span style="font-size: 12px"><?php echo $this->dateToDay($applicationRows[0]['dateAdded']) ?></span><br>
-                                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Read Status</b></span>: <span style="font-size: 12px">
+                                            if($rows[0]['expiryDate'] >= date('Y-m-d')){
+                                                if($applicationRows == NULL){
+                                                    ?>
+                                                    <a onclick="return confirm('By Proceeding, Your acknowledge that your details will be sent to the employer. Proceed?')" href="includes/apply.inc.php?vuid=<?php echo $vuid ?>" class="btn btn-success btn-lg"><span class="fa fa-envelope"></span> Apply</a>
+                                                    <?php
+                                                }
+                                                else{
+                                                    ?>
+                                                    <div class="card-body shadow-lg">
+                                                        <a  class="btn btn-warning btn-sm"><span class=""></span>Applied</a>
+                                                        <div>
+                                                            <span class="text-decoration-underline" style="font-size: 13px"><b>Applied On</b></span>: <span style="font-size: 12px"><?php echo $this->dateToDay($applicationRows[0]['dateAdded']) ?></span><br>
+                                                            <span class="text-decoration-underline" style="font-size: 13px"><b>Read Status</b></span>: <span style="font-size: 12px">
                                                             <?php
                                                             if($applicationRows[0]['readStatus'] == 0){
                                                                 ?>
@@ -166,22 +192,24 @@ class StudentView extends Users
                                                             }
                                                             ?>
                                                         </span><br>
-                                                        <br>
-                                                        <span class="text-decoration-underline" style="font-size: 13px"><b>Reply Status</b></span>: <span class="badge badge-danger" style="font-size: 12px">
+                                                            <br>
+                                                            <span class="text-decoration-underline" style="font-size: 13px"><b>Reply Status</b></span>: <span class="badge badge-danger" style="font-size: 12px">
                                                                 This section is still under construction
                                                             </span><br>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            <?php
+                                                    <?php
+                                                }
+                                            }
+
+                                            else{
+                                                ?>
+                                                <a class="btn btn-danger btn-lg"><span class=""></span>Expired <?php echo $this->timeAgo($rows[0]['expiryDate']) ?></a>
+                                                <?php
+                                            }
                                         }
-                                    }
-                                    else{
                                         ?>
-                                        <a class="btn btn-danger btn-lg"><span class=""></span>Expired <?php echo $this->timeAgo($rows[0]['expiryDate']) ?></a>
-                                        <?php
-                                    }
-                                    ?>
-                                </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -193,7 +221,6 @@ class StudentView extends Users
 
         <?php
     }
-
 
     public function categoryShortLoopsOption(){
         $rows = $this->GetCategoriesMiniLoop();
@@ -225,14 +252,16 @@ class StudentView extends Users
         }
     }
 
-
     public function StudentViewCarrier($id){
         $userRow = $this->GetUser($id);
         $studentRow = $this->GetStudentByID($id);
         $studentEducationRows = $this->GetStudentEducationByUserID($id);
         $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
         $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
-
+        $cvRows = $this->GetCvByUserID($id);
+        $attachmentReportRows = $this->GetAttachmentReportByUserID($id);
+        $supervisorReportRows = $this->GetSupervisorsReportByUserID($id);
+        $logbookRows = $this->GetLogbookByUserID($id);
         ?>
 
         <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
@@ -273,17 +302,22 @@ class StudentView extends Users
                                 </div>
                                 <hr>
                                 <div class="mt-2">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label class="labels text-decoration-underline">Company Attached:</label><br>
                                         <?php
                                         if($studentRow[0]['attachmentStatus'] != 1) {
                                             ?>
-                                                <p class="badge badge-warning text-dark">Not Attached Yet</p>
+                                            <p class="badge badge-warning text-dark">Not Attached Yet</p>
                                             <?php
                                         }
                                         else{
+                                            $attachmentRows = $this->GetAttachmentsByUserID($id);
+                                            $companyRows = $this->GetCompanyById($attachmentRows[0]['companyID']);
                                             ?>
-                                            <p class="badge badge-warning">Attached</p>
+                                            <ul>
+                                                <li><span>Name</span> : <span><a href="companyProfile.php?userID=<?php echo $attachmentRows[0]['companyID']  ?>"><?php echo $companyRows[0]['name'] ?></a></span></li>
+                                                <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attachmentRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attachmentRows[0]['dateEnd']) ?></span></li>
+                                            </ul>
                                             <?php
                                         }
                                         ?>
@@ -299,61 +333,182 @@ class StudentView extends Users
 
 
                         <div class="row">
+                            <span class="card-header -pb-4">My Documents</span>
+                            <hr>
 
                             <div class="col-md-6">
-                                <a style="text-decoration: none" href="#!">
+                                <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Curriculum Vitae</div>
                                     <div class="card-body">
-                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
-                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+
+                                        <?php
+                                        if($cvRows == NULL){
+                                            ?>
+                                            <div class="-dropdown">
+                                                <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Curriculum Vitae
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+
+                                            <div class="-dropdown">
+                                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Curriculum Vitae
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-success">Available</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                        }
+                                        ?>
+
                                     </div>
                                 </div>
-                                </a>
+                                </span>
                             </div>
 
                             <?php
                             if($studentRow[0]['attachmentStatus'] == 1) {
                                 ?>
 
-                            <div class="col-md-6">
-                                <a style="text-decoration: none" href="#!">
+                                <div class="col-md-6">
+                                <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Attachment Report</div>
                                     <div class="card-body">
-                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                        <?php
+                                        if($attachmentReportRows == NULL){
+                                            ?>
+                                            <div class="-dropdown">
+                                                <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Attachment Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+
+                                            <div class="-dropdown">
+                                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Attachment Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-success">Available</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
-                                </a>
-                            </div>
+                                </span>
+                                </div>
 
-                            <div class="col-md-6">
-                                <a style="text-decoration: none" href="#!">
+                                <div class="col-md-6">
+                                <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Assessment Report</div>
                                     <div class="card-body">
-                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
-                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                        <?php
+                                        if($supervisorReportRows == NULL){
+                                            ?>
+                                            <div class="-dropdown">
+                                                <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Assessment Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header text-danger">Unavailable</h6>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+
+                                            <div class="-dropdown">
+                                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Assessment Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-success">Available</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
-                                </a>
-                            </div>
+                                </span>
+                                </div>
 
-                            <div class="col-md-6">
-                                <a style="text-decoration: none" href="#!">
+                                <div class="col-md-6">
+                                <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Logbook Report</div>
                                     <div class="card-body">
-                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                        <?php
+                                        if($logbookRows == NULL){
+                                            ?>
+                                            <div class="-dropdown">
+                                                <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Logbook Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+
+                                            <div class="-dropdown">
+                                                <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Logbook Report
+                                                </button>
+                                                <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
+                                                    <h6 class="dropdown-header badge badge-success">Available</h6>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
+                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
-                                </a>
-                            </div>
+                                </span>
+                                </div>
                                 <?php
                             }
-                                ?>
+                            ?>
 
                         </div>
 
@@ -376,8 +531,6 @@ class StudentView extends Users
 
         <?php
     }
-
-
 
     public function StudentViewChangePassword($id){
         $userRow = $this->GetUser($id);
@@ -462,8 +615,6 @@ class StudentView extends Users
         <?php
     }
 
-
-
     public function aattachmentStatus($id)
     {
         $userRow = $this->GetUser($id);
@@ -484,7 +635,6 @@ class StudentView extends Users
         </div>
         <?php
     }
-
 
     public function miniAttachmentDashboard($id){
         $userRow = $this->GetUser($id);
@@ -523,11 +673,13 @@ class StudentView extends Users
             <?php
         }
         else{
+            $attachmentRows = $this->GetAttachmentsByUserID($id);
+            $companyRows = $this->GetCompanyById($attachmentRows[0]['companyID']);
             ?>
 
 
             <div class="nav-item dropdown -d-none -d-lg-block">
-                <span class="badge badge-primary text-black" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Attached @ ...<a href="#!">company name <span class="fa fa-arrow-right"></span></a> </span>
+                <span class="badge badge-primary text-black" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Attached @ ...<a href="#!"><?php echo $companyRows[0]['name'] ?> <span class="fa fa-arrow-right"></span></a> </span>
 
                 <div class="">
                     <br>
@@ -574,27 +726,26 @@ class StudentView extends Users
         }
     }
 
-
     public function sexProfileImageView($id, $sex){
         $userRows = $this->isUser($id, $_SESSION['role']);
 
         if(!isset($_GET['setProfileImage'])){
             if($userRows[0]['avatar'] == ''){
-            if($sex == 'MALE'){
-                ?>
-                <img class="rounded-circle mt-5" width="150px" src="../img/male.png">
-                <?php
-            }
-            elseif ($sex == 'FEMALE'){
-                ?>
-                <img class="rounded-circle mt-5" width="150px" src="../img/female.png">
-                <?php
-            }
-            else{
-                ?>
-                <img class="rounded-circle mt-5" width="150px" src="../img/user.png">
-                <?php
-            }
+                if($sex == 'MALE'){
+                    ?>
+                    <img class="rounded-circle mt-5" width="150px" src="../img/male.png">
+                    <?php
+                }
+                elseif ($sex == 'FEMALE'){
+                    ?>
+                    <img class="rounded-circle mt-5" width="150px" src="../img/female.png">
+                    <?php
+                }
+                else{
+                    ?>
+                    <img class="rounded-circle mt-5" width="150px" src="../img/user.png">
+                    <?php
+                }
             }
             else{
                 ?>
@@ -628,8 +779,6 @@ class StudentView extends Users
             <?php
         }
     }
-
-
 
     public function StudentViewProfile($id){
         $userRow = $this ->GetUser($id);
@@ -908,6 +1057,7 @@ class StudentView extends Users
         ?>
         <?php
     }
+
 
 
 }

@@ -4,6 +4,7 @@ include 'includes/emptyLayoutTop.inc.php';
 
 <?php
 include 'includes/miniTab.inc.php';
+include 'includes/attachmentStatusFilter.inc.php';
 ?>
 
 

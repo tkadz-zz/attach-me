@@ -5,6 +5,29 @@ class Users extends Dbh{
 
 
 
+
+
+    protected function attachmentStatusFilter($id){
+        $studentRows = $this->GetStudentByID($id);
+        if($studentRows[0]['attachmentStatus'] == 1){
+            $_SESSION['type'] = 'i';
+            $_SESSION['err'] = 'Attached Students can not view this page or perform the intended action';
+            echo "<script type='text/javascript'>;
+              history.back();
+            </script>";
+        }
+    }
+
+
+    protected function underDev(){
+        $_SESSION['type'] = 'i';
+        $_SESSION['err'] = 'The selected section is under development';
+        echo "<script type='text/javascript'>;
+              history.back();
+            </script>";
+    }
+
+
     public function deleteApplication($vuid, $userID){
         $sql = 'DELETE FROM applications WHERE vacancyUID=? and userID=?';
         $stmt = $this->con()->prepare($sql);
@@ -12,23 +35,13 @@ class Users extends Dbh{
             $_SESSION['type'] = 's';
             $_SESSION['err'] = 'Application Has been Deleted Successfully';
             echo "<script type='text/javascript'>;
-                      window.location='../applicants.php?vuid=$vuid';
+                      history.back(-1);
                     </script>";
         }
         else{
             $this->opps();
         }
     }
-
-    public function markApplicationAsRead($vuid, $userID){
-        $this->ReadUnreadApplication($vuid, $userID);
-        $_SESSION['type'] = 's';
-        $_SESSION['err'] = 'Action Successful';
-        echo "<script type='text/javascript'>;
-                      history.back(-1);
-                    </script>";
-    }
-
 
 
 
@@ -70,7 +83,7 @@ class Users extends Dbh{
 
 
     protected function ReadUnreadApplication($vuid, $id){
-        $appRows = $this->GetApplicationByUserID($id);
+        $appRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $id);
 
         if($appRows[0]['readStatus'] != 1) {
             $read = 1;
@@ -81,12 +94,21 @@ class Users extends Dbh{
         $today = date('Y-m-d H:m:s');
         $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=? AND vacancyUID=?";
         $stmt = $this->con()->prepare($sql);
-        $stmt->execute([$read, $today, $id, $vuid]);
+        if($stmt->execute([$read, $today, $id, $vuid])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Action Successful';
+            echo "<script type='text/javascript'>;
+                      history.back(-1);
+                    </script>";
+        }
+        else{
+            $this->opps();
+        }
     }
 
 
     protected function openApplication($vuid, $id){
-        $appRows = $this->GetApplicationByUserID($id);
+        $appRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $id);
         if($appRows[0]['readStatus'] != 1) {
             $today = date('Y-m-d H:m:s');
             $read = 1;
@@ -815,6 +837,27 @@ class Users extends Dbh{
 
     }
 
+    protected function GetAttachmentReportByUserID($id){
+        $sql = "SELECT * FROM attachmentReports WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetSupervisorsReportByUserID($id){
+        $sql = "SELECT * FROM supervisorReports WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
+    protected function GetLogbookByUserID($id){
+        $sql = "SELECT * FROM logbooks WHERE userID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
 
 
     protected function GetCvByUserID($id){
@@ -889,10 +932,10 @@ class Users extends Dbh{
     }
 
 
-    protected function GetApplicationByUserIDandVacancyID($vuid, $id){
-        $sql = "SELECT * FROM applications WHERE vacancyUID=? AND userID=?";
+    protected function GetApplicationByVacancyIDAndUserID($vuid, $id){
+        $sql = "SELECT * FROM applications WHERE userID=? AND vacancyUID=?";
         $stmt = $this->con()->prepare($sql);
-        $stmt->execute([$vuid, $id]);
+        $stmt->execute([$id, $vuid]);
         return $stmt->fetchAll();
     }
 
@@ -914,7 +957,7 @@ class Users extends Dbh{
     }
 
     protected function GetApplicationByUserID($id){
-        $sql = "SELECT * FROM applications WHERE userID=?";
+        $sql = "SELECT * FROM applications WHERE userID=? ORDER BY id DESC";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetchAll();

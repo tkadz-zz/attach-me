@@ -2,6 +2,16 @@
 class Usercontr extends Users{
 
 
+    public function attachmentStatusFilter($id)
+    {
+        parent::attachmentStatusFilter($id);
+    }
+
+
+    public function underDev()
+    {
+        parent::underDev();
+    }
 
     public function deleteApplication($vuid, $userID)
     {
@@ -9,10 +19,11 @@ class Usercontr extends Users{
     }
 
 
-    public function markApplicationAsRead($vuid, $userID)
+    public function ReadUnreadApplication($vuid, $id)
     {
-        parent::markApplicationAsRead($vuid, $userID);
+        parent::ReadUnreadApplication($vuid, $id);
     }
+
 
 
     public function attachStudent($companyID, $subID, $today, $start, $end, $userID)
