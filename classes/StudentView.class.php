@@ -4,6 +4,116 @@ class StudentView extends Users
 {
 
 
+    public function viewIsDocumentAvailable($type, $id){
+        if($type == 'cv'){
+            $Dtype = 'Curriculum Vitae';
+            $docRows = $this->GetCvByUserID($id);
+        }
+        elseif($type == 'attRep'){
+            $Dtype = 'Attachment Report';
+            $docRows = $this->GetAttachmentReportByUserID($id);
+        }
+        elseif($type == 'assRep'){
+            $Dtype = 'Assessment Report';
+            $docRows = $this->GetSupervisorsReportByUserID($id);
+        }
+        elseif($type == 'logb'){
+            $Dtype = 'Logbook';
+            $docRows = $this->GetLogbookByUserID($id);
+        }
+        else{
+            echo "<script type='text/javascript'>history.back(-1)</script>";
+        }
+
+        if($docRows == NULL){
+            ?>
+            No <?php echo $Dtype ?> uploaded yet
+            <?php
+        }
+        else{
+            ?>
+            <label><?php echo $Dtype ?> Available</label>
+            <br>
+            <br>
+            <div -id="divDis" class="animated--grow-in fadeout bg-white rounded -shadow-sm alert alert-info">
+                <div class="closebtn"></div>
+                <span class="text-dark">
+                    <span class="animated--grow-in fadeout fa fa-file text-dark"></span>
+                    <a href="<?php echo $docRows[0]['file'] ?>">Download <?php echo $Dtype ?></a>
+                </span>
+                <hr>
+                <span class="text-dark"><strong>Uploaded: </strong><span><?php echo $this->timeAgo($docRows[0]['dateAdded']) ?> on <?php echo $this->dayDate($docRows[0]['dateAdded']) ?> </span></span>
+
+                <a style="float: right; color: firebrick; font-size:15px" onclick="return confirm('Are you sure you want to proceed removing this qualification?')" href="includes/deleteDocument.inc.php?document=<?php echo $type ?>&userID=<?php echo $id ?>" class="closebtn" data-bs-dismiss="toast" aria-label="Close">
+                    <span class="fa fa-trash"></span>
+                </a>
+            </div>
+            <?php
+        }
+
+    }
+
+
+    public function viewUploadDocument($id){
+        $doc = $_GET['document'] ;
+
+        if($doc == 'cv'){
+            $type = 'cv';
+            $Dtype = 'Curriculum Vitae';
+        }
+        elseif($doc == 'attRep'){
+            $type = 'attachmentReport';
+            $Dtype = 'Attachment Report';
+        }
+        elseif($doc == 'assRep'){
+            $type = 'assessmentReport';
+            $Dtype = 'Assessment Report';
+        }
+        elseif($doc == 'logb'){
+            $type = 'logbook';
+            $Dtype = 'Logbook';
+        }
+        else{
+            echo "<script type='text/javascript'>history.back(-1)</script>";
+        }
+        ?>
+
+        <div class="container">
+            <br>
+            <h4>Upload <?php echo $Dtype ?></h4>
+        </div>
+
+
+        <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
+            <div class="row ">
+                <div class="col-md-8">
+                    <form method="POST" action="includes/uploadDocument.inc.php?document=<?php echo $doc ?>&userID=<?php echo $id ?>" enctype="multipart/form-data">
+                        <div>
+                            <label class="card-description">Choose <?php echo $Dtype ?> file to upload</label>
+                            <div class="pb-2">
+                                <input class="form-control" type="file" name="docFile" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload <span class="fa fa-upload"></span></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <?php
+                    $this->viewIsDocumentAvailable($doc, $id);
+                    ?>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+        <?php
+    }
+
+
+
     public function viewAppliedVacancies($id){
         $rows = $this->GetApplicationByUserID($id);
         $s = 0;
@@ -332,11 +442,11 @@ class StudentView extends Users
                         <br>
 
 
-                        <div class="row">
+                        <div class="row" id="documents">
                             <span class="card-header -pb-4">My Documents</span>
                             <hr>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="cv">
                                 <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Curriculum Vitae</div>
@@ -351,7 +461,7 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=cv"><span class="fa fa-upload"></span> Upload </a>
                                                 </div>
                                             </div>
                                             <?php
@@ -365,9 +475,9 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-success">Available</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
-                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                    <a class="dropdown-item" href="<?php echo $cvRows[0]['file'] ?>" target="_blank"><span class="fa fa-download"></span> Download </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=cv"><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href="includes/deleteDocument.inc.php?document=cv"><span class="fa fa-trash"></span> Delete</a>
                                                 </div>
                                             </div>
 
@@ -384,7 +494,7 @@ class StudentView extends Users
                             if($studentRow[0]['attachmentStatus'] == 1) {
                                 ?>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="attachmentReport">
                                 <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Attachment Report</div>
@@ -398,7 +508,7 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=attRep"><span class="fa fa-upload"></span> Upload </a>
                                                 </div>
                                             </div>
                                             <?php
@@ -412,9 +522,9 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-success">Available</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
-                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                    <a class="dropdown-item" href="<?php echo $attachmentReportRows[0]['file'] ?>" target="_blank"><span class="fa fa-download"></span> Download </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=attRep"><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href="includes/deleteDocument.inc.php?document=attRep"><span class="fa fa-trash"></span> Delete</a>
                                                 </div>
                                             </div>
 
@@ -426,7 +536,7 @@ class StudentView extends Users
                                 </span>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="assessmentReport">
                                 <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Assessment Report</div>
@@ -440,6 +550,7 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header text-danger">Unavailable</h6>
+
                                                 </div>
                                             </div>
                                             <?php
@@ -453,7 +564,7 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-success">Available</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
+                                                    <a class="dropdown-item" href="<?php echo $supervisorReportRows[0]['file'] ?>" target="_blank"><span class="fa fa-download"></span> Download </a>
                                                 </div>
                                             </div>
 
@@ -465,7 +576,7 @@ class StudentView extends Users
                                 </span>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="logbook">
                                 <span style="text-decoration: none" href="#!">
                                 <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                     <div class="card-header">Logbook Report</div>
@@ -479,7 +590,7 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-danger">Unavailable</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Upload </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=logb"><span class="fa fa-upload"></span> Upload </a>
                                                 </div>
                                             </div>
                                             <?php
@@ -493,9 +604,9 @@ class StudentView extends Users
                                                 </button>
                                                 <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
                                                     <h6 class="dropdown-header badge badge-success">Available</h6>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-eye"></span> View </a>
-                                                    <a class="dropdown-item" href=""><span class="fa fa-upload"></span> Update </a>
-                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href=""><span class="fa fa-trash"></span> Delete</a>
+                                                    <a class="dropdown-item" href="<?php echo $logbookRows[0]['file'] ?>" target="_blank"><span class="fa fa-download"></span> Download </a>
+                                                    <a class="dropdown-item" href="uploadDocument.php?document=logb"><span class="fa fa-upload"></span> Update </a>
+                                                    <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href="includes/deleteDocument.inc.php?document=logb"><span class="fa fa-trash"></span> Delete</a>
                                                 </div>
                                             </div>
 
@@ -1006,7 +1117,7 @@ class StudentView extends Users
                         </div>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="cv.php" class="dropdown-item preview-item">
+                    <a href="carrier.php#cv" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Curriculum Vitae</p>
                             <p class="fw-light small-text mb-0">Keep your CV up-to-date</p>
@@ -1027,25 +1138,25 @@ class StudentView extends Users
                                     <p class="mb-0 font-weight-medium float-left">Work Related Learning Management</p>
                                 </span>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
+                    <a href="carrier.php#logbook" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Logbook </p>
                             <p class="fw-light small-text mb-0">Upload and update your logbook</p>
                         </div>
                     </a>
-                    <a class="dropdown-item preview-item">
+                    <a href="carrier.php#attachmentReport" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Attachment Report/s</p>
                             <p class="fw-light small-text mb-0">your attachment report/s</p>
                         </div>
                     </a>
-                    <a href="cv.php" class="dropdown-item preview-item">
+                    <a href="carrier.php#cv" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Curriculum Vitae</p>
                             <p class="fw-light small-text mb-0">Keep your CV up-to-date</p>
                         </div>
                     </a>
-                    <a class="dropdown-item preview-item">
+                    <a href="carrier.php#documents" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark">More ...<span class="mdi mdi-chevron-double-right"></span> </p>
                         </div>

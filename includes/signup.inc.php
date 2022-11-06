@@ -58,7 +58,7 @@ else{
 
     $password = password_hash($confirmPassword, PASSWORD_BCRYPT);
 
-    $joined = date("Y-m-d h:m:i");
+    $joined = date("Y-m-d h:i:s");
     $reg_status = 1;
     $active_status = 1;
     $user_role = "student";

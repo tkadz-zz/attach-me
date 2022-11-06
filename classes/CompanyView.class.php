@@ -353,6 +353,7 @@ class CompanyView extends Users
                                                 <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attchementRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attchementRows[0]['dateEnd']) ?></span></li>
                                                 <?php
                                                 if($_SESSION['id'] == $attchementRows[0]['companyID']){
+                                                    $attachmentRows
                                                     ?>
                                                     <hr>
                                                     <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?></a></span></li>
@@ -380,7 +381,7 @@ class CompanyView extends Users
                                             <div class="card-header">Curriculum Vitae</div>
                                             <div class="card-body">
                                                 <?php
-                                                $cvRows = $this->GetCvByUserID($id);
+                                                $cvRows = $this->GetCvByUserID($studentRows[0]['user_id']);
                                                 if($cvRows == NULL){
                                                     ?>
                                                     <h6 class="badge-danger rounded">Not Available <span class="fa fa-exclamation"></span></h6>
@@ -388,7 +389,7 @@ class CompanyView extends Users
                                                 }
                                                 else{
                                                     ?>
-                                                    <p class="-card-text text-center"><a href="<?php echo $cvRows[0]['cv'] ?>" target="_blank" class="btn btn-primary btn-sm"> Download <span class="fa fa-download"></span> </a></p>
+                                                    <p class="-card-text text-center"><a href="<?php echo $cvRows[0]['file'] ?>" target="_blank" class="btn btn-primary btn-sm"> Download <span class="fa fa-download"></span> </a></p>
                                                     <?php
                                                 }
                                                 ?>
@@ -398,46 +399,56 @@ class CompanyView extends Users
                                             </div>
 
                                             <?php
-                                            if($studentRows[0]['attachmentStatus'] == 1) {
-                                                //TODO: Add company details if student is attached
-                                                ?>
+                                            if(isset($attchementRows) AND $attchementRows[0]['companyID'] == $_SESSION['id']){
+                                                if($studentRows[0]['attachmentStatus'] == 1) {
+                                                    $supervisorReportRows = $this->GetSupervisorsReportByUserID($studentRows[0]['user_id']);
+                                                    ?>
+                                                    <div class="col-md-6">
+                                                    <span style="text-decoration: none" href="#!">
+                                                        <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
+                                                            <div class="card-header">Assessment Report</div>
+                                                            <div class="card-body">
+                                                                <?php
 
-                                                <div class="col-md-6">
-                                            <span style="text-decoration: none" href="#!">
-                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
-                                                    <div class="card-header">Attachment Report</div>
-                                                    <div class="card-body">
-                                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                                </div>
+                                                                if($supervisorReportRows == NULL){
+                                                                    ?>
+                                                                    <div class="dropdown">
+                                                                        <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            Manage
+                                                                        </button>
+                                                                        <div style="font-size: 13px" class="dropdown-menu border border-danger" aria-labelledby="dropdownMenuIconButton6">
+                                                                            <h6 class="dropdown-header text-danger">Unavailable</h6>
+                                                                            <a class="dropdown-item" href="uploadDocument.php?document=assRep&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-upload"></span> Upload </a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <?php
+                                                                }
+                                                                else{
+                                                                    ?>
 
-                                                <div class="col-md-6">
-                                            <span style="text-decoration: none" href="#!">
-                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
-                                                    <div class="card-header">Assessment Report</div>
-                                                    <div class="card-body">
-                                                        <h6 class="badge-danger rounded">Unavailable <span class="fa fa-exclamation"></span></h6>
-                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
-                                                    </div>
-                                                </div>
-                                            </span>
-                                                </div>
+                                                                    <div class="dropdown">
+                                                                        <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            Manage
+                                                                        </button>
+                                                                        <div style="font-size: 13px" class="dropdown-menu border border-success" aria-labelledby="dropdownMenuIconButton6">
+                                                                            <h6 class="dropdown-header badge badge-success">Available</h6>
+                                                                            <a class="dropdown-item" href="uploadDocument.php?document=assRep&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-upload"></span> Update </a>
+                                                                            <a class="dropdown-item" href="<?php echo $supervisorReportRows[0]['file'] ?>" target="_blank"><span class="fa fa-download"></span> Download </a>
+                                                                            <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href="includes/deleteDocument.inc.php?document=assRep&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-trash"></span> Delete</a>
+                                                                        </div>
+                                                                    </div>
 
-                                                <div class="col-md-6">
-                                            <span style="text-decoration: none" href="#!">
-                                                <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
-                                                    <div class="card-header">Logbook Report</div>
-                                                    <div class="card-body">
-                                                        <h6 class="badge-success rounded">Uploaded <span class="fa fa-check"></h6>
-                                                        <p class="-card-text text-center"><span class="text-primary"> Details...</span></p>
+                                                                    <?php
+                                                                }
+
+                                                                ?>
+                                                            </div>
+                                                        </div>
+                                                    </span>
                                                     </div>
-                                                </div>
-                                            </span>
-                                                </div>
-                                                <?php
+
+                                                    <?php
+                                                }
                                             }
                                             ?>
 
@@ -521,8 +532,7 @@ class CompanyView extends Users
                 <td><?php echo $instituteRows[0]['name'] ?></td>
                 <td><?php echo $programRows[0]['name'] ?></td>
                 <td>
-
-                    <div class="dropdown">
+                    <div class="dropdown" style="z-index: 99999">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-ellipsis-v"></i>
                         </button>

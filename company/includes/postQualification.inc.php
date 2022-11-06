@@ -9,7 +9,7 @@ if (isset($_POST['btn_post_vacancyQualification'])){
 
     $qualification = $_POST['qualification'];
     $vacancyID = $_POST['vacancyID'];
-    $dateAdded = date("Y-m-d h:m:i");
+    $dateAdded = date("Y-m-d h:i:s");
 
     if(strlen($qualification) < 1 ){
         $_SESSION['type'] = 'w';

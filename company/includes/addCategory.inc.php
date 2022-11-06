@@ -8,7 +8,7 @@ if(isset($_POST['btn_addCategory'])) {
     $description = $_POST['description'];
     $companyID = $_SESSION['id'];
     $subID = $_SESSION['subID'];
-    $dateAdded = date("Y-m-d h:m:i");
+    $dateAdded = date("Y-m-d h:i:s");
 
     if(strlen($category) < 4){
         $_SESSION['type'] = 'w';

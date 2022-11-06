@@ -27,7 +27,7 @@ if(isset($_POST['btn_ProfilePic'])) {
                 $file_destination   ='../../profileImages/'.$file_name_new;
 
                 try {
-                    $dateAdded = date("Y-m-d h:m:i");
+                    $dateAdded = date("Y-m-d h:i:s");
                     $s = new Usercontr();
                     $s->updateProfileImage($file_tmp, $file_destination, $file_name_new, $file_ext, $id);
                 } catch (TypeError $e) {

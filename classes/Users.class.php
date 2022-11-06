@@ -6,6 +6,107 @@ class Users extends Dbh{
 
 
 
+    protected function uploadDocument($file_tmp, $file_destination, $file_name_new, $file_ext, $type, $id){
+        $today = date('Y-m-d H:i:s');
+        if($type == 'cv'){
+            $Dtype = 'Curriculum Vitae';
+            $docRows = $this->GetCvByUserID($id);
+            $sql = 'DELETE FROM cv WHERE userID=?';
+            $sql1 = 'INSERT INTO cv(userID, file, dateAdded) VALUES (?,?,?)';
+            $filed = '../cv/' . $file_name_new . '';
+        }
+        elseif($type == 'attRep'){
+            $Dtype = 'Attachment Report';
+            $docRows = $this->GetAttachmentReportByUserID($id);
+            $sql = 'DELETE FROM attachmentReports WHERE userID=?';
+            $sql1 = 'INSERT INTO attachmentReports(userID, file, dateAdded) VALUES (?,?,?)';
+            $filed = '../attachmentReports/' . $file_name_new . '';
+        }
+        elseif($type == 'assRep'){
+            $Dtype = 'Assessment Report';
+            $docRows = $this->GetSupervisorsReportByUserID($id);
+            $sql = 'DELETE FROM supervisorReports WHERE userID=?';
+            $sql1 = 'INSERT INTO supervisorReports(userID, file, dateAdded) VALUES (?,?,?)';
+            $filed = '../assessmentReports/' . $file_name_new . '';
+        }
+        elseif($type == 'logb'){
+            $Dtype = 'Logbook';
+            $docRows = $this->GetLogbookByUserID($id);
+            $sql = 'DELETE FROM logbooks WHERE userID=?';
+            $sql1 = 'INSERT INTO logbooks(userID, file, dateAdded) VALUES (?,?,?)';
+            $filed = '../logbooks/' . $file_name_new . '';
+        }
+        else{
+            echo "<script type='text/javascript'>history.back(-1)</script>";
+        }
+        if($docRows != NULL){
+            $source = "../" . $docRows[0]['file'];
+            unlink($source);
+            $stmt = $this->con()->prepare($sql);
+            $stmt->execute([$id]);
+        }
+        if(move_uploaded_file($file_tmp, $file_destination)) {
+            $stmt1 = $this->con()->prepare($sql1);
+
+            if ($stmt1->execute([$id, $filed, $today])) {
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = $Dtype . ' was Successfully Uploaded';
+                echo "<script type='text/javascript'>history.back(-1)</script>";
+            } else {
+                $this->opps();
+            }
+        }
+        else{
+            $this->opps();
+        }
+    }
+
+    protected function deleteDocument($doc, $Dtype, $id){
+        if($doc == 'cv'){
+            $Dtype = 'Curriculum Vitae';
+            $docRows = $this->GetCvByUserID($id);
+            $sql = 'DELETE FROM cv WHERE userID=?';
+        }
+        elseif($doc == 'attRep'){
+            $Dtype = 'Attachment Report';
+            $docRows = $this->GetAttachmentReportByUserID($id);
+            $sql = 'DELETE FROM attachmentReports WHERE userID=?';
+        }
+        elseif($doc == 'assRep'){
+            $Dtype = 'Assessment Report';
+            $docRows = $this->GetSupervisorsReportByUserID($id);
+            $sql = 'DELETE FROM supervisorReports WHERE userID=?';
+        }
+        elseif($doc == 'logb'){
+            $Dtype = 'Logbook';
+            $docRows = $this->GetLogbookByUserID($id);
+            $sql = 'DELETE FROM logbooks WHERE userID=?';
+        }
+        else{
+            echo "<script type='text/javascript'>history.back(-1)</script>";
+        }
+
+        if($docRows == NULL){
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'No '.$Dtype.' found to delete';
+            echo "<script type='text/javascript'>history.back()</script>";
+        }
+        else{
+            $source = "../" . $docRows[0]['file'];
+            unlink($source);
+            $stmt = $this->con()->prepare($sql);
+            if($stmt->execute([$id])){
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = $Dtype . ' Deleted Sucessfully';
+                echo "<script type='text/javascript'>history.back()</script>";
+            }
+            else{
+                $this->opps();
+            }
+        }
+    }
+
+
 
     protected function attachmentStatusFilter($id){
         $studentRows = $this->GetStudentByID($id);
@@ -91,7 +192,7 @@ class Users extends Dbh{
         else {
             $read = 0;
         }
-        $today = date('Y-m-d H:m:s');
+        $today = date('Y-m-d H:i:s');
         $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=? AND vacancyUID=?";
         $stmt = $this->con()->prepare($sql);
         if($stmt->execute([$read, $today, $id, $vuid])){
@@ -110,7 +211,7 @@ class Users extends Dbh{
     protected function openApplication($vuid, $id){
         $appRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $id);
         if($appRows[0]['readStatus'] != 1) {
-            $today = date('Y-m-d H:m:s');
+            $today = date('Y-m-d H:i:s');
             $read = 1;
             $sql = "UPDATE applications SET readStatus=?, dateRead=? WHERE userID=? AND vacancyUID=?";
             $stmt = $this->con()->prepare($sql);
@@ -122,7 +223,7 @@ class Users extends Dbh{
     protected function vacancyApply($vuid, $id){
         $vacancyRows = $this->GetVacancyByUniqueID($vuid);
         $companyID = $vacancyRows[0]['companyID'];
-        $readStatus = 0; $blank = ''; $today = date('Y-m-d H:m:s'); $activeStatus = 1;
+        $readStatus = 0; $blank = ''; $today = date('Y-m-d H:i:s'); $activeStatus = 1;
 
         $sql = 'INSERT INTO applications(userID, companyID, vacancyUID, readStatus, dateRead, dateAdded, status)VALUES(?,?,?,?,?,?,?)';
         $stmt = $this->con()->prepare($sql);
@@ -758,50 +859,50 @@ class Users extends Dbh{
         //Minutes
         else if($minutes <=60){
             if($minutes==1){
-                return "one minute ago";
+                return "One Minute Ago";
             }
             else{
-                return "$minutes minutes ago";
+                return "$minutes Minutes Ago";
             }
         }
         //Hours
         else if($hours <=24){
             if($hours==1){
-                return "an hour ago";
+                return "an Hour Ago";
             }else{
-                return "$hours hrs ago";
+                return "$hours Hrs Ago";
             }
         }
         //Days
         else if($days <= 7){
             if($days==1){
-                return "yesterday";
+                return "Yesterday";
             }else{
-                return "$days days ago";
+                return "$days Days Ago";
             }
         }
         //Weeks
         else if($weeks <= 4.3){
             if($weeks==1){
-                return "a week ago";
+                return "a Week Ago";
             }else{
-                return "$weeks weeks ago";
+                return "$weeks Weeks Ago";
             }
         }
         //Months
         else if($months <=12){
             if($months==1){
-                return "a month ago";
+                return "a Month Ago";
             }else{
-                return "$months months ago";
+                return "$months Months Ago";
             }
         }
         //Years
         else{
             if($years==1){
-                return "one year ago";
+                return "One Year Ago";
             }else{
-                return "$years years ago";
+                return "$years Years Ago";
             }
         }
     }

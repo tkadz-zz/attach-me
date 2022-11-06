@@ -5,7 +5,7 @@ include "subAccAdminSessionFilter.inc.php";
 $userID = $_POST['userID'];
 $companyID = $_SESSION['id'];
 $subID = $_SESSION['subID'];
-$today = date('Y-m-d H:m:s');
+$today = date('Y-m-d H:i:s');
 
 if(isset($_POST['btn_attachToFinalize'])){
     $_SESSION['type'] = 's';

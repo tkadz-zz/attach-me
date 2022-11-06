@@ -15,7 +15,7 @@ if (isset($_POST['btn_post_vacancy'])){
     $body = $_POST['Vbody'];
     $postOnlineDate = $_POST['postOnlineDate'];
     $randomSTR = $_POST['randomSTR'];
-    $dateAdded = date("Y-m-d h:m:i");
+    $dateAdded = date("Y-m-d h:i:s");
 
     if(strlen($title) < 1 ){
         $_SESSION['type'] = 'w';
