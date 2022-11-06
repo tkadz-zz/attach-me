@@ -138,44 +138,28 @@ include 'includes/subAccSessionFilter.inc.php';
         }
         else{
             ?>
-        <div class="col-lg-3 col-sm-6">
-            <div class="card-box bg-green">
-                <div class="inner">
-                    <h3>
-                        <?php
-
-                        $n = new CompanyView();
-                        $res = $n->countSUbAccSupervisingStudents($_SESSION['subID'], $_SESSION['id']);
-
-                        ?>
-                    </h3>
-                    <p> My Students </p>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card-box bg-green">
+                        <div class="inner">
+                            <h3>
+                                <?php
+                                $n = new CompanyView();
+                                $res = $n->countSUbAccSupervisingStudents($_SESSION['subID'], $_SESSION['id']);
+                                ?>
+                            </h3>
+                            <p> My Students </p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <a href="myAttachedStudents.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fa fa-user"></i>
-                </div>
-                <a href="#!" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
         <?php
 
         }
         ?>
 
-        <div class="col-lg-3 col-sm-6">
-            <div class="card-box bg-purple">
-                <div class="inner">
-                    <h3>
-
-                    </h3>
-                    <p> Appointments</p>
-                </div>
-                <div class="icon">
-                    <i class="fa fa-user"></i>
-                </div>
-                <a href="appointment.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
     </div>
 
 

@@ -3,6 +3,16 @@
 class CompanyView extends Users
 {
 
+
+    public function ViewCompanyDeptLoop($companyID){
+        $deptRows = $this->GetDeptByCompanyID($companyID);
+        foreach($deptRows as $deptRow) {
+            ?>
+            <option value="<?php echo $deptRow['id'] ?>"><?php echo $deptRow['department'] ?></option>
+            <?php
+        }
+    }
+
     public function companySupervisorOptionLoop($userID, $companyID){
         $supervisorRows = $this->GetCompanySupervisorOnly($companyID);
         foreach ($supervisorRows as $supervisorRow) {
@@ -10,7 +20,7 @@ class CompanyView extends Users
             $attacheRows = $this->GetAttachmentsByUserID($userID);
             ?>
             <option value="<?php echo $subAccRows[0]['id'] ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] ?>
-            <?php
+                <?php
                 if($attacheRows[0]['supervisorID'] == $supervisorRow['id']){
                     echo '(current)';
                 }
@@ -31,7 +41,12 @@ class CompanyView extends Users
                 <td><?php echo $s ?> </td>
                 <td><?php echo $subAccRow['name'] ?></td>
                 <td><?php echo $subAccRow['surname'] ?></td>
-                <td><?php echo $subAccRow['department'] ?></td>
+                <td>
+                    <?php
+                    $deptRows = $this->GetDeptById($subAccRow['department']);
+                    echo $deptRows[0]['department'];
+                    ?>
+                </td>
                 <td><?php echo $subAccRow['role'] ?></td>
 
                 <td>
@@ -50,6 +65,52 @@ class CompanyView extends Users
             <?php
         }
     }
+
+
+
+    public function viewAllMyCompanyAttachedStudents($companyID, $subID){
+        $attachedRows = $this->GetSUbAccSupervisingStudents($subID, $companyID);
+        $s = 0;
+
+        foreach ($attachedRows as $attachedRow){
+            $s++;
+            $studentRows = $this->GetStudentByID($attachedRow['userID']);
+            $userRows = $this->GetUser($attachedRow['userID']);
+            $subAccRows = $this->GetSubAccByID($attachedRow['supervisorID']);
+
+            if($attachedRow['dateEnd'] >= date('Y-m-d')){
+                $borderClass = 'success';
+                $attStat = 'valid';
+            }
+            else{
+                $borderClass = 'danger';
+                $attStat = 'expired ' .$this->timeAgo($attachedRow['dateEnd']);
+            }
+            ?>
+            <tr>
+                <td><?php echo $s ?> </td>
+                <td><?php echo $studentRows[0]['name'] ?></td>
+                <td><?php echo $studentRows[0]['surname'] ?></td>
+                <td><?php echo $userRows[0]['loginID'] ?></td>
+                <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
+
+                <td>
+                    <div class="-dropdown" style="z-index: 9999">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="#!"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
+        }
+    }
+
 
     public function viewAllCompanyAttachedStudents($id){
         $attachedRows = $this->GetCompanyAttachedStudents($id);
@@ -100,7 +161,7 @@ class CompanyView extends Users
                         <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
                             <h6 class="dropdown-header">More</h6>
                             <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
-                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-trash"></span> Delete</a>
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-trash"></span> Delete</a>
                         </div>
                     </div>
                 </td>
@@ -318,8 +379,6 @@ class CompanyView extends Users
 
     public function studentProfile($id){
         $rows = $this->GetUser($id);
-
-
         if($rows == NULL){
             //user account missing due to id
             ?>
@@ -350,133 +409,127 @@ class CompanyView extends Users
             </div>
             <?php
         }
-            //two abouve conditions passed
+        //two abouve conditions passed
+        else{
+            if(isset($_GET['nID'])){
+                //Search by nID if it is set
+                $studentRows = $this->GetStudentByNationalID($_GET['nID']);
+            }
             else{
-                if(isset($_GET['nID'])){
-                    //Search by nID if it is set
-                    $studentRows = $this->GetStudentByNationalID($_GET['nID']);
+                //search by id if nID is not set
+                $studentRows = $this->GetStudentByID($id);
+                if(isset($_GET['vuid'])){
+                    $this->openApplication($_GET['vuid'], $id);
+                }
+
+                $userApplied = $this->GetApplicationByVacancyIDAndUserID($_GET['vuid'], $id);
+                if($userApplied == NULL){
+                    //if the nID is used but application is missing, companyID and SESSION[ID] will be NULL hence CID 01 which is not used in the entire system
+                    $compnyID = 01; //TODO: This code is working as intended but needs to be fixed. This way is not code ethical
                 }
                 else{
-                    //search by id if nID is not set
-                    $studentRows = $this->GetStudentByID($id);
-                    if(isset($_GET['vuid'])){
-                        $this->openApplication($_GET['vuid'], $id);
-                    }
-
-                    $userApplied = $this->GetApplicationByVacancyIDAndUserID($_GET['vuid'], $id);
-                    if($userApplied == NULL){
-                        //if the nID is used but application is missing, companyID and SESSION[ID] will be NULL hence CID 01 which is not used in the entire system
-                        $compnyID = 01; //TODO: This code is working as intended but needs to be fixed. This way is not code ethical
-                    }
-                    else{
-                        //application available
-                        $compnyID = $userApplied[0]['companyID'];
-                    }
-                    if($compnyID != $_SESSION['id'] AND !isset($_GET['nID'])){
-                        //filter to get students who have applied to this company only
-                        $_SESSION['type'] = 'd';
-                        $_SESSION['err'] = 'Attempted action has been restricted';
-                        echo "<script type='text/javascript'>
+                    //application available
+                    $compnyID = $userApplied[0]['companyID'];
+                }
+                if($compnyID != $_SESSION['id'] AND !isset($_GET['nID'])){
+                    //filter to get students who have applied to this company only
+                    $_SESSION['type'] = 'd';
+                    $_SESSION['err'] = 'Attempted action has been restricted';
+                    echo "<script type='text/javascript'>
                             history.back(-1);
                         </script>";
-                    }
-
                 }
 
-                if($studentRows == NULL){
-                    //if nID is not found. This issue is fixed on studentSearch. This is for further protection
-                    ?>
-                    <div class="container px-0">
-                        <div class="pp-gallery">
-                            <div class="-card-columns">
-                                <div class="alert alert-warning text-dark" role="alert">
-                                    <span class="mdi mdi-information-outline"></span> Student Account Not Found <br><br>
-                                    If you are using National ID, make sure its correct
-                                </div>
+            }
+            if($studentRows == NULL){
+                //if nID is not found. This issue is fixed on studentSearch. This is for further protection
+                ?>
+                <div class="container px-0">
+                    <div class="pp-gallery">
+                        <div class="-card-columns">
+                            <div class="alert alert-warning text-dark" role="alert">
+                                <span class="mdi mdi-information-outline"></span> Student Account Not Found <br><br>
+                                If you are using National ID, make sure its correct
                             </div>
                         </div>
                     </div>
-                    <?php
+                </div>
+                <?php
+            }
+            else{
+                $studentRows = $this->GetStudentByID($id);
+                $studentEducationRows = $this->GetStudentEducationByUserID($id);
+
+                if($studentRows[0]['attachmentStatus'] == 1){
+                    $borderClass = 'success';
+                    $msg = 'Attached';
                 }
                 else{
-
-                    $studentRows = $this->GetStudentByID($id);
-                    $studentEducationRows = $this->GetStudentEducationByUserID($id);
-
-                    if($studentRows[0]['attachmentStatus'] == 1){
-                        $borderClass = 'success';
-                        $msg = 'Attached';
-                    }
-                    else{
-                        $borderClass = 'warning';
-                        $msg = 'Not Attached';
-                    }
-                    ?>
-                    <div class="col-md-12">
-                        <div class="card border border-<?php echo $borderClass ?> border-3">
-                            <div class="card-body">
-                                <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
-                                <div>
-                                    <p class="card-description">The following are the details of <?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?></p>
-                                    <?php
-                                    if(!isset($_GET['nID'])){
-                                        ?>
-                                        <!-- <p class="card-description">Received: <?php echo $this->dateTimeToDay($userApplied[0]['dateAdded']) ?> (<?php echo $this->timeAgo($userApplied[0]['dateAdded']) ?>)</p> -->
-                                        <?php
-                                    }
+                    $borderClass = 'warning';
+                    $msg = 'Not Attached';
+                }
+                ?>
+                <div class="col-md-12">
+                    <div class="card border border-<?php echo $borderClass ?> border-3">
+                        <div class="card-body">
+                            <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
+                            <div>
+                                <p class="card-description">The following are the details of <?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?></p>
+                                <?php
+                                if(!isset($_GET['nID'])){
                                     ?>
-                                    <div>
+                                    <!-- <p class="card-description">Received: <?php echo $this->dateTimeToDay($userApplied[0]['dateAdded']) ?> (<?php echo $this->timeAgo($userApplied[0]['dateAdded']) ?>)</p> -->
+                                    <?php
+                                }
+                                ?>
+                                <div>
 
-                                    </div>
                                 </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <span>Personal</span>
-                                        <ul>
-                                            <?php
-                                            $addDetRow = $this->GetCompanyById($_SESSION['id']);
-                                            ?>
-                                            <li><span>National ID</span> : <span><?php echo $studentRows[0]['nationalID'] ?></span></li>
-                                            <li><span>Email</span> : <span><a href="mail:<?php echo $studentRows[0]['email'] ?>"><?php echo $studentRows[0]['email'] ?></a></span></li>
-                                            <li><span>Phone</span> : <span><a href="tel:<?php echo $studentRows[0]['phone'] ?>"><?php echo $studentRows[0]['phone'] ?></a></span></li>
-                                            <li><span>Address</span> : <span><?php echo $studentRows[0]['homeAddress'] ?></span></li>
-                                            <li><span>Sex</span> : <span><?php echo $studentRows[0]['sex'] ?></span></li>
-                                            <li><span>DOB</span> : <span><?php echo $this->dayDate($studentRows[0]['dob']) ?></span></li>
-                                            <li><span>Marital</span> : <span><?php echo $studentRows[0]['marital'] ?></span></li>
-                                            <li><span>Religion</span> : <span><?php echo $studentRows[0]['religion'] ?></span></li>
-                                            <li><span>Bio</span> : <br><span><?php echo $studentRows[0]['aboutSelf'] ?></span></li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <span>Education</span>
-                                        <ul>
-                                            <?php
-                                            $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
-                                            $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
-                                            ?>
-                                            <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
-                                            <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></span></li>
-                                            <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
-                                        </ul>
-
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span>Personal</span>
+                                    <ul>
                                         <?php
-                                        if($studentRows[0]['attachmentStatus'] == 1){
-                                            $attchementRows = $this->GetAttachmentsByUserID($id);
-                                            $companyRows = $this->GetCompanyByUserID($attchementRows[0]['companyID']);
-                                            $subAccRows = $this->GetSubAccByID($attchementRows[0]['subID']);
+                                        $addDetRow = $this->GetCompanyById($_SESSION['id']);
+                                        ?>
+                                        <li><span>National ID</span> : <span><?php echo $studentRows[0]['nationalID'] ?></span></li>
+                                        <li><span>Email</span> : <span><a href="mail:<?php echo $studentRows[0]['email'] ?>"><?php echo $studentRows[0]['email'] ?></a></span></li>
+                                        <li><span>Phone</span> : <span><a href="tel:<?php echo $studentRows[0]['phone'] ?>"><?php echo $studentRows[0]['phone'] ?></a></span></li>
+                                        <li><span>Address</span> : <span><?php echo $studentRows[0]['homeAddress'] ?></span></li>
+                                        <li><span>Sex</span> : <span><?php echo $studentRows[0]['sex'] ?></span></li>
+                                        <li><span>DOB</span> : <span><?php echo $this->dayDate($studentRows[0]['dob']) ?></span></li>
+                                        <li><span>Marital</span> : <span><?php echo $studentRows[0]['marital'] ?></span></li>
+                                        <li><span>Religion</span> : <span><?php echo $studentRows[0]['religion'] ?></span></li>
+                                        <li><span>Bio</span> : <br><span><?php echo $studentRows[0]['aboutSelf'] ?></span></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <span>Education</span>
+                                    <ul>
+                                        <?php
+                                        $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
+                                        $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
+                                        ?>
+                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                        <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></span></li>
+                                        <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
+                                    </ul>
+                                    <?php
+                                    if($studentRows[0]['attachmentStatus'] == 1){
+                                        $attchementRows = $this->GetAttachmentsByUserID($id);
+                                        $companyRows = $this->GetCompanyByUserID($attchementRows[0]['companyID']);
+                                        $subAccRows = $this->GetSubAccByID($attchementRows[0]['subID']);
+                                        ?>
+                                        <span>Company</span>
+                                        <ul>
+                                            <?php
+                                            $attachmentRows = 0 //TODO: Set attchemnt variables
                                             ?>
-                                            <span>Company</span>
-                                            <ul>
-                                                <?php
-                                                $attachmentRows = 0 //TODO: Set attchemnt variables
-                                                ?>
-                                                <li><span>Name</span> : <span><a href="companyProfile.php?userID=<?php echo $attchementRows[0]['companyID']  ?>"><?php echo $companyRows[0]['name'] ?></a></span></li>
-                                                <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attchementRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attchementRows[0]['dateEnd']) ?></span></li>
-                                                <li><span>Contract Status</span> : <span>
+                                            <li><span>Name</span> : <span><a href="companyProfile.php?userID=<?php echo $attchementRows[0]['companyID']  ?>"><?php echo $companyRows[0]['name'] ?></a></span></li>
+                                            <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attchementRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attchementRows[0]['dateEnd']) ?></span></li>
+                                            <li><span>Contract Status</span> : <span>
                                                         <?php
                                                         if($attchementRows[0]['dateEnd'] >= date('Y-m-d')){
                                                             $borderClass = 'success';
@@ -488,34 +541,28 @@ class CompanyView extends Users
                                                         }
                                                         ?>
                                                         <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
-
                                                     </span></li>
-
-                                                <?php
-                                                if($_SESSION['id'] == $attchementRows[0]['companyID']){
-                                                    $attachmentRows
-                                                    ?>
-                                                    <hr>
-                                                    <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?> <span class="fa fa-arrow-circle-right"></a> </span></li>
-                                                    <li><span>On</span> : <span><?php echo $this->dayDate($attchementRows[0]['dateAdded']) ?></span></li>
-                                                    <?php
-                                                }
-                                                ?>
-
-                                            </ul>
                                             <?php
-                                        }
-                                        ?>
-
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <span>Documents</span>
-                                        <br>
-                                        <br>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
+                                            if($_SESSION['id'] == $attchementRows[0]['companyID']){
+                                                $attachmentRows
+                                                ?>
+                                                <hr>
+                                                <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?> <span class="fa fa-arrow-circle-right"></a> </span></li>
+                                                <li><span>On</span> : <span><?php echo $this->dayDate($attchementRows[0]['dateAdded']) ?></span></li>
+                                                <?php
+                                            }
+                                            ?>
+                                        </ul>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <span>Documents</span>
+                                    <br>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                     <span style="text-decoration: none" href="#!">
                                         <div class="-card myhover -text-white text-center -bg-gradient-dark mb-3" style="max-width: 18rem;">
                                             <div class="card-header">Curriculum Vitae</div>
@@ -536,12 +583,12 @@ class CompanyView extends Users
                                             </div>
                                         </div>
                                     </span>
-                                            </div>
-
-                                            <?php
-                                            if(isset($attchementRows) AND $attchementRows[0]['companyID'] == $_SESSION['id']){
-                                                if($studentRows[0]['attachmentStatus'] == 1) {
-                                                    $supervisorReportRows = $this->GetSupervisorsReportByUserID($studentRows[0]['user_id']);
+                                        </div>
+                                        <?php
+                                        if(isset($attchementRows) AND $attchementRows[0]['companyID'] == $_SESSION['id']){
+                                            if($studentRows[0]['attachmentStatus'] == 1) {
+                                                $supervisorReportRows = $this->GetSupervisorsReportByUserID($studentRows[0]['user_id']);
+                                                if($attchementRows[0]['supervisorID'] == $_SESSION['subID'] || $_SESSION['subRole'] == 'admin'){
                                                     ?>
                                                     <div class="col-md-6">
                                                     <span style="text-decoration: none" href="#!">
@@ -549,7 +596,6 @@ class CompanyView extends Users
                                                             <div class="card-header">Assessment Report</div>
                                                             <div class="card-body">
                                                                 <?php
-
                                                                 if($supervisorReportRows == NULL){
                                                                     ?>
                                                                     <div class="dropdown">
@@ -565,7 +611,6 @@ class CompanyView extends Users
                                                                 }
                                                                 else{
                                                                     ?>
-
                                                                     <div class="dropdown">
                                                                         <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                             Manage
@@ -577,41 +622,36 @@ class CompanyView extends Users
                                                                             <a onclick="return confirm('This CV will be deleted. Proceed?')" class="dropdown-item" href="includes/deleteDocument.inc.php?document=assRep&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-trash"></span> Delete</a>
                                                                         </div>
                                                                     </div>
-
                                                                     <?php
                                                                 }
-
                                                                 ?>
                                                             </div>
                                                         </div>
-
-
                                                     </span>
                                                     </div>
-
-
-                                                    <div class="col-md-12 pt-3 shadow-sm">
-                                                        <div class="card-description">
-                                                            <p class="card-description">Current Supervisor:
-                                                                <?php
-                                                                if($this->GetSubAccByID($attchementRows[0]['supervisorID']) != NULL){
-                                                                    $supervisorRows = $this->GetSubAccByID($attchementRows[0]['supervisorID']);
+                                                    <?php
+                                                }
+                                                ?>
+                                                <div class="col-md-12 pt-3 shadow-sm">
+                                                    <div class="card-description">
+                                                        <p class="card-description">Current Supervisor:
+                                                            <?php
+                                                            if($this->GetSubAccByID($attchementRows[0]['supervisorID']) != NULL){
+                                                                $supervisorRows = $this->GetSubAccByID($attchementRows[0]['supervisorID']);
                                                                 ?>
                                                                 <a href="#!"><?php echo $supervisorRows[0]['name'] .' '. $supervisorRows[0]['surname'];  ?> <span class="fa fa-arrow-circle-right"></span></a>
                                                                 <?php
-                                                                }
-                                                                else{
-                                                                    ?>
-                                                                    <span class="badge badge-danger">Not Assigned</span>
-                                                                    <?php
-                                                                    }
+                                                            }
+                                                            else{
                                                                 ?>
-                                                            </p>
-
-                                                            <?php
-                                                            if($_SESSION['subRole'] == 'admin'){
+                                                                <span class="badge badge-danger">Not Assigned</span>
+                                                                <?php
+                                                            }
                                                             ?>
-
+                                                        </p>
+                                                        <?php
+                                                        if($_SESSION['subRole'] == 'admin' || $_SESSION['subRole'] == 'adminSupervisor'){
+                                                            ?>
                                                             <button onclick="myFunction()" type="button" class="btn btn-secondary col-md-12"> <span class="fa fa-chevron-circle-down">Assign New Supervisor</span></button>
                                                             <div style="display: none" id="myDIV" class="shadow-sm p-3 rounded">
                                                                 <form method="POST" action="includes/updateSupervisor.inc.php?userID=<?php echo $id ?>">
@@ -626,8 +666,6 @@ class CompanyView extends Users
                                                                     <input name="btn_set_supervisor" type="submit" value="update" class="btn btn-primary btn-sm rounded">
                                                                 </form>
                                                             </div>
-
-
                                                             <script>
                                                                 function myFunction() {
                                                                     var x = document.getElementById("myDIV");
@@ -639,60 +677,49 @@ class CompanyView extends Users
                                                                 }
                                                             </script>
                                                             <?php
-                                                            }
-                                                            ?>
-
-                                                        </div>
+                                                        }
+                                                        ?>
                                                     </div>
-
-                                                    <?php
-                                                }
+                                                </div>
+                                                <?php
                                             }
-                                            ?>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <ul>
-                                    <?php
-                                    if($studentRows[0]['attachmentStatus'] != 1){
+                                        }
                                         ?>
-                                        <hr>
-
-                                        <form method="POST" action="includes/attach.inc.php">
-                                            <input name="userID" type="text" value="<?php echo $id ?>" hidden>
-                                            <input type="checkbox" id="checkme"/> Check to enable the attach button below
-                                            <br>
-                                            <br>
-                                            <button type="submit" name="btn_attachToFinalize" id="attbtn" disabled onclick="return confirm('This student will attached at this company. Proceed?')" class="btn btn-primary">Attach Student<span class="fa fa-user"></span></button>
-                                        </form>
-
-                                        <script>
-                                            var checker = document.getElementById('checkme');
-                                            var sendbtn = document.getElementById('attbtn');
-                                            // when unchecked or checked, run the function
-                                            checker.onchange = function(){
-                                                if(this.checked){
-                                                    sendbtn.disabled = false;
-                                                } else {
-                                                    sendbtn.disabled = true;
-                                                }
-
-                                            }
-                                        </script>
-
-                                        <?php
-                                    }
-                                    ?>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
+                            <ul>
+                                <?php
+                                if($studentRows[0]['attachmentStatus'] != 1){
+                                    ?>
+                                    <hr>
+                                    <form method="POST" action="includes/attach.inc.php">
+                                        <input name="userID" type="text" value="<?php echo $id ?>" hidden>
+                                        <input type="checkbox" id="checkme"/> Check to enable the attach button below
+                                        <br>
+                                        <br>
+                                        <button type="submit" name="btn_attachToFinalize" id="attbtn" disabled onclick="return confirm('This student will attached at this company. Proceed?')" class="btn btn-primary">Attach Student<span class="fa fa-user"></span></button>
+                                    </form>
+                                    <script>
+                                        var checker = document.getElementById('checkme');
+                                        var sendbtn = document.getElementById('attbtn');
+                                        // when unchecked or checked, run the function
+                                        checker.onchange = function(){
+                                            if(this.checked){
+                                                sendbtn.disabled = false;
+                                            } else {
+                                                sendbtn.disabled = true;
+                                            }
+                                        }
+                                    </script>
+                                    <?php
+                                }
+                                ?>
+                            </ul>
                         </div>
                     </div>
-                    <?php
-
+                </div>
+                <?php
             }
         }
     }

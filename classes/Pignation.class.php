@@ -47,7 +47,12 @@ class Pignation extends Users
 
                         <div class="card-body">
                             <h6 class="card-text"><?php echo $row['name'] .' '. $row['surname'] ?></h6>
-                            <p class="card-text"><?php echo $row['department'] ?></p>
+                            <p class="card-text">
+                                <?php
+                                $deptRows = $this->GetDeptById($row['department'], $_SESSION['id']);
+                                echo $deptRows[0]['department'];
+                                ?>
+                            </p>
                             <button id="theButton1<?php echo $x ?>" onclick="clickMe<?php echo $x ?>()" type="button" class="btn btn-secondary"> <span class="fa fa-chevron-circle-down"></span></button>
 
 

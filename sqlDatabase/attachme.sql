@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2022 at 01:55 AM
+-- Generation Time: Nov 06, 2022 at 11:02 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -44,9 +44,9 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`id`, `userID`, `companyID`, `vacancyUID`, `readStatus`, `dateRead`, `dateAdded`, `lastUpdated`, `status`) VALUES
-(9, 28, 38, 'bbe015b3c2e525030b5d185f4acc9f78', 1, '2022-11-05 17:11:11', '2022-11-05 16:11:05', '2022-11-05 16:34:11', 1),
-(11, 28, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-05 17:11:30', '2022-11-05 16:11:14', '2022-11-05 16:55:30', 1),
-(12, 28, 200, '265d2b4dfff70b886c327546d7e3174c', 0, '2022-11-06 01:34:25', '2022-11-05 16:11:20', '2022-11-06 00:34:25', 1);
+(9, 28, 38, 'bbe015b3c2e525030b5d185f4acc9f78', 1, '2022-11-05 17:11:11', '2022-11-05 16:11:05', '2022-11-06 10:56:38', 0),
+(11, 28, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-05 17:11:30', '2022-11-05 16:11:14', '2022-11-06 10:56:38', 0),
+(12, 28, 200, '265d2b4dfff70b886c327546d7e3174c', 0, '2022-11-06 01:34:25', '2022-11-05 16:11:20', '2022-11-06 10:56:38', 0);
 
 -- --------------------------------------------------------
 
@@ -73,6 +73,7 @@ CREATE TABLE `attachments` (
   `userID` int(11) NOT NULL,
   `companyID` int(11) NOT NULL,
   `subID` int(11) NOT NULL,
+  `supervisorID` int(11) NOT NULL,
   `dateAdded` varchar(225) NOT NULL,
   `dateStart` varchar(225) NOT NULL,
   `dateEnd` varchar(225) NOT NULL,
@@ -84,8 +85,9 @@ CREATE TABLE `attachments` (
 -- Dumping data for table `attachments`
 --
 
-INSERT INTO `attachments` (`id`, `userID`, `companyID`, `subID`, `dateAdded`, `dateStart`, `dateEnd`, `lastUpdated`, `status`) VALUES
-(10, 23, 38, 2, '2022-11-04 19:11:23', '2022-11-05', '2022-11-15', '2022-11-04 18:15:23', 1);
+INSERT INTO `attachments` (`id`, `userID`, `companyID`, `subID`, `supervisorID`, `dateAdded`, `dateStart`, `dateEnd`, `lastUpdated`, `status`) VALUES
+(10, 23, 38, 2, 3, '2022-11-04 19:11:23', '2022-11-03', '2022-11-07', '2022-11-06 20:53:17', 1),
+(11, 28, 38, 2, 1, '2022-11-06 11:56:38', '2022-11-10', '2022-11-20', '2022-11-06 21:49:34', 1);
 
 -- --------------------------------------------------------
 
@@ -117,6 +119,29 @@ INSERT INTO `company` (`id`, `user_id`, `name`, `phone`, `email`, `website`, `av
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `companyDepartment`
+--
+
+CREATE TABLE `companyDepartment` (
+  `id` int(11) NOT NULL,
+  `companyID` int(11) NOT NULL,
+  `department` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `companyDepartment`
+--
+
+INSERT INTO `companyDepartment` (`id`, `companyID`, `department`, `dateAdded`, `lastUpdated`) VALUES
+(1, 38, 'Human Resource', '2022-11-06 20:01:32', '2022-11-06 18:01:32'),
+(2, 38, 'E-Banking', '2022-11-06 20:01:32', '2022-11-06 18:01:32'),
+(3, 38, 'IT', '2022-11-06 19:39:15', '2022-11-06 18:39:15');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `company_sub_accounts`
 --
 
@@ -143,10 +168,11 @@ CREATE TABLE `company_sub_accounts` (
 --
 
 INSERT INTO `company_sub_accounts` (`id`, `companyID`, `name`, `surname`, `sex`, `avatar`, `email`, `phone`, `password`, `department`, `description`, `dateAdded`, `lastUpdate`, `status`, `role`) VALUES
-(1, 38, 'Emanuel', 'Chindoza', 'MALE', '', '', '', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', 'Accounting', '', '2022-05-19 14:56:45', '2022-10-20 16:13:38', 0, 'supervisor'),
-(2, 38, 'EVELYNN', 'MADZIBA', 'FEMALE', '../profileImages/63581ba6946d24.41378029.jpg', 'evelyn@gmail.com', '0783883392', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', 'Humanitarians', '', '2022-05-19 14:56:45', '2022-10-25 17:23:50', 1, 'admin'),
-(3, 38, 'Cherity', 'Winji', 'MALE', '../profileImages/63518225dd2b78.86541092.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', 'Information Systems', '', '2022-05-19 14:56:45', '2022-10-20 17:15:17', 1, 'adminSupervisor'),
-(4, 200, 'Ronald', 'Mukute', 'MALE', '../profileImages/63518d2e745537.61004449.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', 'Information Systems', '', '2022-05-19 14:56:45', '2022-10-22 10:27:53', 1, 'admin');
+(1, 38, 'Emanuel', 'Chindoza', 'MALE', '', '', '', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '1', '', '2022-05-19 14:56:45', '2022-11-06 18:18:30', 1, 'supervisor'),
+(2, 38, 'EVELYNN', 'MADZIBA', 'FEMALE', '../profileImages/63581ba6946d24.41378029.jpg', 'evelyn@gmail.com', '0783883392', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '2', '', '2022-05-19 14:56:45', '2022-11-06 18:24:19', 1, 'admin'),
+(3, 38, 'Cherity', 'Winji', 'MALE', '../profileImages/63518225dd2b78.86541092.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '3', '', '2022-05-19 14:56:45', '2022-11-06 18:39:37', 1, 'adminSupervisor'),
+(4, 200, 'Ronald', 'Mukute', 'MALE', '../profileImages/63518d2e745537.61004449.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '1', '', '2022-05-19 14:56:45', '2022-11-06 18:18:24', 1, 'admin'),
+(5, 38, 'FRANCIES', 'KUSEMA', 'MALE', '', '', '', '$2y$10$6NbEDqrZuH1BFwJz2ZgBT.z5bSwhxLz4w3HaUytjTN/Rn7NUXtQO.', '2', '', '2022-11-06 19:17:21', '2022-11-06 21:39:43', 1, 'adminSupervisor');
 
 -- --------------------------------------------------------
 
@@ -364,7 +390,7 @@ INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email
 (19, '24', 'PANASHE', 'MURWISI', '', 'panashemurwisi@gmail.com', '722233332', '1998-01-01', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'l love you all with all my heart', 0, '2021-10-31 06:16:41'),
 (20, '26', 'TEST', 'USER', '', '', '0782226633', '2005-01-31', 'FEMALE', 'MARRIED', '', '', '', 'SOUTH AFRICA', 'HINDU', 'a strong hindu believer', 0, '2021-11-01 19:14:26'),
 (21, '27', 'TERRY', 'KAYZ0', '', '', '782266333', '1997-02-03', 'N_A', 'PRIVATE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'nothing special to tell', 0, '2021-11-02 15:24:14'),
-(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-11-04 17:01:06'),
+(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 1, '2022-11-06 10:56:38'),
 (23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 0, '2022-11-03 01:44:25'),
 (26, '32', 'NUMERIC', 'USER', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2022-03-29 19:11:33'),
 (27, '33', 'NUMERIC', 'USERA', '', '', '782273383', '2001-02-28', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'N/A', 0, '2022-03-29 19:16:25'),
@@ -391,13 +417,6 @@ CREATE TABLE `supervisorReports` (
   `dateAdded` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `supervisorReports`
---
-
-INSERT INTO `supervisorReports` (`id`, `userID`, `file`, `dateAdded`, `lastUpdated`) VALUES
-(5, 23, '../assessmentReports/6366fc6b135385.51983753.doc', '2022-11-06 01:14:35', '2022-11-06 00:14:35');
 
 -- --------------------------------------------------------
 
@@ -587,6 +606,12 @@ ALTER TABLE `company`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `companyDepartment`
+--
+ALTER TABLE `companyDepartment`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `company_sub_accounts`
 --
 ALTER TABLE `company_sub_accounts`
@@ -691,7 +716,7 @@ ALTER TABLE `attachmentReports`
 -- AUTO_INCREMENT for table `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `company`
@@ -700,10 +725,16 @@ ALTER TABLE `company`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `companyDepartment`
+--
+ALTER TABLE `companyDepartment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `company_sub_accounts`
 --
 ALTER TABLE `company_sub_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cv`
@@ -757,7 +788,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `supervisorReports`
 --
 ALTER TABLE `supervisorReports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`

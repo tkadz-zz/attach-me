@@ -1,6 +1,19 @@
 <?php
 class Usercontr extends Users{
 
+    public function setSubAccPassword($loginID, $password, $confirmPassword){
+        parent::setSubAccPassword($loginID, $password, $confirmPassword);
+    }
+
+    public function addDept($name, $companyID){
+        parent::addDept($name, $companyID);
+    }
+
+    public function addSubAcc($name, $surname, $sex, $dept, $userRole, $companyID)
+    {
+        parent::addSubAcc($name, $surname, $sex, $dept, $userRole, $companyID);
+    }
+
     public function setSupervisor($supervisorID, $userID)
     {
         parent::setSupervisor($supervisorID, $userID);

@@ -16,7 +16,7 @@
                     if(isset($_SESSION['subRole']) AND $_SESSION['subRole'] == 'admin'){
                         ?>
                         <li class="nav-item">
-                            <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="#!" role="tab" aria-selected="false"><span class="mdi mdi-account-edit"></span> Sub Accounts</a>
+                            <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="allSubAccounts.php" role="tab" aria-selected="false"><span class="mdi mdi-account-edit"></span> Sub Accounts</a>
                         </li>
                         <?php
                     }

@@ -4,7 +4,52 @@
 class Users extends Dbh{
 
 
+    protected function setSubAccPassword($loginID, $password, $confirmPassword){
+        $sql = 'UPDATE company_sub_accounts SET password=? WHERE id=?';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$password, $loginID])){
+            $this->loginCompanySubAcc($loginID, $_SESSION['id'], $confirmPassword);
+        }
+        else{
+            $this->opps();
+        }
 
+    }
+
+
+    protected function addDept($name, $companyID){
+        $today = date('Y-m-d H:i:s');
+        $sql = 'INSERT INTO companyDepartment(companyID, department, dateAdded) VALUES(?,?,?)';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$companyID, $name, $today])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Department '. $name .' was Created Successfully';
+            echo "<script type='text/javascript'>
+                history.back(-1);
+            </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
+
+    protected function addSubAcc($name, $surname, $sex, $dept, $userRole, $companyID){
+        $today = date('Y-m-d H:i:s');
+        $active = 1;
+        $blank = '';
+        $sql = 'INSERT INTO company_sub_accounts(companyID, name, surname, sex, avatar, email, phone, password, department, description, dateAdded, status, role) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$companyID, $name, $surname, $sex, $blank, $blank, $blank, $blank, $dept, $blank, $today, $active, $userRole])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Sub Account for '.$name .' '. $surname .' was Created Successfully';
+            echo "<script type='text/javascript'>
+                history.back(-1);
+            </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
 
     protected function setSupervisor($supervisorID, $userID){
         $sql = 'UPDATE attachments SET supervisorID=? WHERE userID=?';
@@ -934,6 +979,20 @@ class Users extends Dbh{
 
     //$GET BY FUNCTIONS
 
+    protected function GetDeptById($id){
+        $sql = "SELECT * FROM companyDepartment WHERE id=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return  $stmt->fetchAll();
+    }
+
+    protected function GetDeptByCompanyID($companyID){
+        $sql = "SELECT * FROM companyDepartment WHERE companyID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$companyID]);
+        return  $stmt->fetchAll();
+    }
+
     protected function GetCompanySupervisorOnly($id){
         $roleEx = 'admin';
         $status = 1;
@@ -1141,6 +1200,7 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
+
     protected function GetAttachmentsByUserID($id){
         $sql = "SELECT * FROM attachments WHERE userID=?";
         $stmt = $this->con()->prepare($sql);
@@ -1209,6 +1269,15 @@ class Users extends Dbh{
         if ($res) {
             $record = $stmt->fetchAll();
             /* Check the number of rows that match the SELECT statement */
+            if ($record[0]['password'] == '') {
+
+                $_SESSION['loginIDTemp'] = $record[0]['id'];
+                $_SESSION['loginTempName'] = $record[0]['name'];
+                $_SESSION['loginTempSurname'] = $record[0]['surname'];
+
+                echo "<script type='text/javascript'>window.location='../setPassword.php'</script>";
+            }
+            else {
             if (count($record) > 0) {
                 foreach ($record as $row) {
                     $passwords = $row["password"];
@@ -1223,9 +1292,9 @@ class Users extends Dbh{
                         $_SESSION['sex'] = $row['sex'];
 
                         //redirect to subcompany profile
-                        if($row['status'] != 1){
+                        if ($row['status'] != 1) {
                             $_SESSION['type'] = 'd';
-                            $_SESSION['err'] = 'account '. $row["name"] ." ". $row["surname"] .' is temporarily deactivated. Contact your administrator for more details';
+                            $_SESSION['err'] = 'account ' . $row["name"] . " " . $row["surname"] . ' is temporarily deactivated. Contact your administrator for more details';
                             unset($_SESSION['subID']);
                             unset($_SESSION['subName']);
                             unset($_SESSION['subSurname']);
@@ -1233,11 +1302,10 @@ class Users extends Dbh{
                             echo "<script type='text/javascript'>
                                 window.location='../accounts.php';
                               </script>";
-                        }
-                        else {
+                        } else {
                             //Sub Acc Logged-in
                             $_SESSION['type'] = 's';
-                            $_SESSION['err'] = 'Welcome Back '. $row["name"] ." ". $row["surname"] .' ';
+                            $_SESSION['err'] = 'Welcome Back ' . $row["name"] . " " . $row["surname"] . ' ';
                             echo "<script type='text/javascript'>;
                           window.location='../dashboard.php';
                         </script>";
@@ -1246,16 +1314,16 @@ class Users extends Dbh{
                     } else {
                         //Password Did Not match
                         $_SESSION['type'] = 'w';
-                        $_SESSION['err'] = 'Wrong Sub-Account Or Password for '. $row["name"] ." ". $row["surname"] .' ';
+                        $_SESSION['err'] = 'Wrong Sub-Account Or Password for ' . $row["name"] . " " . $row["surname"] . ' ';
                         echo "<script type='text/javascript'>;
                           window.location='../accounts.php';
                         </script>";
                     }
                 }
-            }
-            else{
+            } else {
                 $this->opps();
             }
+        }
         }
         else{
             $this->opps();
