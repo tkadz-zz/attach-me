@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 04, 2022 at 08:59 PM
+-- Generation Time: Nov 06, 2022 at 01:55 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -44,8 +44,23 @@ CREATE TABLE `applications` (
 --
 
 INSERT INTO `applications` (`id`, `userID`, `companyID`, `vacancyUID`, `readStatus`, `dateRead`, `dateAdded`, `lastUpdated`, `status`) VALUES
-(5, 23, 38, '730ef6fe8d13fc3ba4d08518b85959e1', 0, '2022-11-04 18:11:34', '2022-10-29 18:10:23', '2022-11-04 18:15:23', 0),
-(6, 23, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-04 19:11:29', '2022-10-29 22:10:02', '2022-11-04 18:15:29', 0);
+(9, 28, 38, 'bbe015b3c2e525030b5d185f4acc9f78', 1, '2022-11-05 17:11:11', '2022-11-05 16:11:05', '2022-11-05 16:34:11', 1),
+(11, 28, 38, 'c89f9a9c7aa20c5975bc6d4a259d3e66', 1, '2022-11-05 17:11:30', '2022-11-05 16:11:14', '2022-11-05 16:55:30', 1),
+(12, 28, 200, '265d2b4dfff70b886c327546d7e3174c', 0, '2022-11-06 01:34:25', '2022-11-05 16:11:20', '2022-11-06 00:34:25', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attachmentReports`
+--
+
+CREATE TABLE `attachmentReports` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `file` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -142,7 +157,7 @@ INSERT INTO `company_sub_accounts` (`id`, `companyID`, `name`, `surname`, `sex`,
 CREATE TABLE `cv` (
   `id` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
-  `cv` varchar(225) NOT NULL,
+  `file` varchar(225) NOT NULL,
   `dateAdded` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -151,8 +166,9 @@ CREATE TABLE `cv` (
 -- Dumping data for table `cv`
 --
 
-INSERT INTO `cv` (`id`, `userID`, `cv`, `dateAdded`, `lastUpdated`) VALUES
-(1, 23, '../cv/63517a7930e803.30930419.pdf', '2022-11-02 18:36:18', '2022-11-02 16:50:42');
+INSERT INTO `cv` (`id`, `userID`, `file`, `dateAdded`, `lastUpdated`) VALUES
+(11, 23, '../cv/6366f272c2be79.63639583.docx', '2022-11-06 00:32:02', '2022-11-05 23:32:02'),
+(12, 28, '../cv/6366f70ef0aa76.20355874.doc', '2022-11-06 00:51:42', '2022-11-05 23:51:42');
 
 -- --------------------------------------------------------
 
@@ -180,6 +196,20 @@ CREATE TABLE `institute` (
 INSERT INTO `institute` (`id`, `userID`, `name`, `phone`, `email`, `website`, `address`, `avatar`, `dateJoined`, `lastUpdated`) VALUES
 (1, 3, 'Great Zimbabwe University', '4228844', 'info@gzu.ac.zw', 'http://www.gzu.co.zw', 'Masvingo, Harera ', '', '2021-02-02', '2022-11-04 18:39:30'),
 (2, 2, 'Midlands State University', '4228844', 'info@msu.ac.zw', 'http://www.msu.co.zw', 'Gweru ', '', '2021-02-02', '2022-11-04 18:39:40');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logbooks`
+--
+
+CREATE TABLE `logbooks` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `file` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -330,7 +360,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email`, `phone`, `dob`, `sex`, `marital`, `avatar`, `homeAddress`, `postalAddress`, `nationality`, `religion`, `aboutSelf`, `attachmentStatus`, `lastUpdatedStudent`) VALUES
-(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-04 18:15:23'),
+(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-05 17:17:05'),
 (19, '24', 'PANASHE', 'MURWISI', '', 'panashemurwisi@gmail.com', '722233332', '1998-01-01', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'l love you all with all my heart', 0, '2021-10-31 06:16:41'),
 (20, '26', 'TEST', 'USER', '', '', '0782226633', '2005-01-31', 'FEMALE', 'MARRIED', '', '', '', 'SOUTH AFRICA', 'HINDU', 'a strong hindu believer', 0, '2021-11-01 19:14:26'),
 (21, '27', 'TERRY', 'KAYZ0', '', '', '782266333', '1997-02-03', 'N_A', 'PRIVATE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'nothing special to tell', 0, '2021-11-02 15:24:14'),
@@ -347,6 +377,27 @@ INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email
 (34, '201', 'MILES', 'SHANGURAI', '', '', '0779862645', '2006-01-10', 'MALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-10-16 11:26:35'),
 (35, '203', 'LAM', 'EIGHT9', '', '', '789050035', '2002-01-03', 'MALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-10-29 22:53:29'),
 (36, '205', 'NM', 'NX', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2022-11-02 17:17:05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `supervisorReports`
+--
+
+CREATE TABLE `supervisorReports` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `file` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `supervisorReports`
+--
+
+INSERT INTO `supervisorReports` (`id`, `userID`, `file`, `dateAdded`, `lastUpdated`) VALUES
+(5, 23, '../assessmentReports/6366fc6b135385.51983753.doc', '2022-11-06 01:14:35', '2022-11-06 00:14:35');
 
 -- --------------------------------------------------------
 
@@ -518,6 +569,12 @@ ALTER TABLE `applications`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `attachmentReports`
+--
+ALTER TABLE `attachmentReports`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `attachments`
 --
 ALTER TABLE `attachments`
@@ -549,6 +606,12 @@ ALTER TABLE `institute`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `logbooks`
+--
+ALTER TABLE `logbooks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -576,6 +639,12 @@ ALTER TABLE `studentEducation`
 -- Indexes for table `students`
 --
 ALTER TABLE `students`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `supervisorReports`
+--
+ALTER TABLE `supervisorReports`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -610,7 +679,13 @@ ALTER TABLE `vacancyQualifications`
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `attachmentReports`
+--
+ALTER TABLE `attachmentReports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `attachments`
@@ -634,13 +709,19 @@ ALTER TABLE `company_sub_accounts`
 -- AUTO_INCREMENT for table `cv`
 --
 ALTER TABLE `cv`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `institute`
 --
 ALTER TABLE `institute`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `logbooks`
+--
+ALTER TABLE `logbooks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -671,6 +752,12 @@ ALTER TABLE `studentEducation`
 --
 ALTER TABLE `students`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT for table `supervisorReports`
+--
+ALTER TABLE `supervisorReports`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`

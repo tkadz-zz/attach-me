@@ -1,6 +1,11 @@
 <?php
 class Usercontr extends Users{
 
+    public function setSupervisor($supervisorID, $userID)
+    {
+        parent::setSupervisor($supervisorID, $userID);
+    }
+
 
     public function uploadDocument($file_tmp, $file_destination, $file_name_new, $file_ext, $type, $id){
         parent::uploadDocument($file_tmp, $file_destination, $file_name_new, $file_ext, $type, $id);

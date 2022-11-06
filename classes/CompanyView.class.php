@@ -3,6 +3,131 @@
 class CompanyView extends Users
 {
 
+    public function companySupervisorOptionLoop($userID, $companyID){
+        $supervisorRows = $this->GetCompanySupervisorOnly($companyID);
+        foreach ($supervisorRows as $supervisorRow) {
+            $subAccRows = $this->GetSubAccByID($supervisorRow['id']);
+            $attacheRows = $this->GetAttachmentsByUserID($userID);
+            ?>
+            <option value="<?php echo $subAccRows[0]['id'] ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] ?>
+            <?php
+                if($attacheRows[0]['supervisorID'] == $supervisorRow['id']){
+                    echo '(current)';
+                }
+                ?>
+            </option>
+            <?php
+        }
+    }
+
+    public function viewAllCompanySubAcc($id){
+        $subAccRows = $this->GetSubCompanyById($id);
+        $s = 0;
+
+        foreach ($subAccRows as $subAccRow){
+            $s++;
+            ?>
+            <tr>
+                <td><?php echo $s ?> </td>
+                <td><?php echo $subAccRow['name'] ?></td>
+                <td><?php echo $subAccRow['surname'] ?></td>
+                <td><?php echo $subAccRow['department'] ?></td>
+                <td><?php echo $subAccRow['role'] ?></td>
+
+                <td>
+                    <div class="-dropdown" style="z-index: 9999">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $subAccRow[0]['id'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="#!"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
+        }
+    }
+
+    public function viewAllCompanyAttachedStudents($id){
+        $attachedRows = $this->GetCompanyAttachedStudents($id);
+        $s = 0;
+
+        foreach ($attachedRows as $attachedRow){
+            $s++;
+            $studentRows = $this->GetStudentByID($attachedRow['userID']);
+            $userRows = $this->GetUser($attachedRow['userID']);
+            $subAccRows = $this->GetSubAccByID($attachedRow['supervisorID']);
+
+            if($attachedRow['dateEnd'] >= date('Y-m-d')){
+                $borderClass = 'success';
+                $attStat = 'valid';
+            }
+            else{
+                $borderClass = 'danger';
+                $attStat = 'expired ' .$this->timeAgo($attachedRow['dateEnd']);
+            }
+            ?>
+            <tr>
+                <td><?php echo $s ?> </td>
+                <td><?php echo $studentRows[0]['name'] ?></td>
+                <td><?php echo $studentRows[0]['surname'] ?></td>
+                <td><?php echo $userRows[0]['loginID'] ?></td>
+                <td>
+                    <?php
+                    if($subAccRows != NULL){
+                        ?>
+                        <span><a href="#!"><?php echo $subAccRows[0]['name'] .' '.  $subAccRows[0]['surname']; ?> <span class="fa fa-arrow-circle-right"></span></a></span>
+                        <?php
+                    }
+                    else{
+                        ?>
+                        <span class="badge badge-danger">Not Assigned</span>
+                        <?php
+                    }
+
+                    ?>
+                </td>
+                <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
+
+                <td>
+                    <div class="-dropdown" style="z-index: 9999">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
+                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $studentRows[0]['user_id'] ?>&vuid=<?php echo $vuid ?>"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
+        }
+    }
+
+
+    public function countCompanySUbAcc($companyID){
+        $subAccRows = $this->GetSubCompanyById($companyID);
+        $n = new Usercontr();
+        $n->myCount($subAccRows);
+    }
+
+    public function countSUbAccSupervisingStudents($subID, $companyID){
+        $supervisingRows = $this->GetSUbAccSupervisingStudents($subID, $companyID);
+        $n = new Usercontr();
+        $n->myCount($supervisingRows);
+    }
+
+    public function countCompanyAttachedStudents($id){
+        $attchedRows = $this->GetCompanyAttachedStudents($id);
+        $n = new Usercontr();
+        $n->myCount($attchedRows);
+    }
+
 
     public function attachmentFinalization($id){
 
@@ -351,12 +476,27 @@ class CompanyView extends Users
                                                 ?>
                                                 <li><span>Name</span> : <span><a href="companyProfile.php?userID=<?php echo $attchementRows[0]['companyID']  ?>"><?php echo $companyRows[0]['name'] ?></a></span></li>
                                                 <li><span>Duration</span> : <span>From <?php echo $this->dayDate($attchementRows[0]['dateStart']) ?> to <?php echo $this->dayDate($attchementRows[0]['dateEnd']) ?></span></li>
+                                                <li><span>Contract Status</span> : <span>
+                                                        <?php
+                                                        if($attchementRows[0]['dateEnd'] >= date('Y-m-d')){
+                                                            $borderClass = 'success';
+                                                            $attStat = 'valid';
+                                                        }
+                                                        else{
+                                                            $borderClass = 'danger';
+                                                            $attStat = 'expired ' .$this->timeAgo($attchementRows[0]['dateEnd']);
+                                                        }
+                                                        ?>
+                                                        <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
+
+                                                    </span></li>
+
                                                 <?php
                                                 if($_SESSION['id'] == $attchementRows[0]['companyID']){
                                                     $attachmentRows
                                                     ?>
                                                     <hr>
-                                                    <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?></a></span></li>
+                                                    <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?> <span class="fa fa-arrow-circle-right"></a> </span></li>
                                                     <li><span>On</span> : <span><?php echo $this->dayDate($attchementRows[0]['dateAdded']) ?></span></li>
                                                     <?php
                                                 }
@@ -444,7 +584,65 @@ class CompanyView extends Users
                                                                 ?>
                                                             </div>
                                                         </div>
+
+
                                                     </span>
+                                                    </div>
+
+
+                                                    <div class="col-md-12 pt-3 shadow-sm">
+                                                        <div class="card-description">
+                                                            <p class="card-description">Current Supervisor:
+                                                                <?php
+                                                                if($this->GetSubAccByID($attchementRows[0]['supervisorID']) != NULL){
+                                                                    $supervisorRows = $this->GetSubAccByID($attchementRows[0]['supervisorID']);
+                                                                ?>
+                                                                <a href="#!"><?php echo $supervisorRows[0]['name'] .' '. $supervisorRows[0]['surname'];  ?> <span class="fa fa-arrow-circle-right"></span></a>
+                                                                <?php
+                                                                }
+                                                                else{
+                                                                    ?>
+                                                                    <span class="badge badge-danger">Not Assigned</span>
+                                                                    <?php
+                                                                    }
+                                                                ?>
+                                                            </p>
+
+                                                            <?php
+                                                            if($_SESSION['subRole'] == 'admin'){
+                                                            ?>
+
+                                                            <button onclick="myFunction()" type="button" class="btn btn-secondary col-md-12"> <span class="fa fa-chevron-circle-down">Assign New Supervisor</span></button>
+                                                            <div style="display: none" id="myDIV" class="shadow-sm p-3 rounded">
+                                                                <form method="POST" action="includes/updateSupervisor.inc.php?userID=<?php echo $id ?>">
+                                                                    <select name="supervisor" class="form-control form-select" required>
+                                                                        <option value="">-- SELECT NEW SUPERVISOR --</option>
+                                                                        <?php
+                                                                        $this->companySupervisorOptionLoop($id, $_SESSION['id']);
+                                                                        ?>
+                                                                        <option value="0">Un-Assign Supervisor</option>
+                                                                    </select>
+                                                                    <br>
+                                                                    <input name="btn_set_supervisor" type="submit" value="update" class="btn btn-primary btn-sm rounded">
+                                                                </form>
+                                                            </div>
+
+
+                                                            <script>
+                                                                function myFunction() {
+                                                                    var x = document.getElementById("myDIV");
+                                                                    if (x.style.display === "none") {
+                                                                        x.style.display = "block";
+                                                                    } else {
+                                                                        x.style.display = "none";
+                                                                    }
+                                                                }
+                                                            </script>
+                                                            <?php
+                                                            }
+                                                            ?>
+
+                                                        </div>
                                                     </div>
 
                                                     <?php

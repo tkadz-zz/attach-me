@@ -6,6 +6,23 @@ class Users extends Dbh{
 
 
 
+    protected function setSupervisor($supervisorID, $userID){
+        $sql = 'UPDATE attachments SET supervisorID=? WHERE userID=?';
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$supervisorID, $userID])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Supervisor Updated Successfully';
+            echo "<script type='text/javascript'>
+                history.back(-1);
+            </script>";
+        }
+        else{
+            $this->opps();
+        }
+
+    }
+
+
     protected function uploadDocument($file_tmp, $file_destination, $file_name_new, $file_ext, $type, $id){
         $today = date('Y-m-d H:i:s');
         if($type == 'cv'){
@@ -148,7 +165,8 @@ class Users extends Dbh{
 
     protected function attachStudent($companyID, $subID, $today, $start, $end, $userID){
         $status = 1;
-        $sql = "INSERT INTO attachments(userID, companyID, subID, dateAdded, dateStart, dateEnd, status) VALUES (?,?,?,?,?,?,?)";
+        $supervisorID = 0;
+        $sql = "INSERT INTO attachments(userID, companyID, subID, supervisorID, dateAdded, dateStart, dateEnd, status) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $this->con()->prepare($sql);
 
         $this->updateAttachmentStatus($userID);
@@ -156,7 +174,7 @@ class Users extends Dbh{
         $this->updateApplicantStatusToInavtive($userID);
 
 
-        if($stmt->execute([$userID, $companyID, $subID, $today, $start, $end, $status])){
+        if($stmt->execute([$userID, $companyID, $subID, $supervisorID, $today, $start, $end, $status])){
             $_SESSION['type'] = 's';
             $_SESSION['err'] = 'Student successfully attached';
             echo "<script type='text/javascript'>;
@@ -916,6 +934,29 @@ class Users extends Dbh{
 
     //$GET BY FUNCTIONS
 
+    protected function GetCompanySupervisorOnly($id){
+        $roleEx = 'admin';
+        $status = 1;
+        $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? AND role!=? AND status=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id, $roleEx, $status]);
+        return  $stmt->fetchAll();
+    }
+
+
+    protected function GetSUbAccSupervisingStudents($subID, $companyID){
+        $sql = "SELECT * FROM attachments WHERE companyID=? AND supervisorID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$companyID, $subID]);
+        return  $stmt->fetchAll();
+    }
+
+    protected function GetCompanyAttachedStudents($id){
+        $sql = "SELECT * FROM attachments WHERE companyID=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return  $stmt->fetchAll();
+    }
 
     protected function isUser($id, $role){
         if($role == 'admin'){
