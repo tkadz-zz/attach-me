@@ -5,8 +5,18 @@ class Usercontr extends Users{
         parent::setSubAccPassword($loginID, $password, $confirmPassword);
     }
 
+    public function delDept($deptID, $companyID)
+    {
+        parent::delDept($deptID, $companyID);
+    }
+
     public function addDept($name, $companyID){
         parent::addDept($name, $companyID);
+    }
+
+    public function updateSubAcc($subRole, $subDept, $subStatus, $companyID, $subID)
+    {
+        parent::updateSubAcc($subRole, $subDept, $subStatus, $companyID, $subID);
     }
 
     public function addSubAcc($name, $surname, $sex, $dept, $userRole, $companyID)
@@ -53,9 +63,14 @@ class Usercontr extends Users{
 
 
 
-    public function attachStudent($companyID, $subID, $today, $start, $end, $userID)
+    public function unattachStudent($userID, $companyID)
     {
-        parent::attachStudent($companyID, $subID, $today, $start, $end, $userID);
+        parent::unattachStudent($userID, $companyID);
+    }
+
+    public function attachStudent($companyID, $supervisorID, $subID, $today, $start, $end, $userID)
+    {
+        parent::attachStudent($companyID, $supervisorID, $subID, $today, $start, $end, $userID);
     }
 
 

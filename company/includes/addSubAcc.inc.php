@@ -1,6 +1,7 @@
 <?php
 include("autoloader.inc.php");
 
+$companyID = $_SESSION['id'];
 
 if(isset($_POST['btn_addUser'])){
 
@@ -9,7 +10,6 @@ if(isset($_POST['btn_addUser'])){
     $name = strtoupper($_POST["name"]);
     $surname = strtoupper($_POST["surname"]);
     $sex = strtoupper($_POST["sex"]);
-    $companyID = $_SESSION['id'];
 
     try {
         $n = new Usercontr();
@@ -20,9 +20,24 @@ if(isset($_POST['btn_addUser'])){
     }
 
 }
+
+
+if(isset($_POST['btn_update_subAcc'])){
+    $subID = $_POST['subID'];
+    $subRole = $_POST['subRole'];
+    $subDept = $_POST['subDept'];
+    $subStatus = $_POST['subStatus'];
+    try {
+        $n = new Usercontr();
+        $n->updateSubAcc($subRole, $subDept, $subStatus, $companyID, $subID);
+    } catch (TypeError $e) {
+        echo "Error" . $e->getMessage();
+
+    }
+}
+
 if(isset($_POST['btn_addDept'])){
     $name = $_POST["name"];
-    $companyID = $_SESSION['id'];
 
     try {
         $n = new Usercontr();
@@ -32,6 +47,22 @@ if(isset($_POST['btn_addDept'])){
 
     }
 }
+
+
+if(isset($_GET['delDept'])){
+    $deptID = $_GET["deptID"];
+    $companyID = $_SESSION['id'];
+
+    try {
+        $n = new Usercontr();
+        $n->delDept($deptID, $companyID);
+    } catch (TypeError $e) {
+        echo "Error" . $e->getMessage();
+
+    }
+}
+
+
 
 
 

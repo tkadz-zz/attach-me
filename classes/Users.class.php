@@ -16,16 +16,65 @@ class Users extends Dbh{
 
     }
 
+    protected function delDept($deptID, $companyID){
+        $rows = $this->GetSubAccByCompanyIDandDeptID($companyID, $deptID);
+        if(count($rows) > 0){
+            $newDept = 0;
+            $usql = "UPDATE company_sub_accounts SET department=? WHERE department=? AND companyID=?";
+            $ustmt = $this->con()->prepare($usql);
+            $ustmt->execute([$newDept, $deptID, $companyID]);
+        }
+        $sql = "DELETE FROM companyDepartment WHERE id=? AND companyID=?";
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$deptID, $companyID])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Department <span class="text-dark"></span> deleted successfully';
+            echo "<script type='text/javascript'>
+                    history.back(-1);
+                </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
 
     protected function addDept($name, $companyID){
-        $today = date('Y-m-d H:i:s');
-        $sql = 'INSERT INTO companyDepartment(companyID, department, dateAdded) VALUES(?,?,?)';
-        $stmt = $this->con()->prepare($sql);
-        if($stmt->execute([$companyID, $name, $today])){
-            $_SESSION['type'] = 's';
-            $_SESSION['err'] = 'Department '. $name .' was Created Successfully';
+        $csql = "SELECT * FROM companyDepartment WHERE companyID=? and department=?";
+        $cstmt = $this->con()->prepare($csql);
+        $cstmt->execute([$companyID, $name]);
+        $results = $cstmt->fetchAll();
+        if(count($results) > 0) {
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'Department <span class="text-dark">' . $name . '</span> already exist';
             echo "<script type='text/javascript'>
-                history.back(-1);
+                    history.back(-1);
+                </script>";
+        }
+        else {
+            $today = date('Y-m-d H:i:s');
+            $sql = 'INSERT INTO companyDepartment(companyID, department, dateAdded) VALUES(?,?,?)';
+            $stmt = $this->con()->prepare($sql);
+            if ($stmt->execute([$companyID, $name, $today])) {
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = 'Department ' . $name . ' was Created Successfully';
+                echo "<script type='text/javascript'>
+            history.back(-1);
+        </script>";
+            } else {
+                $this->opps();
+            }
+        }
+
+    }
+
+    protected function updateSubAcc($subRole, $subDept, $subStatus, $companyID, $subID){
+        $sql = "UPDATE company_sub_accounts SET role=?, department=?, status=? WHERE companyID=? AND id=?";
+        $stmt = $this->con()->prepare($sql);
+        if($stmt->execute([$subRole, $subDept, $subStatus, $companyID, $subID])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = 'Sub Account Updated Successfully';
+            echo "<script type='text/javascript'>
+                window.location='../subAccProfile.php?subID=$subID';
             </script>";
         }
         else{
@@ -66,7 +115,6 @@ class Users extends Dbh{
         }
 
     }
-
 
     protected function uploadDocument($file_tmp, $file_destination, $file_name_new, $file_ext, $type, $id){
         $today = date('Y-m-d H:i:s');
@@ -168,8 +216,6 @@ class Users extends Dbh{
         }
     }
 
-
-
     protected function attachmentStatusFilter($id){
         $studentRows = $this->GetStudentByID($id);
         if($studentRows[0]['attachmentStatus'] == 1){
@@ -181,7 +227,6 @@ class Users extends Dbh{
         }
     }
 
-
     protected function underDev(){
         $_SESSION['type'] = 'i';
         $_SESSION['err'] = 'The selected section is under development';
@@ -189,7 +234,6 @@ class Users extends Dbh{
               history.back();
             </script>";
     }
-
 
     public function deleteApplication($vuid, $userID){
         $sql = 'DELETE FROM applications WHERE vacancyUID=? and userID=?';
@@ -206,11 +250,77 @@ class Users extends Dbh{
         }
     }
 
+    protected function unattachStudent($userID,$companyID){
+        $attachmentRows = $this->GetAttachmentsByUserID($userID);
+        $studentRows = $this->GetStudentByID($userID);
+        $logBookRows = $this->GetLogbookByUserID($userID);
+        $attachmentReportRows = $this->GetAttachmentReportByUserID($userID);
+        $supervisorReportRows = $this->GetSupervisorsReportByUserID($userID);
 
 
-    protected function attachStudent($companyID, $subID, $today, $start, $end, $userID){
+        //Get attachment variables
+        $supervisorID = $attachmentRows[0]['supervisorID'];
+        $started = $attachmentRows[0]['dateStart']; $toEnd = $attachmentRows[0]['dateEnd']; $ended = date('Y-m-d H:i:s');
+        $newAttachmentStatus = 0;
+        $nID = $studentRows[0]['nationalID'];
+
+        //Move data to attachment history before deliting
+        $sqlMoveData = "INSERT INTO attachmentsHistory(userID, companyID, supervisorID, started, toEnd, ended, dateAdded, logbook, attachmentReport, supervisorReport) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        $stmtMoveData = $this->con()->prepare($sqlMoveData);
+
+
+        //Logbook Delete
+        $logBook = ''; //If not empty, it will be set below in the if statement
+        if(count($logBookRows) > 0){
+            $logBook = $logBookRows[0]['file'];
+            $sqlLogbook = "DELETE FROM logbooks WHERE userID=?";
+            $stmtLogbook = $this->con()->prepare($sqlLogbook);
+            $stmtLogbook->execute([$userID]);
+        }
+
+
+        //Attachment Report Delete
+        $attachmentReport = ''; //If not empty, it will be set below in the if statement
+        if(count($attachmentReportRows) > 0) {
+            $attachmentReport = $attachmentReportRows[0]['file'];
+            $sqlatachmentReport = "DELETE FROM attachmentReports WHERE userID=?";
+            $stmtatachmentReport = $this->con()->prepare($sqlatachmentReport);
+            $stmtatachmentReport->execute([$userID]);
+        }
+
+        //Supervisor Report Delete
+        $supervisorReport = ''; //If not empty, it will be set below in the if statement
+        if(count($supervisorReportRows) > 0) {
+            $supervisorReport = $supervisorReportRows[0]['file'];
+            $sqlSupervisorReport = "DELETE FROM supervisorReports WHERE userID=?";
+            $stmtSupervisorReport = $this->con()->prepare($sqlSupervisorReport);
+            $stmtSupervisorReport->execute([$userID]);
+        }
+
+        //Delete User Attachment Details
+        $sqllast = "DELETE FROM attachments WHERE userID=? AND companyID=?";
+        $stmtlast= $this->con()->prepare($sqllast);
+
+
+        //UPDATE Student Attachment Status to 0
+        $sqlDeleteAttachment = "UPDATE students SET attachmentStatus=? WHERE user_id=?";
+        $stmtDeleteAttachment = $this->con()->prepare($sqlDeleteAttachment);
+
+        //MOVE DATA -> DELETE ATTACHMENT TABLE -> UPDATE STUDENT STATUS
+        if($stmtMoveData->execute([$userID, $companyID, $supervisorID, $started, $toEnd, $ended, $ended, $logBook, $attachmentReport, $supervisorReport]) AND $stmtlast->execute([$userID, $companyID]) AND $stmtDeleteAttachment->execute([$newAttachmentStatus, $userID])){
+            $_SESSION['type'] = 's';
+            $_SESSION['err'] = $studentRows[0]['name']. ' ' . $studentRows[0]['surname'] . ' is no longer an attachee at this company';
+            echo "<script type='text/javascript'>;
+                      window.location='../studentProfile.php?userID=$userID&nID=$nID';
+                    </script>";
+        }
+        else{
+            $this->opps();
+        }
+    }
+
+    protected function attachStudent($companyID, $supervisorID, $subID, $today, $start, $end, $userID){
         $status = 1;
-        $supervisorID = 0;
         $sql = "INSERT INTO attachments(userID, companyID, subID, supervisorID, dateAdded, dateStart, dateEnd, status) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $this->con()->prepare($sql);
 
@@ -220,10 +330,12 @@ class Users extends Dbh{
 
 
         if($stmt->execute([$userID, $companyID, $subID, $supervisorID, $today, $start, $end, $status])){
+            $studRows = $this->GetStudentByID($userID);
+            $studNID = $studRows[0]['nationalID'];
             $_SESSION['type'] = 's';
             $_SESSION['err'] = 'Student successfully attached';
             echo "<script type='text/javascript'>;
-                      window.location='../studentProfile.php?userID=$userID';
+                      window.location='../studentProfile.php?userID=$userID&nID=$studNID';
                     </script>";
         }
         else{
@@ -244,7 +356,6 @@ class Users extends Dbh{
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$active, $id]);
     }
-
 
     protected function ReadUnreadApplication($vuid, $id){
         $appRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $id);
@@ -270,7 +381,6 @@ class Users extends Dbh{
         }
     }
 
-
     protected function openApplication($vuid, $id){
         $appRows = $this->GetApplicationByVacancyIDAndUserID($vuid, $id);
         if($appRows[0]['readStatus'] != 1) {
@@ -281,7 +391,6 @@ class Users extends Dbh{
             $stmt->execute([$read, $today, $id, $vuid]);
         }
     }
-
 
     protected function vacancyApply($vuid, $id){
         $vacancyRows = $this->GetVacancyByUniqueID($vuid);
@@ -301,7 +410,6 @@ class Users extends Dbh{
             $this->opps();
         }
     }
-
 
     protected function subAccUpdateProfile($name,$surname,$phone,$email,$sex,$id){
         $sql = "UPDATE company_sub_accounts SET name=?, surname=?, sex=?, email=?, phone=? WHERE id=?";
@@ -409,7 +517,6 @@ class Users extends Dbh{
                 $this->opps();
             }
     }
-
 
     protected function opps(){
         $_SESSION['type'] = 'w';
@@ -580,7 +687,6 @@ class Users extends Dbh{
         }
     }
 
-
     //Notifications
     protected function getallnotifications($id){
         $sql = "SELECT * from notifications where receiverID=?";
@@ -669,7 +775,6 @@ class Users extends Dbh{
 
     }
 
-
     //-------------------------------------------------------------
     //student profile section
     protected function studentUpdatePassword($op, $cp, $id){
@@ -729,7 +834,6 @@ class Users extends Dbh{
 
     }
 
-
     //student profile section
     //---------------------------------------------------------------
     protected function ShowPrograms(){
@@ -771,8 +875,6 @@ class Users extends Dbh{
         return  $stmt->fetchAll();
     }
 
-
-
     //STUDENT LOGIN/SIGNIN
     protected function SigninUser($loginID, $password)
     {
@@ -812,7 +914,6 @@ class Users extends Dbh{
             }
         }
     }
-
 
     //STUDENT REGISTRATION CLASSES
     protected function Stage4($id){
@@ -976,13 +1077,18 @@ class Users extends Dbh{
         return date('l j F Y h:m:s A',$history_bus_date_tostring);
     }
 
-
     //$GET BY FUNCTIONS
-
     protected function GetDeptById($id){
         $sql = "SELECT * FROM companyDepartment WHERE id=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
+        return  $stmt->fetchAll();
+    }
+
+    protected function GetSubAccByCompanyIDandDeptID($companyID, $deptID){
+        $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? and department=?";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$companyID, $deptID]);
         return  $stmt->fetchAll();
     }
 
@@ -996,12 +1102,11 @@ class Users extends Dbh{
     protected function GetCompanySupervisorOnly($id){
         $roleEx = 'admin';
         $status = 1;
-        $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? AND role!=? AND status=?";
+        $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? AND role!=? AND status=? ORDER BY department ASC";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id, $roleEx, $status]);
         return  $stmt->fetchAll();
     }
-
 
     protected function GetSUbAccSupervisingStudents($subID, $companyID){
         $sql = "SELECT * FROM attachments WHERE companyID=? AND supervisorID=?";
@@ -1059,15 +1164,12 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-
-
     protected function GetCvByUserID($id){
         $sql = "SELECT * FROM cv WHERE userID=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
-
 
     protected function GetCategoryByID($id){
         $sql = "SELECT * FROM vacancyCategories WHERE id=?";
@@ -1132,7 +1234,6 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-
     protected function GetApplicationByVacancyIDAndUserID($vuid, $id){
         $sql = "SELECT * FROM applications WHERE userID=? AND vacancyUID=?";
         $stmt = $this->con()->prepare($sql);
@@ -1148,8 +1249,6 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-
-
     protected function GetApplicationByCompanyID($id){
         $sql = "SELECT * FROM applications WHERE companyID=?";
         $stmt = $this->con()->prepare($sql);
@@ -1163,9 +1262,6 @@ class Users extends Dbh{
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
-
-
-
 
     protected function GetVacancyByUniqueID($uniqueID){
         $sql = "SELECT * FROM vacancies WHERE uniqueID=?";
@@ -1185,7 +1281,6 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-
     protected function GetCompanyById($id){
         $sql = "SELECT * FROM company WHERE user_id=?";
         $stmt = $this->con()->prepare($sql);
@@ -1199,7 +1294,6 @@ class Users extends Dbh{
         $stmt->execute([$id]);
         return $stmt->fetchAll();
     }
-
 
     protected function GetAttachmentsByUserID($id){
         $sql = "SELECT * FROM attachments WHERE userID=?";
@@ -1222,10 +1316,10 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-    protected function GetSubAccByCompanyAndUserID($id, $subID){
+    protected function GetSubAccByCompanyAndUserID($companyID, $subID){
         $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? AND id=? ORDER BY role ASC";
         $stmt = $this->con()->prepare($sql);
-        $stmt->execute([$id, $subID]);
+        $stmt->execute([$companyID, $subID]);
         return $stmt->fetchAll();
     }
 
@@ -1250,16 +1344,12 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
-
-
     protected function GetUserByLoginID($loginID){
         $sql = "SELECT * FROM users WHERE loginID=?";
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$loginID]);
         return $stmt->fetchAll();
     }
-
-
 
     protected function loginCompanySubAcc($subID, $subCompanyID, $password){
         //login SubAcc

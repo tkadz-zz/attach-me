@@ -3,6 +3,147 @@
 class CompanyView extends Users
 {
 
+    public function viewSubAccProfile($companyID, $subID){
+        $subAccRows = $this->GetSubAccByCompanyAndUserID($companyID, $subID);
+        $deptRows = $this->GetDeptById($subAccRows[0]['department']);
+        if($subAccRows[0]['role'] == 'admin'){
+            $borderClass = 'danger';
+            $subRole = 'admin';
+        }
+        elseif ($subAccRows[0]['role'] == 'adminSupervisor'){
+            $borderClass = 'warning';
+            $subRole = 'coodinator';
+        }
+        elseif ($subAccRows[0]['role'] == 'supervisor'){
+            $borderClass = 'success';
+            $subRole = 'supervisor';
+        }
+
+        if($subAccRows[0]['status'] == 1){
+            $status = 'Active';
+            $statusBadge = 'success';
+        }
+        else{
+            $status = 'Not Active';
+            $statusBadge = 'danger';
+        }
+
+        ?>
+        <div class="col-md-12">
+            <div class="card border border-<?php echo $borderClass ?> border-3">
+                <div class="card-body">
+                    <h4 class="card-title card-header"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] ?> <span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $subRole ?></span> </h4>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span>Details</span>
+                            <ul>
+                                <?php
+                                $addDetRow = $this->GetCompanyById($_SESSION['id']);
+                                ?>
+                                <li><span>Sex</span> : <span><?php echo $subAccRows[0]['sex'] ?></span></li>
+                                <li><span>Email</span> : <span><a href="mail:<?php echo $subAccRows[0]['email'] ?>"><?php echo $subAccRows[0]['email'] ?></a></span></li>
+                                <li><span>Phone</span> : <span><a href="tel:<?php echo $subAccRows[0]['phone'] ?>"><?php echo $subAccRows[0]['phone'] ?></a></span></li>
+                                <li><span>Joined</span> : <span><?php echo $this->dateToDay($subAccRows[0]['dateAdded'] ) ?></span></li>
+                                <li><span>Bio</span> : <br><span><?php echo $subAccRows[0]['description'] ?></span></li>
+                            </ul>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <form method="POST" action="includes/addSubAcc.inc.php">
+                                <span style="font-size: 13px">Account Type</span> : <span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $subRole ?></span>
+                                    <br>
+                                <div class="pt-2">
+                                    <select name="subRole" class="form-control form-select">
+                                        <option value="<?php echo $subAccRows[0]['role']  ?>"><?php echo $subRole ?> (current)</option>
+                                        <option value="admin">ADMIN</option>
+                                        <option value="adminSupervisor">Coordinator</option>
+                                        <option value="supervisor">Supervisor</option>
+                                    </select>
+                                </div>
+                                <br>
+                                <span style="font-size: 13px">Department </span> : <span class="badge badge-secondary text-dark"><?php echo $deptRows[0]['department'] ?></span>
+                                    <br>
+                                <div class="pt-2">
+                                    <select name="subDept" class="form-control form-select">
+                                        <option value="<?php echo $subAccRows[0]['department']  ?>"><?php echo $deptRows[0]['department'] ?> (current)</option>
+                                        <?php
+                                        $this->ViewCompanyDeptLoop($companyID);
+                                        ?>
+                                    </select>
+                                </div>
+                                <br>
+                                <span style="font-size: 13px">Account Status </span> : <span class="badge badge-<?php echo $statusBadge ?>"><?php echo $status ?></span>
+                                <br>
+                                <div class="pt-2">
+                                    <select name="subStatus" class="form-control form-select">
+                                        <option value="<?php echo $subAccRows[0]['status']  ?>"><?php echo $status ?> (current)</option>
+                                        <?php
+                                        if($subAccRows[0]['status'] == 1){
+                                        ?>
+                                        <option value="0">DeActivate</option>
+                                            <?php
+                                        }
+                                        else{
+                                            ?>
+                                        <option value="1">Activate</option>
+                                            <?php
+                                        }
+                                            ?>
+                                    </select>
+                                </div>
+                                <input type="text" name="subID" value="<?php echo $subID ?>" hidden>
+                                <br>
+                                <div class="pb-3">
+                                    <button type="submit" name="btn_update_subAcc" class="btn btn-primary btn-sm">Update</button>
+                                </div>
+
+                            </form>
+                        </div>
+                        <hr>
+                        <?php
+                        if($subAccRows[0]['role'] != 'admin'){
+                        ?>
+                        <p class="text-muted font-14 mb-3">
+                            Students under <?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] ?>'s Supervision
+                        </p>
+                        <div class="col-md-12">
+                            <table id="datatable" class="table table-bordered dt-responsive nowrap">
+
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Reg#</th>
+                                    <th>Contract Status</th>
+                                    <th>More</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <?php
+                                $n = new CompanyView();
+                                $n->viewAllMyCompanyAttachedStudents($companyID, $subID);
+                                ?>
+                                </tbody>
+
+
+                            </table>
+                        </div>
+                            <?php
+                        }
+                            ?>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
 
     public function ViewCompanyDeptLoop($companyID){
         $deptRows = $this->GetDeptByCompanyID($companyID);
@@ -18,17 +159,74 @@ class CompanyView extends Users
         foreach ($supervisorRows as $supervisorRow) {
             $subAccRows = $this->GetSubAccByID($supervisorRow['id']);
             $attacheRows = $this->GetAttachmentsByUserID($userID);
+            $dept = $this->GetDeptById($supervisorRow['department']);
+            if($supervisorRow['role'] == 'admin'){
+                $ro = '<span class="badge badge-danger"> Admin </span>';
+            }
+            if($supervisorRow['role'] == 'adminSupervisor'){
+                $ro = '<span class="badge badge-warning"> Coordinator </span>';
+            }
+            if($supervisorRow['role'] == 'supervisor'){
+                $ro = '<span class="badge badge-success"> Supervisor </span>';
+            }
             ?>
-            <option value="<?php echo $subAccRows[0]['id'] ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] ?>
-                <?php
-                if($attacheRows[0]['supervisorID'] == $supervisorRow['id']){
-                    echo '(current)';
-                }
-                ?>
-            </option>
+            <option value="<?php echo $subAccRows[0]['id'] ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname'] .' - ' . $ro . ' ('.$dept[0]['department'].')'?></option>
             <?php
         }
     }
+
+
+    public function countSubAccInDept($companyID, $deptID){
+        $rows = $this->GetSubAccByCompanyIDandDeptID($companyID, $deptID);
+        $n = new Usercontr();
+        $n->myCount($rows);
+    }
+
+    public function viewCompanyDept($id){
+        $deptRows = $this->GetDeptByCompanyID($id);
+        $s = 0;
+        foreach ($deptRows as $deptRow){
+            $s++;
+            ?>
+            <tr>
+                <td><?php echo $s ?> </td>
+                <td><?php echo $deptRow['department'] ?></td>
+                <td><?php echo $this->dayDate($deptRow['dateAdded']) ?></td>
+                <td data-toggle="tooltip" data-placement="right"
+                    title="<?php
+                    $rows = $this->GetSubAccByCompanyIDandDeptID($_SESSION['id'], $deptRow['id']);
+                    $ss=0;
+                    foreach ($rows as $row){
+                        $ss++;
+                        if(count($rows) > 1){
+                            echo $ss . ': '. $row['name'] .' '. $row['surname'] .', ';
+                        }
+                        else{
+                            echo $row['name'] .' '. $row['surname'];
+                        }
+
+                    }
+
+                    ?>">
+                    <a href="allSubAccounts.php"><?php $this->countSubAccInDept($_SESSION['id'], $deptRow['id']); ?> account/s</a>
+                </td>
+                <td>
+                    <div class="-dropdown" style="z-index: 9999">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </button>
+                        <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
+                            <h6 class="dropdown-header">More</h6>
+                            <a class="dropdown-item" href="#!"><span class="fa fa-pencil"></span> View Profile </a>
+                            <a onclick="return confirm('This Department will be deleted. Proceed?')" class="dropdown-item" href="includes/addSubAcc.inc.php?delDept&deptID=<?php echo $deptRow['id'] ?>"><span class="fa fa-trash"></span> Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <?php
+        }
+    }
+
 
     public function viewAllCompanySubAcc($id){
         $subAccRows = $this->GetSubCompanyById($id);
@@ -43,11 +241,32 @@ class CompanyView extends Users
                 <td><?php echo $subAccRow['surname'] ?></td>
                 <td>
                     <?php
-                    $deptRows = $this->GetDeptById($subAccRow['department']);
-                    echo $deptRows[0]['department'];
+                    if($subAccRow['department'] == 0){
+                        echo '';
+                    }
+                    else {
+                        $deptRows = $this->GetDeptById($subAccRow['department']);
+                        echo $deptRows[0]['department'];
+                    }
                     ?>
                 </td>
-                <td><?php echo $subAccRow['role'] ?></td>
+                <td><?php
+                    if($subAccRow['role'] == 'admin'){
+                        ?>
+                        <span class="badge badge-danger"> Admin </span>
+                        <?php
+                    }
+                    if($subAccRow['role'] == 'adminSupervisor'){
+                        ?>
+                        <span class="badge badge-warning"> Coordinator </span>
+                        <?php
+                    }
+                    if($subAccRow['role'] == 'supervisor'){
+                        ?>
+                        <span class="badge badge-success"> Supervisor </span>
+                        <?php
+                    }
+                    ?></td>
 
                 <td>
                     <div class="-dropdown" style="z-index: 9999">
@@ -56,7 +275,7 @@ class CompanyView extends Users
                         </button>
                         <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
                             <h6 class="dropdown-header">More</h6>
-                            <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $subAccRow[0]['id'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
+                            <a class="dropdown-item" href="subAccProfile.php?subID=<?php echo $subAccRow['id'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
                             <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="#!"><span class="fa fa-trash"></span> Delete</a>
                         </div>
                     </div>
@@ -161,7 +380,6 @@ class CompanyView extends Users
                         <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
                             <h6 class="dropdown-header">More</h6>
                             <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
-                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="includes/applicantOptions.inc.php?action=delete&userID=<?php echo $studentRows[0]['user_id'] ?>"><span class="fa fa-trash"></span> Delete</a>
                         </div>
                     </div>
                 </td>
@@ -170,6 +388,12 @@ class CompanyView extends Users
         }
     }
 
+
+    public function countCompanyDepartments($companyID){
+        $subAccRows = $this->GetDeptByCompanyID($companyID);
+        $n = new Usercontr();
+        $n->myCount($subAccRows);
+    }
 
     public function countCompanySUbAcc($companyID){
         $subAccRows = $this->GetSubCompanyById($companyID);
@@ -324,6 +548,16 @@ class CompanyView extends Users
                                                             <label>Ending Date</label>
                                                             <input id="end" type="date" class="form-control form-control-user" autocomplete="off" name="end" min="<?php echo date('Y-m-d', strtotime("+1 day")) ?>" required >
                                                         </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <select name="supervisor" class="form-control form-select" required>
+                                                            <option value="">-- SELECT NEW SUPERVISOR --</option>
+                                                            <?php
+                                                            $this->companySupervisorOptionLoop($_GET['userID'], $_SESSION['id']);
+                                                            ?>
+                                                            <option value="0">Un-Assign Supervisor</option>
+                                                        </select>
                                                     </div>
 
                                                     <div>
@@ -715,6 +949,36 @@ class CompanyView extends Users
                                     <?php
                                 }
                                 ?>
+
+                                <?php
+                                if($studentRows[0]['attachmentStatus'] == '1' AND $_SESSION['id'] == $attchementRows[0]['companyID']){
+                                ?>
+
+                                <hr>
+                                <form method="POST" action="includes/unattach.inc.php">
+                                    <input name="userID" type="text" value="<?php echo $id ?>" hidden>
+                                    <input type="checkbox" id="checkme"/> Check to enable the un-attach button below
+                                    <br>
+                                    <br>
+                                    <button type="submit" name="btn_unattach" id="unattbtn" disabled onclick="return confirm('This student will be removed from this company. Proceed?')" class="btn btn-info">Un-ttach Student <span class="fa fa-user-times"></span></button>
+                                </form>
+                                <script>
+                                    var checker = document.getElementById('checkme');
+                                    var sendbtn = document.getElementById('unattbtn');
+                                    // when unchecked or checked, run the function
+                                    checker.onchange = function(){
+                                        if(this.checked){
+                                            sendbtn.disabled = false;
+                                        } else {
+                                            sendbtn.disabled = true;
+                                        }
+                                    }
+                                </script>
+                                <?php
+                                }
+                                ?>
+
+
                             </ul>
                         </div>
                     </div>

@@ -107,7 +107,7 @@ include 'includes/subAccSessionFilter.inc.php';
                         <p> Attached Students </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-user"></i>
+                        <i class="fa fa-graduation-cap"></i>
                     </div>
                     <a href="allAttachedStudent.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -130,6 +130,26 @@ include 'includes/subAccSessionFilter.inc.php';
                         <i class="fa fa-user"></i>
                     </div>
                     <a href="allSubAccounts.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="card-box bg-purple">
+                    <div class="inner">
+                        <h3>
+                            <?php
+
+                            $n = new CompanyView();
+                            $res = $n->countCompanyDepartments($_SESSION['id']);
+
+                            ?>
+                        </h3>
+                        <p> Departments </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-building"></i>
+                    </div>
+                    <a href="departments.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 

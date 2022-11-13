@@ -11,7 +11,7 @@ include 'includes/subAccSessionFilter.inc.php';
 <br>
 <br>
     <a href="#!"  data-bs-toggle="modal" data-bs-target="#addUserModal" class="btn btn-outline-primary">New Sub-Account <span class="fa fa-user-plus"></span> </a>
-    <a href="#!"  data-bs-toggle="modal" data-bs-target="#addDept" class="btn btn-outline-primary">New Department <span class="fa fa-plus"></span> </a>
+    <a href="departments.php" class="btn btn-outline-primary">Department <span class="fa fa-list"></span> </a>
 
     <div id="--printableArea" class="card-box">
         <h4 class="mt-0 header-title"></h4>
