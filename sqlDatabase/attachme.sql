@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2022 at 11:02 PM
+-- Generation Time: Nov 13, 2022 at 08:40 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -81,13 +81,34 @@ CREATE TABLE `attachments` (
   `status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `attachments`
+-- Table structure for table `attachmentsHistory`
 --
 
-INSERT INTO `attachments` (`id`, `userID`, `companyID`, `subID`, `supervisorID`, `dateAdded`, `dateStart`, `dateEnd`, `lastUpdated`, `status`) VALUES
-(10, 23, 38, 2, 3, '2022-11-04 19:11:23', '2022-11-03', '2022-11-07', '2022-11-06 20:53:17', 1),
-(11, 28, 38, 2, 1, '2022-11-06 11:56:38', '2022-11-10', '2022-11-20', '2022-11-06 21:49:34', 1);
+CREATE TABLE `attachmentsHistory` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `companyID` int(11) NOT NULL,
+  `supervisorID` int(11) NOT NULL,
+  `started` varchar(225) NOT NULL,
+  `toEnd` varchar(225) NOT NULL,
+  `ended` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `logbook` varchar(225) NOT NULL,
+  `attachmentReport` varchar(225) NOT NULL,
+  `supervisorReport` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `attachmentsHistory`
+--
+
+INSERT INTO `attachmentsHistory` (`id`, `userID`, `companyID`, `supervisorID`, `started`, `toEnd`, `ended`, `dateAdded`, `logbook`, `attachmentReport`, `supervisorReport`, `lastUpdated`) VALUES
+(1, 23, 38, 10, '2022-11-03', '2022-11-07', '2022-11-13 20:25:17', '2022-11-13 20:25:17', '', '', '', '2022-11-13 19:25:17'),
+(2, 28, 38, 1, '2022-11-10', '2022-11-20', '2022-11-13 20:27:25', '2022-11-13 20:27:25', '', '', '../assessmentReports/63714514709684.44477231.docx', '2022-11-13 19:27:25');
 
 -- --------------------------------------------------------
 
@@ -136,8 +157,11 @@ CREATE TABLE `companyDepartment` (
 
 INSERT INTO `companyDepartment` (`id`, `companyID`, `department`, `dateAdded`, `lastUpdated`) VALUES
 (1, 38, 'Human Resource', '2022-11-06 20:01:32', '2022-11-06 18:01:32'),
-(2, 38, 'E-Banking', '2022-11-06 20:01:32', '2022-11-06 18:01:32'),
-(3, 38, 'IT', '2022-11-06 19:39:15', '2022-11-06 18:39:15');
+(2, 38, 'E-Banking', '2022-11-12 19:11:51', '2022-11-12 18:12:06'),
+(4, 38, 'Procurement', '2022-11-12 18:39:07', '2022-11-12 17:39:07'),
+(9, 38, 'IT', '2022-11-12 19:13:24', '2022-11-12 18:13:24'),
+(10, 38, 'Accounts', '2022-11-12 19:17:00', '2022-11-12 18:17:00'),
+(11, 38, 'Marketing', '2022-11-12 19:17:16', '2022-11-12 18:17:16');
 
 -- --------------------------------------------------------
 
@@ -169,10 +193,17 @@ CREATE TABLE `company_sub_accounts` (
 
 INSERT INTO `company_sub_accounts` (`id`, `companyID`, `name`, `surname`, `sex`, `avatar`, `email`, `phone`, `password`, `department`, `description`, `dateAdded`, `lastUpdate`, `status`, `role`) VALUES
 (1, 38, 'Emanuel', 'Chindoza', 'MALE', '', '', '', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '1', '', '2022-05-19 14:56:45', '2022-11-06 18:18:30', 1, 'supervisor'),
-(2, 38, 'EVELYNN', 'MADZIBA', 'FEMALE', '../profileImages/63581ba6946d24.41378029.jpg', 'evelyn@gmail.com', '0783883392', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '2', '', '2022-05-19 14:56:45', '2022-11-06 18:24:19', 1, 'admin'),
-(3, 38, 'Cherity', 'Winji', 'MALE', '../profileImages/63518225dd2b78.86541092.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '3', '', '2022-05-19 14:56:45', '2022-11-06 18:39:37', 1, 'adminSupervisor'),
+(2, 38, 'EVELYNN', 'MADZIBA', 'FEMALE', '../profileImages/63581ba6946d24.41378029.jpg', 'evelyn@gmail.com', '0783883392', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '2', '', '2022-05-19 14:56:45', '2022-11-12 18:12:14', 1, 'admin'),
+(3, 38, 'Cherity', 'Winji', 'MALE', '../profileImages/63518225dd2b78.86541092.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '4', '', '2022-05-19 14:56:45', '2022-11-12 18:13:08', 1, 'adminSupervisor'),
 (4, 200, 'Ronald', 'Mukute', 'MALE', '../profileImages/63518d2e745537.61004449.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '1', '', '2022-05-19 14:56:45', '2022-11-06 18:18:24', 1, 'admin'),
-(5, 38, 'FRANCIES', 'KUSEMA', 'MALE', '', '', '', '$2y$10$6NbEDqrZuH1BFwJz2ZgBT.z5bSwhxLz4w3HaUytjTN/Rn7NUXtQO.', '2', '', '2022-11-06 19:17:21', '2022-11-06 21:39:43', 1, 'adminSupervisor');
+(5, 38, 'FRANCIES', 'KUSEMA', 'MALE', '', '', '', '$2y$10$6NbEDqrZuH1BFwJz2ZgBT.z5bSwhxLz4w3HaUytjTN/Rn7NUXtQO.', '2', '', '2022-11-06 19:17:21', '2022-11-13 10:58:26', 1, 'admin'),
+(6, 38, 'SABRINA', 'HURASHA', 'FEMALE', '', '', '', '', '10', '', '2022-11-12 19:18:11', '2022-11-12 18:18:11', 1, 'adminSupervisor'),
+(7, 38, 'DERICK', 'CHIKUNI', 'MALE', '', '', '', '', '9', '', '2022-11-12 19:18:35', '2022-11-12 18:18:35', 1, 'adminSupervisor'),
+(8, 38, 'PATRICK', 'CHINDOZA', 'MALE', '', '', '', '', '9', '', '2022-11-12 19:19:08', '2022-11-12 18:19:08', 1, 'adminSupervisor'),
+(9, 38, 'NONTHOKOZA', 'NTHABILE', 'FEMALE', '', '', '', '', '11', '', '2022-11-12 19:19:48', '2022-11-13 09:32:38', 1, 'supervisor'),
+(10, 38, 'KUDZAI', 'XABA', 'FEMALE', '', '', '', '$2y$10$1XjSQPPaMzzXVMfAj/pJ2ecmISAqOVO/Ttjt.VPaukI1cxysLQvA6', '1', '', '2022-11-12 19:20:35', '2022-11-13 09:55:19', 1, 'supervisor'),
+(11, 38, 'DZIDZAI', 'MULEYA', 'FEMALE', '', '', '', '', '11', '', '2022-11-12 19:21:08', '2022-11-12 18:21:08', 1, 'supervisor'),
+(12, 38, 'DERICK', 'KURE', 'FEMALE', '', '', '', '', '9', '', '2022-11-12 21:37:11', '2022-11-12 20:37:11', 1, 'supervisor');
 
 -- --------------------------------------------------------
 
@@ -386,12 +417,12 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email`, `phone`, `dob`, `sex`, `marital`, `avatar`, `homeAddress`, `postalAddress`, `nationality`, `religion`, `aboutSelf`, `attachmentStatus`, `lastUpdatedStudent`) VALUES
-(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-05 17:17:05'),
+(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 0, '2022-11-13 19:25:17'),
 (19, '24', 'PANASHE', 'MURWISI', '', 'panashemurwisi@gmail.com', '722233332', '1998-01-01', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'l love you all with all my heart', 0, '2021-10-31 06:16:41'),
 (20, '26', 'TEST', 'USER', '', '', '0782226633', '2005-01-31', 'FEMALE', 'MARRIED', '', '', '', 'SOUTH AFRICA', 'HINDU', 'a strong hindu believer', 0, '2021-11-01 19:14:26'),
 (21, '27', 'TERRY', 'KAYZ0', '', '', '782266333', '1997-02-03', 'N_A', 'PRIVATE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'nothing special to tell', 0, '2021-11-02 15:24:14'),
-(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 1, '2022-11-06 10:56:38'),
-(23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 0, '2022-11-03 01:44:25'),
+(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-11-13 19:33:50'),
+(23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 0, '2022-11-12 18:23:45'),
 (26, '32', 'NUMERIC', 'USER', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2022-03-29 19:11:33'),
 (27, '33', 'NUMERIC', 'USERA', '', '', '782273383', '2001-02-28', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'N/A', 0, '2022-03-29 19:16:25'),
 (28, '34', 'TEST', 'USERB', '', '', '700000000', '2005-06-22', 'MALE', 'SINGLE', '', '', '', 'BARBADOS', 'MD', '', 0, '2022-03-29 19:25:05'),
@@ -600,6 +631,12 @@ ALTER TABLE `attachments`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `attachmentsHistory`
+--
+ALTER TABLE `attachmentsHistory`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `company`
 --
 ALTER TABLE `company`
@@ -716,7 +753,13 @@ ALTER TABLE `attachmentReports`
 -- AUTO_INCREMENT for table `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `attachmentsHistory`
+--
+ALTER TABLE `attachmentsHistory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `company`
@@ -728,13 +771,13 @@ ALTER TABLE `company`
 -- AUTO_INCREMENT for table `companyDepartment`
 --
 ALTER TABLE `companyDepartment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `company_sub_accounts`
 --
 ALTER TABLE `company_sub_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `cv`
@@ -788,7 +831,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `supervisorReports`
 --
 ALTER TABLE `supervisorReports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
