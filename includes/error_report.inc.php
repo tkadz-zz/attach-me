@@ -14,12 +14,12 @@ if(isset($_SESSION['type']) && isset($_SESSION['err'])) {
                 }
                 @keyframes blinkingText{
                     0%{     color: #fa0000;    }
-                    15%{    color: rgba(158, 250, 0, 0.81); }
-                    40%{    color: rgba(250, 5, 25, 0.99); }
-                    60%{    color: rgb(0, 103, 255); }
-                    75%{    color: rgba(234, 152, 0, 0.98); }
-                    85%{    color: rgb(255, 0, 0);  }
-                    100%{   color: rgba(0, 0, 0, 0.81);    }
+                    15%{    color: rgba(255, 0, 20, 0.93); }
+                    40%{    color: rgba(250, 5, 25, 0.84); }
+                    60%{    color: rgba(255, 0, 0, 0.72); }
+                    75%{    color: rgba(250, 0, 0, 0.55); }
+                    85%{    color: rgba(250, 0, 0, 0.62);  }
+                    100%{   color: rgba(250, 0, 0, 0.73);    }
                 }
             </style>
         <div -id="divDis" class="animated--grow-in fadeout -my-3 -p-3 bg-white rounded shadow-sm alert alert-danger">

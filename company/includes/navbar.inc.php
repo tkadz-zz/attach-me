@@ -31,8 +31,31 @@ if (isset($_GET['logout']) && ($_GET['logout'] == 'true')) {
                     if(isset($_SESSION['subID'])){
                         echo "(". $_SESSION['subName'] ." ". $_SESSION['subSurname'] .")";
                     }
-                    ?></h1>
-                <h6 class="welcome-sub-text" style="font-size: 15px"><?php echo  $_SESSION['email']  ?> </h6>
+                    ?>
+                    <?php
+                    if(isset($_SESSION['subRole'])){
+                        $subRNav = $_SESSION['subRole'];
+                        if($subRNav == 'admin'){
+                            $borderClass = 'danger';
+                            $subRole = 'admin';
+                        }
+                        elseif ($subRNav == 'adminSupervisor'){
+                            $borderClass = 'warning';
+                            $subRole = 'coodinator';
+                        }
+                        elseif ($subRNav == 'supervisor'){
+                            $borderClass = 'success';
+                            $subRole = 'supervisor';
+                        }
+                        ?>
+                        <span style="font-size: 10px;" class="badge badge-<?php echo $borderClass ?>"><?php  echo $subRole ?></span>
+                        <?php
+                    }
+                    ?>
+                </h1>
+                <h6 class="welcome-sub-text" style="font-size: 15px"><?php echo  $_SESSION['email']  ?>
+                </h6>
+
             </li>
         </ul>
         <ul class="navbar-nav ms-auto">

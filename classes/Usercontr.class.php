@@ -1,6 +1,17 @@
 <?php
 class Usercontr extends Users{
 
+
+
+    public function setPassword($loginID, $password, $password_unprotected){
+        parent::setPassword($loginID, $password, $password_unprotected);
+    }
+
+    public function resetSubAccPassword($subID, $companyID)
+    {
+        parent::resetSubAccPassword($subID, $companyID);
+    }
+
     public function setSubAccPassword($loginID, $password, $confirmPassword){
         parent::setSubAccPassword($loginID, $password, $confirmPassword);
     }
@@ -12,6 +23,11 @@ class Usercontr extends Users{
 
     public function addDept($name, $companyID){
         parent::addDept($name, $companyID);
+    }
+
+    public function delSubAcc($subID, $companyID)
+    {
+        parent::delSubAcc($subID, $companyID);
     }
 
     public function updateSubAcc($subRole, $subDept, $subStatus, $companyID, $subID)
@@ -145,17 +161,23 @@ class Usercontr extends Users{
         parent::postVacancyQualification($qualification, $vacancyID, $dateAdded);
     }
 
+    public function delVacancy($vuid,$companyID){
+        parent::delVacancy($vuid,$companyID);
+    }
+
     public function postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID)
     {
         parent::postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID);
     }
 
     public function subCompanyUpdatePassword($op, $cp, $id){
+        //This method is also used by institute
         parent::subCompanyUpdatePassword($op, $cp, $id);
     }
 
-    public function loginCompanySubAcc($subID, $subCompanyID, $password){
-        parent::loginCompanySubAcc($subID, $subCompanyID, $password);
+
+    public function loginSubAcc($subID, $subAccID, $password){
+        parent::loginSubAcc($subID, $subAccID, $password);
     }
 
     public function passwordreserttoken($email)

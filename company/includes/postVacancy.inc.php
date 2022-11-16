@@ -64,8 +64,14 @@ if (isset($_POST['btn_post_vacancy'])){
 
 }
 
-else {
-    echo "<script type='text/javascript'>;
-             window.location='../unauthorized.php';
-            </script>";
+
+if(isset($_GET['delVacancy'])){
+    $vuid = $_GET['vuid'];
+    $companyID =$_SESSION['id'];
+    try {
+        $n = new Usercontr();
+        $n->delVacancy($vuid, $companyID);
+    } catch (TypeError $e) {
+        echo "Error" . $e->getMessage();
+    }
 }

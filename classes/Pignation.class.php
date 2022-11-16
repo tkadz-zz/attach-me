@@ -22,7 +22,12 @@ class Pignation extends Users
                 $hr = 'hrid' . $x;
 
                 $subID = $row['id'];
-                $subCompanyID = $row['companyID'];
+                if($_SESSION['role'] == 'company'){
+                    $subAccID = $row['companyID'];
+                }
+                if($_SESSION['role'] == 'institute'){
+                    $subAccID = $row['instID'];
+                }
                 ?>
 
                 <div class="col-md-3 mb-3">
@@ -49,25 +54,28 @@ class Pignation extends Users
                             <h6 class="card-text"><?php echo $row['name'] .' '. $row['surname'] ?></h6>
                             <p class="card-text">
                                 <?php
-                                if($row['department'] == 0){
+                                if($row['department'] == 0 OR $row['department'] == ''){
                                     echo '<br>';
                                 }
                                 else {
-                                    $deptRows = $this->GetDeptById($row['department'], $_SESSION['id']);
+                                    if($_SESSION['role'] == 'company') {
+                                        $deptRows = $this->GetDeptById($row['department'], $_SESSION['id']);
+                                    }
+                                    if($_SESSION['role'] == 'institute'){
+                                        $deptRows = $this->GetInstDeptById($row['department'], $_SESSION['id']);
+                                    }
+
                                     echo $deptRows[0]['department'];
                                 }
                                 ?>
                             </p>
                             <button id="theButton1<?php echo $x ?>" onclick="clickMe<?php echo $x ?>()" type="button" class="btn btn-secondary"> <span class="fa fa-chevron-circle-down"></span></button>
-
-
-
                             <form method="post" action="includes/subAccSignin.inc.php" >
                                 <div class="col-md-12">
                                     <hr class="hide" id="<?php echo $hr; ?>">
                                     <input name="password" id="<?php echo $inputID; ?>" type="password" class="form-control hide" placeholder="Password">
                                     <input name="subID" type="text" hidden value="<?php echo $subID ?>">
-                                    <input name="subCompanyID" type="text" hidden value="<?php echo $subCompanyID ?>">
+                                    <input name="subAccID" type="text" hidden value="<?php echo $subAccID ?>">
                                     <br>
                                     <button name="sub_login" class="btn btn-primary hide" id="<?php echo $buttonID; ?>"  type="submit">Login</button>
                                 </div>

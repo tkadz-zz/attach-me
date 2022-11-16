@@ -109,7 +109,7 @@ include 'includes/emptyLayoutBottom.inc.php';
                             <input name="surname" type="text" class="form-control" placeholder="User Surname" value="" -pattern=".{5,12}" required -title="5 to 12 characters" >
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="inputEmail4" class="col-form-label">Account Type</label>
+                            <label for="inputEmail4" class="col-form-label">Gender</label>
                             <select class="form-control form-select" name="sex" required>
                                 <option value="">-- SELECT GENDER --</option>
                                 <option value="MALE">Male</option>
@@ -135,9 +135,9 @@ include 'includes/emptyLayoutBottom.inc.php';
                             <label for="inputEmail4" class="col-form-label">Account Type</label>
                             <select class="form-control form-select" name="subRole" required>
                                 <option value="">-- SELECT USER ROLE --</option>
-                                    <option value="admin">Admin Account</option>
-                                    <option value="adminSupervisor">Supervisor(Admin) Account</option>
-                                    <option value="supervisor">Supervisor Account</option>
+                                <option value="admin">ADMIN</option>
+                                <option value="adminSupervisor">Coordinator</option>
+                                <option value="supervisor">Supervisor</option>
                             </select>
                         </div>
                     </div>

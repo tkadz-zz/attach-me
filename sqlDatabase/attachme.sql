@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2022 at 08:40 PM
+-- Generation Time: Nov 16, 2022 at 06:06 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `attachme`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_sub_acc`
+--
+
+CREATE TABLE `admin_sub_acc` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `name` varchar(225) NOT NULL,
+  `surname` varchar(225) NOT NULL,
+  `email` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `admin_sub_acc`
+--
+
+INSERT INTO `admin_sub_acc` (`id`, `userID`, `name`, `surname`, `email`, `dateAdded`, `lastUpdated`) VALUES
+(1, 1, 'Tanaka', 'TheAdmin', '', '2022-11-16 17:00:51', '2022-11-16 15:00:51');
 
 -- --------------------------------------------------------
 
@@ -73,13 +96,22 @@ CREATE TABLE `attachments` (
   `userID` int(11) NOT NULL,
   `companyID` int(11) NOT NULL,
   `subID` int(11) NOT NULL,
-  `supervisorID` int(11) NOT NULL,
+  `supervisorID` varchar(225) NOT NULL,
   `dateAdded` varchar(225) NOT NULL,
   `dateStart` varchar(225) NOT NULL,
   `dateEnd` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `attachments`
+--
+
+INSERT INTO `attachments` (`id`, `userID`, `companyID`, `subID`, `supervisorID`, `dateAdded`, `dateStart`, `dateEnd`, `lastUpdated`, `status`) VALUES
+(22, 23, 200, 4, '0', '2022-11-13 20:45:11', '2022-11-13', '2022-11-19', '2022-11-13 19:45:11', 1),
+(23, 28, 38, 2, '13', '2022-11-13 23:45:45', '2022-11-14', '2023-02-08', '2022-11-14 06:44:30', 1),
+(24, 29, 38, 2, '13', '2022-11-16 15:43:14', '2022-11-17', '2022-12-10', '2022-11-16 14:43:14', 1);
 
 -- --------------------------------------------------------
 
@@ -91,7 +123,7 @@ CREATE TABLE `attachmentsHistory` (
   `id` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
   `companyID` int(11) NOT NULL,
-  `supervisorID` int(11) NOT NULL,
+  `supervisorID` varchar(225) NOT NULL,
   `started` varchar(225) NOT NULL,
   `toEnd` varchar(225) NOT NULL,
   `ended` varchar(225) NOT NULL,
@@ -107,8 +139,8 @@ CREATE TABLE `attachmentsHistory` (
 --
 
 INSERT INTO `attachmentsHistory` (`id`, `userID`, `companyID`, `supervisorID`, `started`, `toEnd`, `ended`, `dateAdded`, `logbook`, `attachmentReport`, `supervisorReport`, `lastUpdated`) VALUES
-(1, 23, 38, 10, '2022-11-03', '2022-11-07', '2022-11-13 20:25:17', '2022-11-13 20:25:17', '', '', '', '2022-11-13 19:25:17'),
-(2, 28, 38, 1, '2022-11-10', '2022-11-20', '2022-11-13 20:27:25', '2022-11-13 20:27:25', '', '', '../assessmentReports/63714514709684.44477231.docx', '2022-11-13 19:27:25');
+(1, 23, 38, '10', '2022-11-03', '2022-11-07', '2022-11-13 20:25:17', '2022-11-13 20:25:17', '', '', '', '2022-11-13 19:25:17'),
+(2, 28, 38, '1', '2022-11-10', '2022-11-20', '2022-11-13 20:27:25', '2022-11-13 20:27:25', '', '', '../assessmentReports/63714514709684.44477231.docx', '2022-11-13 19:27:25');
 
 -- --------------------------------------------------------
 
@@ -135,7 +167,9 @@ CREATE TABLE `company` (
 
 INSERT INTO `company` (`id`, `user_id`, `name`, `phone`, `email`, `website`, `avatar`, `address`, `bio`, `LastUpdated`) VALUES
 (1, 200, 'Company1', '000000000', 'companyemail@g.co', 'N/A', '../profileImages/63518225dd2b78.86541092.jpg', 'N/A', 'N/A', '2022-10-21 20:37:57'),
-(2, 38, 'ECONET', '9887969', 'econet@gmail.com', 'N/A', '', 'runhare house', '', '2022-09-09 17:07:55');
+(2, 38, 'ECONET', '9887969', 'econet@gmail.com', 'N/A', '', 'runhare house', '', '2022-09-09 17:07:55'),
+(4, 208, 'ZRP', '', '', '', '', '', '', '2022-11-16 16:44:41'),
+(5, 209, 'RAINBOW TOWERS', '', '', '', '', '', '', '2022-11-16 17:03:20');
 
 -- --------------------------------------------------------
 
@@ -196,14 +230,16 @@ INSERT INTO `company_sub_accounts` (`id`, `companyID`, `name`, `surname`, `sex`,
 (2, 38, 'EVELYNN', 'MADZIBA', 'FEMALE', '../profileImages/63581ba6946d24.41378029.jpg', 'evelyn@gmail.com', '0783883392', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', '2', '', '2022-05-19 14:56:45', '2022-11-12 18:12:14', 1, 'admin'),
 (3, 38, 'Cherity', 'Winji', 'MALE', '../profileImages/63518225dd2b78.86541092.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '4', '', '2022-05-19 14:56:45', '2022-11-12 18:13:08', 1, 'adminSupervisor'),
 (4, 200, 'Ronald', 'Mukute', 'MALE', '../profileImages/63518d2e745537.61004449.jpg', '', '', '$2y$10$N.FDVP5VvHlQSBabcgQCcOVin6S2rGbxOazROcHdNjz74spu7UJ5C', '1', '', '2022-05-19 14:56:45', '2022-11-06 18:18:24', 1, 'admin'),
-(5, 38, 'FRANCIES', 'KUSEMA', 'MALE', '', '', '', '$2y$10$6NbEDqrZuH1BFwJz2ZgBT.z5bSwhxLz4w3HaUytjTN/Rn7NUXtQO.', '2', '', '2022-11-06 19:17:21', '2022-11-13 10:58:26', 1, 'admin'),
+(5, 38, 'FRANCIES', 'KUSEMA', 'MALE', '', '', '', '$2y$10$6NbEDqrZuH1BFwJz2ZgBT.z5bSwhxLz4w3HaUytjTN/Rn7NUXtQO.', '2', '', '2022-11-06 19:17:21', '2022-11-13 22:43:32', 1, 'admin'),
 (6, 38, 'SABRINA', 'HURASHA', 'FEMALE', '', '', '', '', '10', '', '2022-11-12 19:18:11', '2022-11-12 18:18:11', 1, 'adminSupervisor'),
 (7, 38, 'DERICK', 'CHIKUNI', 'MALE', '', '', '', '', '9', '', '2022-11-12 19:18:35', '2022-11-12 18:18:35', 1, 'adminSupervisor'),
 (8, 38, 'PATRICK', 'CHINDOZA', 'MALE', '', '', '', '', '9', '', '2022-11-12 19:19:08', '2022-11-12 18:19:08', 1, 'adminSupervisor'),
 (9, 38, 'NONTHOKOZA', 'NTHABILE', 'FEMALE', '', '', '', '', '11', '', '2022-11-12 19:19:48', '2022-11-13 09:32:38', 1, 'supervisor'),
 (10, 38, 'KUDZAI', 'XABA', 'FEMALE', '', '', '', '$2y$10$1XjSQPPaMzzXVMfAj/pJ2ecmISAqOVO/Ttjt.VPaukI1cxysLQvA6', '1', '', '2022-11-12 19:20:35', '2022-11-13 09:55:19', 1, 'supervisor'),
 (11, 38, 'DZIDZAI', 'MULEYA', 'FEMALE', '', '', '', '', '11', '', '2022-11-12 19:21:08', '2022-11-12 18:21:08', 1, 'supervisor'),
-(12, 38, 'DERICK', 'KURE', 'FEMALE', '', '', '', '', '9', '', '2022-11-12 21:37:11', '2022-11-12 20:37:11', 1, 'supervisor');
+(13, 38, 'DERICK', 'KURE', 'MALE', '', '', '', '', '9', '', '2022-11-14 07:43:42', '2022-11-14 06:43:42', 1, 'adminSupervisor'),
+(15, 208, 'First', 'Sub-Account', 'PRIVATE', '', '', '', '$2y$10$OeogKdoyokpLXz2gMyS2pe108z.t0/wlUwkeMsS8paR9GmzMpbVeG', '0', '', '2022-11-16 17:44:41', '2022-11-16 17:00:58', 1, 'admin'),
+(16, 209, 'First', 'Sub-Account', 'PRIVATE', '', '', '', '$2y$10$iomkY1bpVX8orn.dgfPyD.yAHWKzylLs6jj24tEYAKY8W5Zsxkm6G', '0', '', '2022-11-16 18:03:20', '2022-11-16 17:04:11', 1, 'admin');
 
 -- --------------------------------------------------------
 
@@ -230,6 +266,33 @@ INSERT INTO `cv` (`id`, `userID`, `file`, `dateAdded`, `lastUpdated`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `instDepartment`
+--
+
+CREATE TABLE `instDepartment` (
+  `id` int(11) NOT NULL,
+  `instID` int(11) NOT NULL,
+  `department` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `instDepartment`
+--
+
+INSERT INTO `instDepartment` (`id`, `instID`, `department`, `dateAdded`, `lastUpdated`) VALUES
+(1, 25, 'Human Resource', '2022-11-06 20:01:32', '2022-11-14 23:27:03'),
+(2, 25, 'E-Banking', '2022-11-12 19:11:51', '2022-11-14 23:27:11'),
+(4, 25, 'Procurement', '2022-11-12 18:39:07', '2022-11-14 23:27:17'),
+(9, 25, 'IT', '2022-11-12 19:13:24', '2022-11-14 23:27:19'),
+(10, 25, 'Accounts', '2022-11-12 19:17:00', '2022-11-14 23:27:21'),
+(11, 25, 'Marketing', '2022-11-12 19:17:16', '2022-11-14 23:27:29'),
+(12, 25, 'workHardPlayHard', '2022-11-16 14:58:09', '2022-11-16 13:58:09');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `institute`
 --
 
@@ -251,8 +314,43 @@ CREATE TABLE `institute` (
 --
 
 INSERT INTO `institute` (`id`, `userID`, `name`, `phone`, `email`, `website`, `address`, `avatar`, `dateJoined`, `lastUpdated`) VALUES
-(1, 3, 'Great Zimbabwe University', '4228844', 'info@gzu.ac.zw', 'http://www.gzu.co.zw', 'Masvingo, Harera ', '', '2021-02-02', '2022-11-04 18:39:30'),
-(2, 2, 'Midlands State University', '4228844', 'info@msu.ac.zw', 'http://www.msu.co.zw', 'Gweru ', '', '2021-02-02', '2022-11-04 18:39:40');
+(1, 25, 'Great Zimbabwe University', '4228844', 'info@gzu.ac.zw', 'http://www.gzu.co.zw', 'Masvingo, Harera ', '', '2021-02-02', '2022-11-14 23:10:05'),
+(2, 2, 'Midlands State University', '4228844', 'info@msu.ac.zw', 'http://www.msu.co.zw', 'Gweru ', '', '2021-02-02', '2022-11-04 18:39:40'),
+(3, 210, 'HARARE INSTITUTE OF TECHNOLOGY', '', '', '', '', '', '2022-11-16 18:05:18', '2022-11-16 17:05:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `institute_sub_accounts`
+--
+
+CREATE TABLE `institute_sub_accounts` (
+  `id` int(11) NOT NULL,
+  `instID` int(11) NOT NULL,
+  `name` varchar(225) NOT NULL,
+  `surname` varchar(225) NOT NULL,
+  `sex` varchar(225) NOT NULL,
+  `avatar` varchar(225) NOT NULL,
+  `email` varchar(225) NOT NULL,
+  `phone` varchar(225) NOT NULL,
+  `password` varchar(225) NOT NULL,
+  `department` varchar(225) NOT NULL,
+  `description` varchar(10000) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` int(11) NOT NULL,
+  `role` varchar(225) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `institute_sub_accounts`
+--
+
+INSERT INTO `institute_sub_accounts` (`id`, `instID`, `name`, `surname`, `sex`, `avatar`, `email`, `phone`, `password`, `department`, `description`, `dateAdded`, `lastUpdate`, `status`, `role`) VALUES
+(1, 25, 'LIZ', 'CHABATA', 'MALE', '../profileImages/63735740afb264.06500411.jpg', '', '0783337722', '$2y$10$mP62rjECtQqvPxsyenzk2.LhcGltPjQJ1dNyRi6KAbbnN4y6Exoou', '9', '', '2022-11-15 01:14:28', '2022-11-16 14:06:37', 1, 'admin'),
+(15, 25, 'KUREVA', 'GHII', 'MALE', '', '', '', '$2y$10$gqKVyJkFfUhshz8cW74SBOJnkbQIMWkcN1jdii3QAnnhSKxvq.NlS', '2', '', '2022-11-16 14:53:21', '2022-11-16 14:07:56', 1, 'adminSupervisor'),
+(16, 25, 'BEST', 'OFALL', 'FEMALE', '', '', '', '$2y$10$8uxdklwWVFEKLTjXuRMGmOsDPbHzFQOT7YYogNydx8NfNsggTP9gq', '10', '', '2022-11-16 15:41:10', '2022-11-16 14:42:06', 1, 'supervisor'),
+(17, 210, 'First', 'Sub-Account', 'PRIVATE', '', '', '', '$2y$10$6yNIL27EB1pHwkEZk7pEWOd46rvyhyLVX/ONRAcaGx8Nx3Wj2qii6', '0', '', '2022-11-16 18:05:18', '2022-11-16 17:05:57', 1, 'admin');
 
 -- --------------------------------------------------------
 
@@ -360,6 +458,7 @@ CREATE TABLE `studentEducation` (
   `schoolID` int(11) NOT NULL,
   `programID` varchar(225) NOT NULL,
   `programType` varchar(225) NOT NULL,
+  `supervisorID` varchar(11) NOT NULL,
   `initial_year` varchar(225) NOT NULL,
   `final_year` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -369,21 +468,21 @@ CREATE TABLE `studentEducation` (
 -- Dumping data for table `studentEducation`
 --
 
-INSERT INTO `studentEducation` (`id`, `userID`, `schoolID`, `programID`, `programType`, `initial_year`, `final_year`, `lastUpdated`) VALUES
-(1, 23, 3, '1', 'Bachelor', '2018-03-01', '2021-12-07', '2022-11-02 15:33:24'),
-(2, 26, 0, '0', '0', '2018-01-01', '2021-02-02', '2021-11-01 19:14:55'),
-(3, 27, 0, '0', '0', '2019-01-01', '2022-01-01', '2021-11-02 15:24:50'),
-(5, 29, 3, '1', 'Bachelor', '2021-01-03', '2021-07-30', '2022-11-03 01:53:14'),
-(6, 33, 3, '1', 'Masters', '2020-01-29', '2023-12-29', '2022-10-20 11:47:38'),
-(7, 34, 0, '0', '0', '2022-03-31', '2022-03-31', '2022-03-29 19:25:24'),
-(8, 35, 0, '0', '0', '2022-03-30', '2022-03-30', '2022-03-29 19:33:41'),
-(9, 36, 2, '1', 'Bachelor', '2020-02-29', '2022-11-17', '2022-10-20 11:47:40'),
-(10, 37, 2, '1', 'Bachelor', '2018-03-02', '2022-11-18', '2022-10-20 11:47:47'),
-(11, 39, 2, '1', 'Bachelor', '2022-07-04', '2022-07-27', '2022-10-20 11:47:49'),
-(12, 40, 2, '1', 'Bachelor', '2018-02-28', '2022-12-05', '2022-10-20 11:47:51'),
-(13, 201, 2, '1', 'Bachelor', '2022-10-16', '2022-10-16', '2022-10-20 11:47:53'),
-(15, 28, 3, '2', 'Bachelor', '2019-02-01', '2022-12-01', '2022-10-29 20:46:52'),
-(16, 203, 2, '2', 'Masters', '2021-01-01', '2024-01-02', '2022-10-29 22:54:13');
+INSERT INTO `studentEducation` (`id`, `userID`, `schoolID`, `programID`, `programType`, `supervisorID`, `initial_year`, `final_year`, `lastUpdated`) VALUES
+(1, 23, 25, '1', 'Bachelor', '15', '2018-03-01', '2021-12-07', '2022-11-16 14:22:26'),
+(2, 26, 25, '1', 'Masters', '15', '2018-01-01', '2021-02-02', '2022-11-16 14:34:25'),
+(3, 27, 25, '0', '0', '0', '2019-01-01', '2022-01-01', '2022-11-15 18:36:05'),
+(5, 29, 25, '1', 'Bachelor', '16', '2021-01-03', '2021-07-30', '2022-11-16 14:41:37'),
+(6, 33, 25, '1', 'Masters', '0', '2020-01-29', '2023-12-29', '2022-11-15 18:36:05'),
+(7, 34, 25, '0', '0', '0', '2022-03-31', '2022-03-31', '2022-11-15 18:36:05'),
+(8, 35, 2, '0', '0', '0', '2022-03-30', '2022-03-30', '2022-11-15 18:37:52'),
+(9, 36, 25, '1', 'Bachelor', '16', '2020-02-29', '2022-11-17', '2022-11-16 14:41:50'),
+(10, 37, 25, '1', 'Bachelor', '0', '2018-03-02', '2022-11-18', '2022-11-15 18:36:05'),
+(11, 39, 25, '1', 'Bachelor', '0', '2022-07-04', '2022-07-27', '2022-11-15 18:36:05'),
+(12, 40, 25, '1', 'Bachelor', '0', '2018-02-28', '2022-12-05', '2022-11-15 18:36:05'),
+(13, 201, 25, '1', 'Bachelor', '0', '2022-10-16', '2022-10-16', '2022-11-15 18:36:05'),
+(15, 28, 25, '2', 'Bachelor', '0', '2019-02-01', '2022-12-01', '2022-11-15 18:36:05'),
+(16, 203, 25, '2', 'Masters', '0', '2021-01-01', '2024-01-02', '2022-11-15 18:36:05');
 
 -- --------------------------------------------------------
 
@@ -417,12 +516,12 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `user_id`, `name`, `surname`, `nationalID`, `email`, `phone`, `dob`, `sex`, `marital`, `avatar`, `homeAddress`, `postalAddress`, `nationality`, `religion`, `aboutSelf`, `attachmentStatus`, `lastUpdatedStudent`) VALUES
-(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 0, '2022-11-13 19:25:17'),
+(18, '23', 'TANAKA', 'KADZUNGE', '59-180971R42', 'tkadzzz@gmail.com', '0782956402', '1996-05-09', 'MALE', 'SINGLE', '../profileImages/63517a7930e803.30930419.jpg', '31193 unit m', 'postal address #2', 'ZIMBABWE', 'CHRISTIANITY', 'ndanzwa nekurambwa', 1, '2022-11-13 19:45:11'),
 (19, '24', 'PANASHE', 'MURWISI', '', 'panashemurwisi@gmail.com', '722233332', '1998-01-01', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'l love you all with all my heart', 0, '2021-10-31 06:16:41'),
 (20, '26', 'TEST', 'USER', '', '', '0782226633', '2005-01-31', 'FEMALE', 'MARRIED', '', '', '', 'SOUTH AFRICA', 'HINDU', 'a strong hindu believer', 0, '2021-11-01 19:14:26'),
 (21, '27', 'TERRY', 'KAYZ0', '', '', '782266333', '1997-02-03', 'N_A', 'PRIVATE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'nothing special to tell', 0, '2021-11-02 15:24:14'),
-(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 0, '2022-11-13 19:33:50'),
-(23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 0, '2022-11-12 18:23:45'),
+(22, '28', 'AALIYAH', 'MUSHONGA', '59-180971R43', 'aaliyahmuzuva@gmail.com', '0782267012', '1999-04-29', 'FEMALE', 'SINGLE', '../profileImages/635d99edd3e046.46589701.jpg', '', '', 'ZIMBABWE', 'CHRISTIANITY', '', 1, '2022-11-13 22:45:45'),
+(23, '29', 'WLLIAM', 'ZAMBEZI', '59-180971R44', 'williamjuniorzambezi@gmail.com', '0713632330', '2002-05-21', 'MALE', 'MARRIED', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'boss baby', 1, '2022-11-16 14:43:14'),
 (26, '32', 'NUMERIC', 'USER', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2022-03-29 19:11:33'),
 (27, '33', 'NUMERIC', 'USERA', '', '', '782273383', '2001-02-28', 'FEMALE', 'SINGLE', '', '', '', 'ZIMBABWE', 'CHRISTIANITY', 'N/A', 0, '2022-03-29 19:16:25'),
 (28, '34', 'TEST', 'USERB', '', '', '700000000', '2005-06-22', 'MALE', 'SINGLE', '', '', '', 'BARBADOS', 'MD', '', 0, '2022-03-29 19:25:05'),
@@ -473,7 +572,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `loginID`, `password`, `role`, `joined`, `regStatus`, `status`, `lastUpdated`) VALUES
 (26, 'R111111', '$2y$10$z6nVn2tA7Q4EUAjkL7U5PuwdoQFWbHy82zK/QfjGDMm09YIGqugdS', 'student', '2021-11-01 08:11:13', 4, 1, '2021-11-01 19:14:55'),
 (24, 'R000000', '$2y$10$/7u3Onc/osZ6IFZWxckWneHC3PZ5NOCLanPHOpLfpa1uz5sP4QHVS', 'student', '2021-10-31 07:10:13', 3, 1, '2021-10-31 06:16:41'),
-(25, 'gzu101', '$2y$10$ezd/YqAs4sTmMdzCm8jxNeo8fLK1fj7WbpRU6zZAjgnA0Ds9ZRGle', 'institute', '2021-10-12 04:10:14', 1, 1, '2021-10-31 09:56:17'),
+(25, 'gzu101', '$2y$10$ezd/YqAs4sTmMdzCm8jxNeo8fLK1fj7WbpRU6zZAjgnA0Ds9ZRGle', 'institute', '2021-10-12 04:10:14', 5, 1, '2022-11-14 22:49:58'),
 (23, 'M186483', '$2y$10$pg0/uCdHax5p3..Y0rOMou5I46b0zcn0/x53Zmyq47Mriwil22USC', 'student', '2021-10-12 04:10:14', 5, 1, '2022-04-30 20:01:02'),
 (27, 'T000000', '$2y$10$T6XVqSq6gjYx9rfuTR4J/OAJfhBEUIHzxM2LH2J6DPdXtuGzTYOs2', 'student', '2021-11-02 04:11:22', 4, 1, '2021-11-02 15:30:51'),
 (28, 'M192850', '$2y$10$cNuIm3ZLjBEvBvaJ2EgWE.yWy1BpVmar2tz2WsEsZSrgus4QRCpre', 'student', '2021-11-05 05:11:46', 5, 1, '2022-10-29 20:47:04'),
@@ -491,9 +590,11 @@ INSERT INTO `users` (`id`, `loginID`, `password`, `role`, `joined`, `regStatus`,
 (200, 'comp1', '$2y$10$AnebUYscsEfTAOFllNkJreZPbiiVhs7yMLzKO9VsdgIV4PD3epEfm', 'company', '2022-05-18 10:05:25', 5, 1, '2022-05-21 17:47:11'),
 (201, 'M203673', '$2y$10$f9fElhhFjjZpckM6si9lc.9jHo7Y4MrWkV7kgffwBid31JgBVLXfa', 'student', '2022-10-16 01:10:22', 5, 1, '2022-10-16 11:27:22'),
 (2, 'mymsu', '$2y$10$pg0/uCdHax5p3..Y0rOMou5I46b0zcn0/x53Zmyq47Mriwil22USC', 'institute', '2022-10-16 01:10:22', 5, 1, '2022-10-20 11:46:54'),
-(3, 'gzu', '$2y$10$pg0/uCdHax5p3..Y0rOMou5I46b0zcn0/x53Zmyq47Mriwil22USC', 'institute', '2022-10-16 01:10:22', 5, 1, '2022-10-20 11:46:56'),
+(209, 'Rainy', '$2y$10$NufI7uee76/oG3jUldYBTOxLIWkRZn4lJNr5LHuikgnx3M5QCncjO', 'company', '2022-11-16 18:03:20', 5, 1, '2022-11-16 17:03:48'),
 (203, 'M898989', '$2y$10$TrbPnvXtpIok03u73bSN0OZivkxY0lPK18v.BAbEngmssxI2KZMUW', 'student', '2022-10-30 12:10:52', 5, 1, '2022-10-29 22:54:23'),
-(205, 'TESTING', '$2y$10$hx/cY/eDH8N3zMhEH5snhuXGpp2KZg3QLyS2./0Gqlu2NbY6AMchC', 'student', '2022-11-02 06:11:17', 2, 1, '2022-11-02 17:17:05');
+(205, 'TESTING', '$2y$10$hx/cY/eDH8N3zMhEH5snhuXGpp2KZg3QLyS2./0Gqlu2NbY6AMchC', 'student', '2022-11-02 06:11:17', 2, 1, '2022-11-02 17:17:05'),
+(208, 'yyyyyy', '$2y$10$.iABH5KCplZXGK/7NPB6teV6v.zG6lId.e/.7Z4crB50VX/KE/cii', 'company', '2022-11-16 17:44:41', 5, 1, '2022-11-16 17:00:41'),
+(210, 'hitict', '$2y$10$FWcEUJ9GBdHuNCS14o0xmOPxo.GuepZbwJzetyIRfMEf/J9s0mmz6', 'institute', '2022-11-16 18:05:18', 5, 1, '2022-11-16 17:05:42');
 
 -- --------------------------------------------------------
 
@@ -522,9 +623,7 @@ CREATE TABLE `vacancies` (
 --
 
 INSERT INTO `vacancies` (`id`, `companyID`, `subID`, `uniqueID`, `title`, `location`, `body`, `cartegory`, `expiryDate`, `datePosted`, `dateOnline`, `lastUpdated`, `status`) VALUES
-(2, 38, 2, 'a771db40bf0ba5de94917f852483e4ae', 'wennnnc', 'nmnsd', 'nnndndnndndndnndnd', 2, '2022-09-13', '2022-09-12 11:09:35', '2022-09-12', '2022-09-12 09:35:45', 1),
 (3, 200, 4, '54543afaef97cd6610cce8a506ed2348', 'wennnnc', 'nmnsd', 'nnndndnndndndnndnd', 2, '2022-09-13', '2022-09-12 11:09:36', '2022-09-12', '2022-10-21 20:34:34', 1),
-(4, 38, 2, 'ee431d0da8ce9de44c12f574376b07cc', 'sakjhsa', 'mnxsa', 'bn,na,maN,MNA,MNs,mnA,MNS', 3, '2022-09-17', '2022-09-16 04:09:59', '2022-09-16', '2022-09-16 14:59:21', 1),
 (5, 38, 2, 'cec1e189d23eee5ac7010517d2cbb6d7', 'yywyw', 'nnnsa', 'nnsdsddsdsddsds', 2, '2022-09-17', '2022-09-16 05:09:07', '2022-09-07', '2022-09-17 10:55:56', 1),
 (6, 38, 2, '0e530284167711b3cf57c0785bbe426c', 'a new vacancy', 'harare', 'this is jjust a simple ody', 2, '2022-09-29', '2022-09-17 01:09:25', '2022-09-22', '2022-09-17 11:38:01', 1),
 (7, 38, 2, '9d6d9f12020f2cfcb5ca24d474bff70f', '2nd vacancy', 'harare', 'this is just a body', 2, '2022-10-09', '2022-09-17 02:09:50', '2022-09-17', '2022-09-17 12:50:12', 0),
@@ -613,6 +712,12 @@ INSERT INTO `vacancyQualifications` (`id`, `vacancyID`, `qualification`, `dateAd
 --
 
 --
+-- Indexes for table `admin_sub_acc`
+--
+ALTER TABLE `admin_sub_acc`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `applications`
 --
 ALTER TABLE `applications`
@@ -662,9 +767,21 @@ ALTER TABLE `cv`
   ADD UNIQUE KEY `userID` (`userID`);
 
 --
+-- Indexes for table `instDepartment`
+--
+ALTER TABLE `instDepartment`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `institute`
 --
 ALTER TABLE `institute`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `institute_sub_accounts`
+--
+ALTER TABLE `institute_sub_accounts`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -738,6 +855,12 @@ ALTER TABLE `vacancyQualifications`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_sub_acc`
+--
+ALTER TABLE `admin_sub_acc`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
@@ -753,7 +876,7 @@ ALTER TABLE `attachmentReports`
 -- AUTO_INCREMENT for table `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `attachmentsHistory`
@@ -765,19 +888,19 @@ ALTER TABLE `attachmentsHistory`
 -- AUTO_INCREMENT for table `company`
 --
 ALTER TABLE `company`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `companyDepartment`
 --
 ALTER TABLE `companyDepartment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `company_sub_accounts`
 --
 ALTER TABLE `company_sub_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `cv`
@@ -786,10 +909,22 @@ ALTER TABLE `cv`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `instDepartment`
+--
+ALTER TABLE `instDepartment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `institute`
 --
 ALTER TABLE `institute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `institute_sub_accounts`
+--
+ALTER TABLE `institute_sub_accounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `logbooks`
@@ -837,7 +972,7 @@ ALTER TABLE `supervisorReports`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=211;
 
 --
 -- AUTO_INCREMENT for table `vacancies`

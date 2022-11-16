@@ -57,12 +57,10 @@ if(isset($_SESSION['subID'])){
     $id = $_SESSION['id'];
     $records = 8;
 
-    if(isset($_GET['search'])){
-        if(isset($_SESSION['search'])){
+    if(isset($_GET['search']) AND isset($_SESSION['search']) ){
             $search = $_SESSION['search'];
             $query = "SELECT * FROM company_sub_accounts WHERE companyID='$id' AND name LIKE '%$search%' OR companyID='$id' AND surname LIKE '%$search%' ORDER BY role ASC";
             unset($_SESSION['search']);
-        }
     }
     else{
         $query = "SELECT * FROM company_sub_accounts WHERE companyID='$id' ORDER BY role ASC";

@@ -8,7 +8,9 @@ include 'includes/subAccSessionFilter.inc.php';
 <h4 class="pt-3">All Vacancies</h4>
 <div class="container mt-4 mb-4">
     <div class="btn btn-outline-secondary btn-sm rounded text-decoration-none" data-size="large"><a href="javascript:history.back()" class="fb-xfbml-parse-ignore"><span class="fa fa-chevron-circle-left"></span> Back</a></div>
-
+    <br>
+    <br>
+    <a class="btn btn-outline-primary" href="postVacancy.php">Post Vacancy <span class="fa fa-send"></span></a>
 
     <div id="--printableArea" class="card-box">
         <h4 class="mt-0 header-title"></h4>

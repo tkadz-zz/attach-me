@@ -33,7 +33,7 @@ include 'includes/subAccSessionFilter.inc.php';
                 <ul>
                     <li>Search is for registered student accounts only</li>
                     <li>Search works only with National ID</li>
-                    <li>National ID should be 12 characters long to search</li>
+                    <li>National ID should be 12 or 13 characters long to search</li>
                     <li>format should be as follows: 01-234567R89</li>
                     <br>
                     <strong>NB: This setup is done to protect other student's privacy</strong>
@@ -49,7 +49,7 @@ include 'includes/subAccSessionFilter.inc.php';
         <form method="POST" action="includes/studentAccSearch.inc.php">
             <div class="inner-form">
                 <div class="input-field second-wrap">
-                    <input <?php if(isset($_SESSION['search'])){?> value="<?php echo $_SESSION['search'] ?>" <?php } ?> id="search"  name="search" type="text" placeholder="Enter full National ID(xx-xxxxxxRxx)" pattern="[-a-zA-Z0-9]+" minlength="12" maxlength="12" required/>
+                    <input <?php if(isset($_SESSION['search'])){?> value="<?php echo $_SESSION['search'] ?>" <?php } ?> id="search"  name="search" type="text" placeholder="Enter full National ID(xx-xxxxxxRxx)" pattern="[-a-zA-Z0-9]+" minlength="12" maxlength="13" required/>
                 </div>
                 <div class="input-field third-wrap">
                     <button class="btn-search" name="btn-search" type="submit">

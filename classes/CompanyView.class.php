@@ -63,11 +63,23 @@ class CompanyView extends Users
                                     </select>
                                 </div>
                                 <br>
-                                <span style="font-size: 13px">Department </span> : <span class="badge badge-secondary text-dark"><?php echo $deptRows[0]['department'] ?></span>
+                                <span style="font-size: 13px">Department </span> : <span class="badge badge-secondary text-dark">
+                                <?php
+                                    if ($subAccRows[0]['department'] != 0) {
+                                        echo $deptRows[0]['department'];
+                                    }
+                                    ?>
+                                </span>
                                     <br>
                                 <div class="pt-2">
                                     <select name="subDept" class="form-control form-select">
-                                        <option value="<?php echo $subAccRows[0]['department']  ?>"><?php echo $deptRows[0]['department'] ?> (current)</option>
+                                        <?php
+                                        if($subAccRows[0]['department'] != 0){
+                                        ?>
+                                            <option value="<?php echo $subAccRows[0]['department']  ?>"><?php echo $deptRows[0]['department'] ?> (current)</option>
+                                            <?php
+                                        }
+                                            ?>
                                         <?php
                                         $this->ViewCompanyDeptLoop($companyID);
                                         ?>
@@ -101,6 +113,16 @@ class CompanyView extends Users
 
                             </form>
                         </div>
+                        <div class="col-md-4">
+                            <label>Advanced Options</label>
+                            <br>
+                            <br>
+                            <a href="includes/resetSubAccPassword.inc.php?subID=<?php echo $subID ?>" class="btn btn-outline-info">Reset Password <span class="mdi mdi-lock-open"></span></a>
+                            <br>
+                            <br>
+                            <a onclick="return confirm('This Account will be deleted permanently. Proceed?')" href="includes/addSubAcc.inc.php?delSubAcc&subID=<?php echo $subID ?>" class="btn btn-outline-danger">Delete This Account <span class="mdi mdi-trash-can"></span></a>
+
+                        </div>
                         <hr>
                         <?php
                         if($subAccRows[0]['role'] != 'admin'){
@@ -117,7 +139,13 @@ class CompanyView extends Users
                                     <th>Name</th>
                                     <th>Surname</th>
                                     <th>Reg#</th>
+                                    <?php
+                                    if($_SESSION['role'] == 'company'){
+                                    ?>
                                     <th>Contract Status</th>
+                                        <?php
+                                    }
+                                        ?>
                                     <th>More</th>
                                 </tr>
                                 </thead>
@@ -237,8 +265,8 @@ class CompanyView extends Users
             ?>
             <tr>
                 <td><?php echo $s ?> </td>
-                <td><?php echo $subAccRow['name'] ?></td>
-                <td><?php echo $subAccRow['surname'] ?></td>
+                <td><a href="subAccProfile.php?subID=<?php echo $subAccRow['id'] ?>"><?php echo $subAccRow['name'] ?></a></td>
+                <td><a href="subAccProfile.php?subID=<?php echo $subAccRow['id'] ?>"><?php echo $subAccRow['surname'] ?></a></td>
                 <td>
                     <?php
                     if($subAccRow['department'] == 0){
@@ -276,7 +304,6 @@ class CompanyView extends Users
                         <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
                             <h6 class="dropdown-header">More</h6>
                             <a class="dropdown-item" href="subAccProfile.php?subID=<?php echo $subAccRow['id'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
-                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="#!"><span class="fa fa-trash"></span> Delete</a>
                         </div>
                     </div>
                 </td>
@@ -296,23 +323,28 @@ class CompanyView extends Users
             $studentRows = $this->GetStudentByID($attachedRow['userID']);
             $userRows = $this->GetUser($attachedRow['userID']);
             $subAccRows = $this->GetSubAccByID($attachedRow['supervisorID']);
-
-            if($attachedRow['dateEnd'] >= date('Y-m-d')){
-                $borderClass = 'success';
-                $attStat = 'valid';
-            }
-            else{
-                $borderClass = 'danger';
-                $attStat = 'expired ' .$this->timeAgo($attachedRow['dateEnd']);
+            if($_SESSION['role'] == 'company') {
+                if ($attachedRow['dateEnd'] >= date('Y-m-d')) {
+                    $borderClass = 'success';
+                    $attStat = 'valid';
+                } else {
+                    $borderClass = 'danger';
+                    $attStat = 'expired ' . $this->timeAgo($attachedRow['dateEnd']);
+                }
             }
             ?>
             <tr>
-                <td><?php echo $s ?> </td>
-                <td><?php echo $studentRows[0]['name'] ?></td>
-                <td><?php echo $studentRows[0]['surname'] ?></td>
+                <td><?php echo $s ?></td>
+                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><?php echo $studentRows[0]['name'] ?></a></td>
+                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><?php echo $studentRows[0]['surname'] ?></a></td>
                 <td><?php echo $userRows[0]['loginID'] ?></td>
-                <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
-
+                <?php
+                if($_SESSION['role'] == 'company'){
+                    ?>
+                    <td class="alert alert-<?php echo $borderClass ?>"><span class="badge badge-<?php echo $borderClass ?>"><?php echo $attStat?></span></td>
+                    <?php
+                    }
+                ?>
                 <td>
                     <div class="-dropdown" style="z-index: 9999">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -321,7 +353,6 @@ class CompanyView extends Users
                         <div style="z-index: 9999" class="dropdown-menu" aria-labelledby="dropdownMenuIconButton6">
                             <h6 class="dropdown-header">More</h6>
                             <a class="dropdown-item" href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><span class="fa fa-pencil"></span> View Profile </a>
-                            <a onclick="return confirm('This vacancy application will be deleted. Proceed?')" class="dropdown-item" href="#!"><span class="fa fa-trash"></span> Delete</a>
                         </div>
                     </div>
                 </td>
@@ -352,14 +383,14 @@ class CompanyView extends Users
             ?>
             <tr>
                 <td><?php echo $s ?> </td>
-                <td><?php echo $studentRows[0]['name'] ?></td>
-                <td><?php echo $studentRows[0]['surname'] ?></td>
+                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><?php echo $studentRows[0]['name'] ?></a></td>
+                <td><a href="studentProfile.php?userID=<?php echo $studentRows[0]['user_id'] ?>&nID=<?php echo $studentRows[0]['nationalID'] ?>"><?php echo $studentRows[0]['surname'] ?></a></td>
                 <td><?php echo $userRows[0]['loginID'] ?></td>
                 <td>
                     <?php
                     if($subAccRows != NULL){
                         ?>
-                        <span><a href="#!"><?php echo $subAccRows[0]['name'] .' '.  $subAccRows[0]['surname']; ?> <span class="fa fa-arrow-circle-right"></span></a></span>
+                        <span><a href="subAccProfile.php?subID=<?php echo $subAccRows[0]['id'] ?>"><?php echo $subAccRows[0]['name'] .' '.  $subAccRows[0]['surname']; ?> <span class="fa fa-arrow-circle-right"></span></a></span>
                         <?php
                     }
                     else{
@@ -389,8 +420,15 @@ class CompanyView extends Users
     }
 
 
-    public function countCompanyDepartments($companyID){
-        $subAccRows = $this->GetDeptByCompanyID($companyID);
+    public function countCompanyVacancies($companyID){
+        $subAccRows = $this->GetAllVacancyByCompanyID($companyID);
+        $n = new Usercontr();
+        $n->myCount($subAccRows);
+    }
+
+    public function countCompanyDepartments($accID){
+        //this method is used by both companies and intitutes
+        $subAccRows = $this->GetDeptByCompanyID($accID);
         $n = new Usercontr();
         $n->myCount($subAccRows);
     }
@@ -778,10 +816,10 @@ class CompanyView extends Users
                                                     </span></li>
                                             <?php
                                             if($_SESSION['id'] == $attchementRows[0]['companyID']){
-                                                $attachmentRows
+
                                                 ?>
                                                 <hr>
-                                                <li><span>Attached By</span> : <span><a href="subAccProfile.php?userID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?> <span class="fa fa-arrow-circle-right"></a> </span></li>
+                                                <li><span>Attached By</span> : <span><a href="subAccProfile.php?subID=<?php echo $subAccRows[0]['id']  ?>"><?php echo $subAccRows[0]['name'] .' '. $subAccRows[0]['surname']  ?> <span class="fa fa-arrow-circle-right"></a> </span></li>
                                                 <li><span>On</span> : <span><?php echo $this->dayDate($attchementRows[0]['dateAdded']) ?></span></li>
                                                 <?php
                                             }
@@ -805,7 +843,11 @@ class CompanyView extends Users
                                                 $cvRows = $this->GetCvByUserID($studentRows[0]['user_id']);
                                                 if($cvRows == NULL){
                                                     ?>
-                                                    <h6 class="badge-danger rounded">Not Available <span class="fa fa-exclamation"></span></h6>
+                                                    <div -class="dropdown">
+                                                        <button class="btn btn-danger btn-sm -dropdown-toggle" type="button" id="dropdownMenuIconButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            No Available
+                                                        </button>
+                                                    </div>
                                                     <?php
                                                 }
                                                 else{
@@ -873,7 +915,7 @@ class CompanyView extends Users
                                                             if($this->GetSubAccByID($attchementRows[0]['supervisorID']) != NULL){
                                                                 $supervisorRows = $this->GetSubAccByID($attchementRows[0]['supervisorID']);
                                                                 ?>
-                                                                <a href="#!"><?php echo $supervisorRows[0]['name'] .' '. $supervisorRows[0]['surname'];  ?> <span class="fa fa-arrow-circle-right"></span></a>
+                                                                <a href="subAccProfile.php?subID=<?php echo $supervisorRows[0]['id']?>"><?php echo $supervisorRows[0]['name'] .' '. $supervisorRows[0]['surname'];  ?> <span class="fa fa-arrow-circle-right"></span></a>
                                                                 <?php
                                                             }
                                                             else{
@@ -924,7 +966,7 @@ class CompanyView extends Users
                             </div>
                             <ul>
                                 <?php
-                                if($studentRows[0]['attachmentStatus'] != 1){
+                                if($studentRows[0]['attachmentStatus'] != 1 AND $_SESSION['subRole'] == 'admin'){
                                     ?>
                                     <hr>
                                     <form method="POST" action="includes/attach.inc.php">
@@ -951,7 +993,7 @@ class CompanyView extends Users
                                 ?>
 
                                 <?php
-                                if($studentRows[0]['attachmentStatus'] == '1' AND $_SESSION['id'] == $attchementRows[0]['companyID']){
+                                if($studentRows[0]['attachmentStatus'] == '1' AND $_SESSION['id'] == $attchementRows[0]['companyID'] AND $_SESSION['subRole'] == 'admin'){
                                 ?>
 
                                 <hr>
@@ -1052,90 +1094,7 @@ class CompanyView extends Users
     }
 
 
-    public function companyViewProfile($id){
-        $userRole = $this->isUser($id, $_SESSION['role']);
-        ?>
-        <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
-            <div class="row ">
-                <div class="col-md-3 border-right">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
 
-                        <?php
-
-                        $n = new StudentView();
-                        $n->sexProfileImageView($id, $userRole[0]['sex']);
-
-                        ?>
-
-                        <span class="font-weight-bold"><?php echo $userRole[0]['name'] .' '. $userRole[0]['surname']   ?></span>
-                        <span class="text-black-50"><?php echo $userRole[0]['email'] ?></span>
-                        <span> </span>
-                    </div>
-                </div>
-
-
-                <div class="col-md-5 border-right">
-                    <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right card-header">Profile Settings</h4>
-
-                        </div>
-                        <form method="post" action="includes/subAccProfileUpdate.inc.php" >
-                            <div class="row mt-2">
-                                <div class="col-md-6">
-                                    <label class="labels">Name</label>
-                                    <input name="name" type="text" class="form-control" placeholder="first name" value="<?php echo $userRole[0]['name'] ?>" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="labels">Surname</label>
-                                    <input name="surname" type="text" class="form-control" value="<?php echo $userRole[0]['surname'] ?>" placeholder="surname" required>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-12">
-                                    <label class="labels">Mobile Number (<span>07** *** ***</span>) </label>
-                                    <input name="phone" type="number" max="0799999999" min="0700000000" class="form-control" placeholder="enter phone number" value="<?php echo $userRole[0]['phone'] ?>">
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="labels">Email ID</label>
-                                    <input name="email" type="email" class="form-control" placeholder="enter email" value="<?php echo $userRole[0]['email'] ?>">
-                                </div>
-
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <label class="labels">Sex</label>
-                                    <select name="sex" class="form-control">
-                                        <?php
-                                        $extraV = new ExtraViews();
-                                        $extraV->studentGender($_SESSION['subID']);
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="mt-5 text-center">
-                                    <button name="btn_updateProfile" class="btn btn-primary" type="submit">Save Profile</button>
-                                </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <div class="col-md-4">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center experience">
-                        <span>Additional Settings</span>
-                    </div>
-                    <hr>
-                    <a href="password.php" class="btn btn-dark align-items-center"> <span class="fa fa-lock"></span> Change Password <span class="fa fa-arrow-right"></span></a>
-                    <br>
-                </div>
-            </div>
-        </div>
-        </div>
-        <?php
-    }
 
     public function viewAllCompanyVacancyCategoriesLoopTable($id){
         $rows = $this->GetAllVacancyCategorysByCompanyID($id);
@@ -1222,7 +1181,7 @@ class CompanyView extends Users
                                     <?php
                                 }
                                 ?>
-                                <li><a onclick="return confirm('You are about to delete this Vacancy. Proceed?')" href="vacancy.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-trash"></span> Delete </a></li>
+                                <li><a onclick="return confirm('You are about to delete this Vacancy. Proceed?')" href="includes/postVacancy.inc.php?delVacancy&vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-danger btn-sm rounded"><span class="fa fa-trash"></span> Delete </a></li>
                                 <li><a href="allVacancies.php" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded">Home <span class="fa fa-home"></span> </a></li>
                                 <li>
                                     <a href="applicants.php?vuid=<?php echo $vuid ?>" class="fb-xfbml-parse-ignore btn btn-outline-primary btn-sm rounded position-relative">

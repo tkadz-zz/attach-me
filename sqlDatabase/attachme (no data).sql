@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2022 at 08:39 PM
+-- Generation Time: Nov 16, 2022 at 06:07 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.10
 
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `attachme`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_sub_acc`
+--
+
+CREATE TABLE `admin_sub_acc` (
+  `id` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `name` varchar(225) NOT NULL,
+  `surname` varchar(225) NOT NULL,
+  `email` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -64,7 +80,7 @@ CREATE TABLE `attachments` (
   `userID` int(11) NOT NULL,
   `companyID` int(11) NOT NULL,
   `subID` int(11) NOT NULL,
-  `supervisorID` int(11) NOT NULL,
+  `supervisorID` varchar(225) NOT NULL,
   `dateAdded` varchar(225) NOT NULL,
   `dateStart` varchar(225) NOT NULL,
   `dateEnd` varchar(225) NOT NULL,
@@ -82,7 +98,7 @@ CREATE TABLE `attachmentsHistory` (
   `id` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
   `companyID` int(11) NOT NULL,
-  `supervisorID` int(11) NOT NULL,
+  `supervisorID` varchar(225) NOT NULL,
   `started` varchar(225) NOT NULL,
   `toEnd` varchar(225) NOT NULL,
   `ended` varchar(225) NOT NULL,
@@ -167,6 +183,20 @@ CREATE TABLE `cv` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `instDepartment`
+--
+
+CREATE TABLE `instDepartment` (
+  `id` int(11) NOT NULL,
+  `instID` int(11) NOT NULL,
+  `department` varchar(225) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `institute`
 --
 
@@ -181,6 +211,30 @@ CREATE TABLE `institute` (
   `avatar` varchar(225) NOT NULL,
   `dateJoined` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `institute_sub_accounts`
+--
+
+CREATE TABLE `institute_sub_accounts` (
+  `id` int(11) NOT NULL,
+  `instID` int(11) NOT NULL,
+  `name` varchar(225) NOT NULL,
+  `surname` varchar(225) NOT NULL,
+  `sex` varchar(225) NOT NULL,
+  `avatar` varchar(225) NOT NULL,
+  `email` varchar(225) NOT NULL,
+  `phone` varchar(225) NOT NULL,
+  `password` varchar(225) NOT NULL,
+  `department` varchar(225) NOT NULL,
+  `description` varchar(10000) NOT NULL,
+  `dateAdded` varchar(225) NOT NULL,
+  `lastUpdate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` int(11) NOT NULL,
+  `role` varchar(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -256,6 +310,7 @@ CREATE TABLE `studentEducation` (
   `schoolID` int(11) NOT NULL,
   `programID` varchar(225) NOT NULL,
   `programType` varchar(225) NOT NULL,
+  `supervisorID` varchar(11) NOT NULL,
   `initial_year` varchar(225) NOT NULL,
   `final_year` varchar(225) NOT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -376,6 +431,12 @@ CREATE TABLE `vacancyQualifications` (
 --
 
 --
+-- Indexes for table `admin_sub_acc`
+--
+ALTER TABLE `admin_sub_acc`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `applications`
 --
 ALTER TABLE `applications`
@@ -425,9 +486,21 @@ ALTER TABLE `cv`
   ADD UNIQUE KEY `userID` (`userID`);
 
 --
+-- Indexes for table `instDepartment`
+--
+ALTER TABLE `instDepartment`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `institute`
 --
 ALTER TABLE `institute`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `institute_sub_accounts`
+--
+ALTER TABLE `institute_sub_accounts`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -501,6 +574,12 @@ ALTER TABLE `vacancyQualifications`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_sub_acc`
+--
+ALTER TABLE `admin_sub_acc`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
@@ -549,9 +628,21 @@ ALTER TABLE `cv`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `instDepartment`
+--
+ALTER TABLE `instDepartment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `institute`
 --
 ALTER TABLE `institute`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `institute_sub_accounts`
+--
+ALTER TABLE `institute_sub_accounts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
