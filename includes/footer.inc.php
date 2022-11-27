@@ -1,10 +1,20 @@
+<!-- Quote/testimonial aside-->
+<aside class="text-center bg-gradient-primary-to-secondary">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-xl-8">
+                <div class="h2 fs-1 text-white mb-4">"An intuitive solution to common problems that most students face during WRL, wrapped up in a single website!"</div>
 
+            </div>
+        </div>
+    </div>
+</aside>
 
 <!-- Footer-->
 <footer class="bg-black text-center py-5">
             <div class="container px-5">
                 <div class="text-white-50 small">
-                    <div class="mb-2">&copy; Your Website 2021. All Rights Reserved.</div>
+                    <div class="mb-2">&copy; Attach-Me 2022. All Rights Reserved.</div>
                     <a href="#!">Privacy</a>
                     <span class="mx-1">&middot;</span>
                     <a href="#!">Terms</a>

@@ -3,6 +3,8 @@
 class CompanyView extends Users
 {
 
+
+
     public function viewSubAccProfile($companyID, $subID){
         $subAccRows = $this->GetSubAccByCompanyAndUserID($companyID, $subID);
         $deptRows = $this->GetDeptById($subAccRows[0]['department']);
@@ -80,6 +82,7 @@ class CompanyView extends Users
                                             <?php
                                         }
                                             ?>
+                                        <option value="0">Set Later</option>
                                         <?php
                                         $this->ViewCompanyDeptLoop($companyID);
                                         ?>
@@ -269,7 +272,7 @@ class CompanyView extends Users
                 <td><a href="subAccProfile.php?subID=<?php echo $subAccRow['id'] ?>"><?php echo $subAccRow['surname'] ?></a></td>
                 <td>
                     <?php
-                    if($subAccRow['department'] == 0){
+                    if($subAccRow['department'] == 0 || $subAccRow['department'] == ''  ){
                         echo '';
                     }
                     else {
@@ -744,9 +747,11 @@ class CompanyView extends Users
                 <div class="col-md-12">
                     <div class="card border border-<?php echo $borderClass ?> border-3">
                         <div class="card-body">
-                            <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
+                            <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $rows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span>
+                            </h4>
                             <div>
                                 <p class="card-description">The following are the details of <?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?></p>
+                                <a href="attachmentHistory.php?userID=<?php echo $id ?>" -style="float: right" class="btn btn-outline-success btn-sm">attachment history <span class="fa fa-chevron-right"></span> </a>
                                 <?php
                                 if(!isset($_GET['nID'])){
                                     ?>
@@ -784,7 +789,7 @@ class CompanyView extends Users
                                         $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
                                         $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
                                         ?>
-                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo $studentEducationRows[0]['schoolID'] ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
                                         <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></span></li>
                                         <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
                                     </ul>
@@ -1129,11 +1134,19 @@ class CompanyView extends Users
             else{
                 $borderClass = 'danger';
             }
+
+            if($vCateg == NULL){
+                $categ = 'Not available';
+            }
+            else{
+                $categ = $vCateg[0]['category'];
+            }
+
             ?>
             <tr>
                 <td><?php echo $s ?> </td>
                 <td><a href="vacancySummery.php?vuid=<?php echo $row['uniqueID'] ?>"><?php echo $row['title'] ?></a></td>
-                <td><?php echo $vCateg[0]['category'] ?></td>
+                <td><?php echo $categ ?></td>
                 <td><?php echo $this->dayDate($row['datePosted']) ?></td>
                 <td><?php echo $this->dayDate($row['dateOnline']);?></td>
                 <td class="alert alert-<?php echo $borderClass ?>"><?php echo $this->dayDate($row['expiryDate']) ?></td>
@@ -1160,6 +1173,13 @@ class CompanyView extends Users
         else{
             $borderClass = 'danger';
             $msg = 'Expired';
+        }
+
+        if($categoryRows == NULL){
+            $categ = 'Not available';
+        }
+        else{
+            $categ = $categoryRows[0]['category'];
         }
 
         ?>
@@ -1218,7 +1238,7 @@ class CompanyView extends Users
                         $addDetRow = $this->GetCompanyById($_SESSION['id']);
                         ?>
                         <li>Vacancy Title: <?php echo $rows[0]['title'] ?></li>
-                        <li>Vacancy Category: <?php echo $categoryRows[0]['category'] ?></li>
+                        <li>Vacancy Category: <?php echo $categ ?></li>
                         <br>
                         <li><span class="fa fa-circle-o text-primary"></span> Posted On: <?php echo $this->dateToDay($rows[0]['datePosted']) ?> (<?php echo $this->timeAgo($rows[0]['datePosted']) ?>)</li>
                         <li><span class="fa fa-circle-o text-success"></span> Online Date: <?php echo $this->dateToDay($rows[0]['dateOnline']) ?></li>
@@ -1497,15 +1517,32 @@ class CompanyView extends Users
 
     public function SubCompanyViewChangePassword($id){
         ?>
+
+        <?php
+        if(isset($_GET['main'])){
+            $main = '?main=acc';
+            if($_SESSION['role'] == 'company'){
+                $myv = 'Company';
+            }
+            if($_SESSION['role'] == 'institute'){
+                $myv = 'institute';
+            }
+        }
+        else{
+            $main = '?main=sub';
+            $myv = '';
+        }
+        ?>
+
         <div class="container card-body col-md-12 card grid-margin stretch-card rounded bg-white mt-4 mb-4">
             <div class="row">
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">Profile Settings</h4>
+                            <h4 class="text-right"><?php echo $myv ?> Profile Password</h4>
 
                         </div>
-                        <form method="post" action="includes/companyUpdate.inc.php" >
+                        <form method="post" action="includes/companyUpdate.inc.php<?php echo $main ?>" >
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels">Current Password</label>

@@ -98,17 +98,6 @@
 
 
 
-    <!-- Quote/testimonial aside-->
-    <aside class="text-center bg-gradient-primary-to-secondary">
-        <div class="container px-5">
-            <div class="row gx-5 justify-content-center">
-                <div class="col-xl-8">
-                    <div class="h2 fs-1 text-white mb-4">"An intuitive solution to common problems that most companies face, wrapped up in a single website!"</div>
-
-                </div>
-            </div>
-        </div>
-    </aside>
 
 
 

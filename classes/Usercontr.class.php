@@ -1,7 +1,10 @@
 <?php
 class Usercontr extends Users{
 
-
+    public function updateMainProfie($loginID, $name, $email, $phone, $address, $website, $userID)
+    {
+        parent::updateMainProfie($loginID, $name, $email, $phone, $address, $website, $userID);
+    }
 
     public function setPassword($loginID, $password, $password_unprotected){
         parent::setPassword($loginID, $password, $password_unprotected);
@@ -170,9 +173,9 @@ class Usercontr extends Users{
         parent::postVacancy($randomSTR, $title, $location, $expDate, $category, $body, $dateAdded, $postOnlineDate, $companyID, $subID);
     }
 
-    public function subCompanyUpdatePassword($op, $cp, $id){
+    public function subCompanyUpdatePassword($op, $cp, $main, $id){
         //This method is also used by institute
-        parent::subCompanyUpdatePassword($op, $cp, $id);
+        parent::subCompanyUpdatePassword($op, $cp, $main, $id);
     }
 
 

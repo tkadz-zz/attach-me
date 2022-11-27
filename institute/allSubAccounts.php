@@ -93,6 +93,7 @@ include 'includes/emptyLayoutBottom.inc.php';
                             <label for="inputEmail4" class="col-form-label">Department</label>
                             <select class="form-control form-select" name="dept" required>
                                 <option value="">-- SELECT DEPARTMENT  --</option>
+                                <option value="0">Set Later</option>
                                 <?php
                                 $n = new CompanyView();
                                 $n->ViewCompanyDeptLoop($_SESSION['id']);

@@ -3,6 +3,14 @@ include("autoloader.inc.php");
 
 
 if (isset($_POST['btn_updatePassword'])){
+    if($_GET['main'] == 'acc'){
+        $userID = $_SESSION['id'];
+    }
+    else{
+        $userID = $_SESSION['subID'];
+    }
+
+    $main = $_GET['main'];
     $op = $_POST['op'];
     $np = $_POST['np'];
     $cp = $_POST['cp'];
@@ -15,7 +23,7 @@ if (isset($_POST['btn_updatePassword'])){
     else{
         try {
             $prof = new Usercontr();
-            $prof->subCompanyUpdatePassword($op, $cp, $_SESSION['subID']);
+            $prof->subCompanyUpdatePassword($op, $cp, $main, $userID);
         } catch (TypeError $e) {
             echo "Error" . $e->getMessage();
         }

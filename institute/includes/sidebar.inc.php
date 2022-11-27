@@ -16,13 +16,6 @@
                 <i class="menu-arrow"></i>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="searchStudent.php">
-                <i class="menu-icon mdi mdi-magnify"></i>
-                <span class="menu-title">Find Student</span>
-                <i class="menu-arrow"></i>
-            </a>
-        </li>
         <?php
         if(isset($_SESSION['subRole']) AND  $_SESSION['subRole'] == 'admin'){
         ?>
@@ -47,6 +40,21 @@
                 </ul>
             </div>
         </li>
+
+            <li class="nav-item nav-category">Institute Profile</li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#form-elementtt" aria-expanded="false" aria-controls="form-elements">
+                    <i class="menu-icon mdi mdi-account-multiple"></i>
+                    <span class="menu-title">Institute Profile</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="form-elementtt">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"><a class="nav-link" href="profileInstitute.php">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="password.php?main=acc">Password</a></li>
+                    </ul>
+                </div>
+            </li>
             <?php
         }
         ?>

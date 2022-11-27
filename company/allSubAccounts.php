@@ -16,7 +16,7 @@ include 'includes/subAccSessionFilter.inc.php';
     <div id="--printableArea" class="card-box">
         <h4 class="mt-0 header-title"></h4>
         <p class="text-muted font-14 mb-3">
-            Showing all attached students
+            Showing all Sub-Accounts
         </p>
         <hr>
         <table id="datatable" class="table table-bordered dt-responsive nowrap">
@@ -124,6 +124,7 @@ include 'includes/emptyLayoutBottom.inc.php';
                             <label for="inputEmail4" class="col-form-label">Department</label>
                             <select class="form-control form-select" name="dept" required>
                                 <option value="">-- SELECT DEPARTMENT  --</option>
+                                <option value="0">Set Later</option>
                                 <?php
                                 $n = new CompanyView();
                                 $n->ViewCompanyDeptLoop($_SESSION['id']);

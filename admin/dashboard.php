@@ -178,6 +178,44 @@ include 'includes/miniTab.inc.php';
         </div>
 
 
+        <div class="col-lg-3 col-sm-6">
+            <div class="card-box bg-primary">
+                <div class="inner">
+                    <h3>
+                        <?php
+                        $n = new AdminView();
+                        $res = $n->countAllCartegories();
+                        ?>
+                    </h3>
+                    <p>Categories </p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <a href="categories.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card-box bg-success">
+                <div class="inner">
+                    <h3>
+                        <?php
+                        $n = new AdminView();
+                        $res = $n->countAllPrograms();
+                        ?>
+                    </h3>
+                    <p>Programs </p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-book"></i>
+                </div>
+                <a href="programs.php" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+
     </div>
 
 

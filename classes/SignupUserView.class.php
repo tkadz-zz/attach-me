@@ -43,7 +43,7 @@ class SignupUserView extends Users{
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label>National ID</label>
-                                    <input id="nid" type="text"  class="form-control form-control-user" placeholder="National ID(xx-xxxxxxRxx)" autocomplete="off" name="nid" minlength="12" maxlength="12"  required >
+                                    <input id="nid" type="text"  class="form-control form-control-user" placeholder="National ID(xx-xxxxxxRxx)" autocomplete="off" name="nid" minlength="10" maxlength="13"  required >
                                 </div>
 
                                 <div class="col-sm-6 mb-3 mb-sm-0">
@@ -667,8 +667,7 @@ class SignupUserView extends Users{
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label>Institute</label>
                                     <select name="institute" type="text" class="form-control form-control-user" required>
-                                        <option> -- Choose Your Institute -- </option>
-                                        <option value="0"> Not Listed Below </option>
+                                        <option value=""> -- Choose Your Institute -- </option>
                                         <?php
                                         $n = new Userview();
                                         $n->ShowInstitutes();
@@ -681,8 +680,7 @@ class SignupUserView extends Users{
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label>Course/Program</label>
                                     <select name="program" type="text" class="form-control form-control-user" required>
-                                        <option> -- Choose Your Program/Course -- </option>
-                                        <option value="0"> Not Listed Below </option>
+                                        <option value=""> -- Choose Your Program/Course -- </option>
                                         <?php
                                         $n = new Userview();
                                         $n->ShowPrograms();
@@ -692,8 +690,7 @@ class SignupUserView extends Users{
                                 <div class="col-sm-6 mb-3 mb-sm-0">
                                     <label>Program/Course Type</label>
                                     <select name="programType" type="text" class="form-control form-control-user" required>
-                                        <option> -- Program/Course Type -- </option>
-                                        <option value="0"> Not Listed Below </option>
+                                        <option value=""> -- Program/Course Type -- </option>
                                         <option value="Certificate"> Certificate </option>
                                         <option value="Bachelor"> Bachelor's Degree </option>
                                         <option value="Masters"> Masters Degree </option>

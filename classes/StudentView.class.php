@@ -400,7 +400,7 @@ class StudentView extends Users
                                 <div class="mt-2">
                                     <div class="col-md-6">
                                         <label class="labels text-decoration-underline">Institute:</label>
-                                        <p><a href="#!"><?php echo $instituteRow[0]['name'] ?> Resorces <span class="fa fa-external-link"></span></a></p>
+                                        <p><a href="instituteProfile.php?userID=<?php echo $instituteRow[0]['userID'] ?>"><?php echo $instituteRow[0]['name'] ?> Resorces <span class="fa fa-external-link"></span></a></p>
                                     </div>
                                 </div>
                                 <hr>
@@ -790,7 +790,7 @@ class StudentView extends Users
 
 
             <div class="nav-item dropdown -d-none -d-lg-block">
-                <span class="badge badge-primary text-black" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Attached @ ...<a href="#!"><?php echo $companyRows[0]['name'] ?> <span class="fa fa-arrow-right"></span></a> </span>
+                <span class="badge badge-primary text-black" -id="messageDropdown" -data-bs-toggle="dropdown" -aria-expanded="false"> Attached @ ...<a href="companyProfile.php?userID=<?php echo $attachmentRows[0]['companyID'] ?>"><?php echo $companyRows[0]['name'] ?> <span class="fa fa-arrow-right"></span></a> </span>
 
                 <div class="">
                     <br>
@@ -799,7 +799,7 @@ class StudentView extends Users
                     </p>
 
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item">
+                    <a href="uploadDocument.php?document=logb" class="dropdown-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Logbook </p>
                             <p class="fw-light small-text mb-0">Upload and update your logbook</p>
@@ -807,7 +807,7 @@ class StudentView extends Users
                     </a>
 
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item">
+                    <a href="uploadDocument.php?document=attRep" class="dropdown-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Attachment Report/s</p>
                             <p class="fw-light small-text mb-0">your attachment report/s</p>
@@ -815,7 +815,7 @@ class StudentView extends Users
                     </a>
 
                     <div class="dropdown-divider"></div>
-                    <a href="cv.php" class="dropdown-item">
+                    <a href="uploadDocument.php?document=cv" class="dropdown-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Curriculum Vitae</p>
                             <p class="fw-light small-text mb-0">Keep your CV up-to-date</p>
@@ -823,7 +823,7 @@ class StudentView extends Users
                     </a>
 
                     <div class="dropdown-divider"></div>
-                    <a href="#!" class="dropdown-item preview-item">
+                    <a href="carrier.php" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark">More ...<span class="mdi mdi-chevron-double-right"></span> </p>
                         </div>
@@ -1117,7 +1117,7 @@ class StudentView extends Users
                         </div>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="carrier.php#cv" class="dropdown-item preview-item">
+                    <a href="uploadDocument.php?document=cv" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Curriculum Vitae</p>
                             <p class="fw-light small-text mb-0">Keep your CV up-to-date</p>
@@ -1134,29 +1134,29 @@ class StudentView extends Users
             <li class="nav-item dropdown d-none d-lg-block">
                 <a class="border border-success nav-link dropdown-bordered dropdown-toggle dropdown-toggle-split text-primary" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false"> Attached</a>
                 <div class="border border-success dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
-                                <span style="color: black" class="dropdown-item py-3 disabled" >
-                                    <p class="mb-0 font-weight-medium float-left">Work Related Learning Management</p>
-                                </span>
+                <span style="color: black" class="dropdown-item py-3 disabled" >
+                    <p class="mb-0 font-weight-medium float-left">Work Related Learning Management</p>
+                </span>
                     <div class="dropdown-divider"></div>
-                    <a href="carrier.php#logbook" class="dropdown-item preview-item">
+                    <a href="uploadDocument.php?document=logb"  class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Logbook </p>
                             <p class="fw-light small-text mb-0">Upload and update your logbook</p>
                         </div>
                     </a>
-                    <a href="carrier.php#attachmentReport" class="dropdown-item preview-item">
+                    <a href="uploadDocument.php?document=attRep" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Attachment Report/s</p>
                             <p class="fw-light small-text mb-0">your attachment report/s</p>
                         </div>
                     </a>
-                    <a href="carrier.php#cv" class="dropdown-item preview-item">
+                    <a href="uploadDocument.php?document=cv" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark"><span class="mdi mdi-book-open-page-variant"></span> Curriculum Vitae</p>
                             <p class="fw-light small-text mb-0">Keep your CV up-to-date</p>
                         </div>
                     </a>
-                    <a href="carrier.php#documents" class="dropdown-item preview-item">
+                    <a href="carrier.php" class="dropdown-item preview-item">
                         <div class="preview-item-content flex-grow py-2">
                             <p class="preview-subject ellipsis font-weight-medium text-dark">More ...<span class="mdi mdi-chevron-double-right"></span> </p>
                         </div>

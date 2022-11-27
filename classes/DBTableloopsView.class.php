@@ -8,6 +8,7 @@ class DBTableloopsView extends Users
 
         ?>
         <option value="">-- Select Category --</option>
+        <option value="0">Set Later</option>
         <?php
         foreach ($rows as $row){
         ?>

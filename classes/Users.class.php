@@ -3,6 +3,60 @@
 
 class Users extends Dbh{
 
+    protected function updateMainProfie($loginID, $name, $email, $phone, $address, $website, $userID){
+
+        if ($_SESSION['role'] == 'company') {
+            $nmdirect = 'profileCompany.php';
+        }
+        if ($_SESSION['role'] == 'institute') {
+            $nmdirect = 'profileInstitute.php';
+        }
+
+        $sqlc = "SELECT * FROM users WHERE loginID=? AND id != ?";
+        $stmtc = $this->con()->prepare($sqlc);
+        $stmtc->execute([$loginID, $userID]);
+        $rows = $stmtc->fetchAll();
+        //Check to see if there is any loginID in database matching the provided one
+        if (count($rows) > 0) {
+            //if loginID already exist in database, do not create account, redirect user to previous page
+            $_SESSION['type'] = 'w';
+            $_SESSION['err'] = 'LoginID <span class="text-decoration-underline text-dark">'.$loginID.'</span> already taken. Please Choose another';
+            echo "<script type='text/javascript'>
+                    window.location='../$nmdirect';
+                </script>";
+        }
+        else {
+            if ($_SESSION['role'] == 'company') {
+                $sql2 = "UPDATE company SET name=?, email=?, phone=?, address=?, website=? WHERE user_id=?";
+                $nm = 'company';
+                $nmdirect = 'profileCompany.php';
+            }
+            if ($_SESSION['role'] == 'institute') {
+                $sql2 = "UPDATE institute SET name=?, email=?, phone=?, address=?, website=? WHERE userID=?";
+                $nm = 'institute';
+                $nmdirect = 'profileInstitute.php';
+            }
+            $sql1 = "UPDATE users SET loginID=? WHERE id=?";
+
+            $stmt1 = $this->con()->prepare($sql1);
+            $stmt2 = $this->con()->prepare($sql2);
+
+            if ($stmt1->execute([$loginID, $userID]) and $stmt2->execute([$name, $email, $phone, $address, $website, $userID])) {
+                $_SESSION['name'] = $name;
+                $_SESSION['email'] = $email;
+
+                $_SESSION['type'] = 's';
+                $_SESSION['err'] = $nm . ' profile updated successfully';
+                echo "<script type='text/javascript'>
+                    window.location='../$nmdirect';
+                </script>";
+            } else {
+                $this->opps();
+            }
+        }
+    }
+
+
     protected function setPassword($loginID, $password, $password_unprotected){
         $sql = "UPDATE users SET password=? WHERE loginID=?";
         $stmt = $this->con()->prepare($sql);
@@ -785,17 +839,33 @@ class Users extends Dbh{
 
     }
 
-    protected function subCompanyUpdatePassword($op, $cp, $id){
+    protected function subCompanyUpdatePassword($op, $cp, $main, $id){
         //update student password
-        $rows = $this->isUser($id, $_SESSION['role']);
+        if($main == 'acc'){
+            $rows = $this->GetUser($id);
+        }
+        else{
+            $rows = $this->GetSubAccByID($id);
+        }
+
 
         if(password_verify($op, $rows[0]['password'])){
             //Match
             if($_SESSION['role'] == 'company'){
-                $sql2 = "UPDATE company_sub_accounts SET password=? WHERE id=?";
+                if($main == 'acc'){
+                    $sql2 = "UPDATE users SET password=? WHERE id=?";
+                }
+                else{
+                    $sql2 = "UPDATE company_sub_accounts SET password=? WHERE id=?";
+                }
             }
             if($_SESSION['role'] == 'institute'){
-                $sql2 = "UPDATE institute_sub_accounts SET password=? WHERE id=?";
+                if($main == 'acc'){
+                    $sql2 = "UPDATE users SET password=? WHERE id=?";
+                }
+                else{
+                    $sql2 = "UPDATE institute_sub_accounts SET password=? WHERE id=?";
+                }
             }
             $stmt2 = $this->con()->prepare($sql2);
             $pass_safe = password_hash($cp, PASSWORD_DEFAULT);
@@ -804,7 +874,7 @@ class Users extends Dbh{
                 $_SESSION['type'] = 's';
                 $_SESSION['err'] = 'Password Updated Successfully';
                 echo "<script type='text/javascript'>;
-                      window.location='../password.php';
+                      history.back(-1);
                     </script>";
             }
             else{
@@ -1027,10 +1097,10 @@ class Users extends Dbh{
                     if($passwords == ''){
                         $accRows = $this->isUser($record[0]['id'], $record[0]['role']);
 
-                        $_SESSION['loginIDTemp'] = $record[0]['loginID'];
+                        $_SESSION['loginIDTemp'] = $row['loginID'];
                         $_SESSION['tempName'] = $accRows[0]['name'];
-                        $_SESSION['idTemp'] = $record[0]['id'];
-                        $_SESSION['ids'] = $record[0]['id'];
+                        $_SESSION['idTemp'] = $row['id'];
+                        $_SESSION['ids'] = $row['id'];
                         $_SESSION['type'] = 's';
                         $_SESSION['err'] = 'Looks like this is your first time login-in! Please Choose a password of your choice to proceed';
 
@@ -1249,7 +1319,12 @@ class Users extends Dbh{
     }
 
     protected function GetDeptById($id){
-        $sql = "SELECT * FROM companyDepartment WHERE id=?";
+        if($_SESSION['role'] == 'company'){
+            $sql = "SELECT * FROM companyDepartment WHERE id=?";
+        }
+        if($_SESSION['role'] == 'institute'){
+            $sql = "SELECT * FROM instDepartment WHERE id=?";
+        }
         $stmt = $this->con()->prepare($sql);
         $stmt->execute([$id]);
         return  $stmt->fetchAll();
@@ -1510,12 +1585,19 @@ class Users extends Dbh{
         return $stmt->fetchAll();
     }
 
+    protected function GetAttachmentHistoryByUserID($id){
+        $sql = "SELECT * FROM attachmentsHistory WHERE userID=? ORDER BY id DESC";
+        $stmt = $this->con()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll();
+    }
+
     protected function GetSubCompanyById($id){
         //This method is also used by institute
         if($_SESSION['role'] == 'company'){
             $sql = "SELECT * FROM company_sub_accounts WHERE companyID=? ORDER BY role ASC";
         }
-        if($_SESSION['role'] == 'institute'){
+        elseif($_SESSION['role'] == 'institute'){
             $sql = "SELECT * FROM institute_sub_accounts WHERE instID=? ORDER BY role ASC";
         }
         $stmt = $this->con()->prepare($sql);
@@ -1667,6 +1749,7 @@ class Users extends Dbh{
             $_SESSION['id'] = $rowsUser[0]['id'];
             $_SESSION['regNumber'] = $loginID;
             $_SESSION['role'] = $rowsUser[0]['role'];
+            $_SESSION['avatar'] = $rowsUser[0]['avatar'];
 
             $updateRegS = new Usercontr();
             $updateRegS->UpdateRegStatus($rowsUser[0]['regStatus'], $_SESSION['id']);
@@ -1840,7 +1923,7 @@ class Users extends Dbh{
             if($stmt->execute([$user_id, $name, $surname, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $blank, $myNull])){
                 //USER CREATED SUCCESSFULLY
                 $autoLogin = new Usercontr();
-                $autoLogin -> autologinSet($user_id, $loginID);
+                $autoLogin->autologinSet($user_id, $loginID);
             }
             else{
                 $this->opps();

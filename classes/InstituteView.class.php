@@ -67,6 +67,7 @@ class InstituteView extends Users
                     <div class="card border border-<?php echo $borderClass ?> border-3">
                         <div class="card-body">
                             <h4 class="card-title card-header"><?php echo $studentRows[0]['name'] .' '. $studentRows[0]['surname'] ?><span style="font-size: 13px">(<?php echo $userRows[0]['loginID'] ?>)</span><span class="badge badge-<?php echo $borderClass ?> border rounded <?php echo $borderClass ?>"><?php echo $msg ?></span> </h4>
+                            <a href="attachmentHistory.php?userID=<?php echo $id ?>" -style="float: right" class="btn btn-outline-success btn-sm">attachment history <span class="fa fa-chevron-right"></span> </a>
                             <hr>
                             <div class="row">
                                 <div class="col-md-4">
@@ -90,7 +91,7 @@ class InstituteView extends Users
                                         $instituteRow = $this->GetInstituteByUserID($studentEducationRows[0]['schoolID']);
                                         $programRows = $this->GetProgramByID($studentEducationRows[0]['programID']);
                                         ?>
-                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo 'SET' ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
+                                        <li><span>Institute</span> : <span><a href="instituteProfile.php?userID=<?php echo $studentEducationRows[0]['schoolID'] ?>"><?php echo $instituteRow[0]['name'] ?></a></span></li>
                                         <li><span>Program</span> : <span><?php echo $studentEducationRows[0]['programType'] ?>'s in <?php echo $programRows[0]['name'] ?></span></li>
                                         <li><span>Course</span> : <span><?php echo $this->dayDate($studentEducationRows[0]['initial_year']) ?> to <?php echo $this->dayDate($studentEducationRows[0]['final_year']) ?></span></li>
                                     </ul>

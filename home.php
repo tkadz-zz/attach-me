@@ -33,13 +33,15 @@
                         <circle cx="50" cy="50" r="50"></circle>
                     </svg>
                     <div class="device-wrapper">
-                        <div class="device" data-device="iPhoneX" data-orientation="portrait" data-color="black">
-                            <div class="screen bg-black">
-                                <!-- PUT CONTENTS HERE:-->
-                                <!-- * * This can be a video, image, or just about anything else.-->
-                                <!-- * * Set the max width of your media to 100% and the height to-->
-                                <!-- * * 100% like the demo example below.-->
-                               <!-- <img style="height: 515px; width: 235px" src="img/phone_wall.jpg" /> -->
+                        <div class="device-wrapper">
+                            <div class="device" data-device="iPhoneX" data-orientation="portrait" data-color="black">
+                                <div class="screen bg-black">
+                                    <!-- PUT CONTENTS HERE:-->
+                                    <!-- * * This can be a video, image, or just about anything else.-->
+                                    <!-- * * Set the max width of your media to 100% and the height to-->
+                                    <!-- * * 100% like the demo example below.-->
+                                    <!-- <img style="height: 515px; width: 235px" src="img/phone_wall.jpg" /> -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -54,17 +56,7 @@
 
 
 
-<!-- Quote/testimonial aside-->
-<aside class="text-center bg-gradient-primary-to-secondary">
-    <div class="container px-5">
-        <div class="row gx-5 justify-content-center">
-            <div class="col-xl-8">
-                <div class="h2 fs-1 text-white mb-4">"An intuitive solution to common problems that most companies face, wrapped up in a single website!"</div>
 
-            </div>
-        </div>
-    </div>
-</aside>
 
 
 

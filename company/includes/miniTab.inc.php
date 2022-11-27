@@ -10,7 +10,7 @@
                         <a class="nav-link active " id="profile-tab" -data-bs-toggle="tab" href="profile.php" role="tab" aria-selected="false"><span class="fa fa-pencil"></span> Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="vacancies.php" role="tab" aria-selected="false"><span class="mdi mdi-newspaper"></span> Vacancies</a>
+                        <a class="nav-link active" id="profile-tab" -data-bs-toggle="tab" href="allVacancies.php" role="tab" aria-selected="false"><span class="mdi mdi-newspaper"></span> Vacancies</a>
                     </li>
                     <?php
                     if(isset($_SESSION['subRole']) AND $_SESSION['subRole'] == 'admin'){
