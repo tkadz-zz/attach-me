@@ -1,8 +1,8 @@
 DEVELOPER DETAILS
 
-	$backend_developer = 'Tanaka Kadzunge';
+	$backend_developer = 'Tanaka Terrance Kadzunge';
 	$email = 'tkadzzz@gmail.com';
-	$linkedin = 'lhttps:/linkedin.com/in/tanaka-kadzunge';
+	$linkedin = 'https:/linkedin.com/in/tanaka-kadzunge';
 
 
 Its very exiting to introduce to you one of the most significant projets l have ever worked on
