@@ -48,7 +48,7 @@ SETTING UP THE SYSTEM
 	2: start your server
  	2: Go to /classes/Dbh.class.php to see the name of the database under $dbname variable
 	3: Navigate to localhost/phpmyadmin on your browser and create Database
-	4: import sql file in the system root folder /dbfile/.....sql
+	4: import sql file in the system root folder /sqldatabase/.....sql
 	5: Your application is good to go
  
 
